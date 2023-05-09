@@ -18,7 +18,10 @@ const Map = () => {
           center={center}
           zoom={12}
         >
-          <Marker position={{ lat: 32.78697, lng: 35.005344 }} />
+          <Marker
+            position={{ lat: 32.78697, lng: 35.00534 }}
+            icon={'http://maps.google.com/mapfiles/ms/icons/green-dot.png'}
+          />
         </GoogleMap>
       )}
     </div>
