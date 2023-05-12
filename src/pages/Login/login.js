@@ -10,7 +10,7 @@ function SignInForm() {
         >
           <img
             className="w-8 h-8 mr-2"
-            src="https://ibb.co/RBYV5qV"
+            src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/logo.svg"
             alt="logo"
           />
           Eco Collectors

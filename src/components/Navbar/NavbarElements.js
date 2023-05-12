@@ -48,6 +48,48 @@ export const NavMenu = styled.div`
   /* width: 100vw;
 white-space: nowrap; */
   @media screen and (max-width: 768px) {
-    display: none;
+    display: ${({ isOpen }) => (isOpen ? 'flex' : 'none')};
+    flex-direction: column;
+    align-items: center;
+    position: absolute;
+    top: 85px;
+    left: 0;
+    width: 100%;
+    background: #374151;
+    padding-top: 1rem;
+    transition: all 0.3s ease-in-out;
+  }
+`;
+
+export const NavItem = styled.li`
+  height: 85px;
+  @media screen and (max-width: 768px) {
+    width: 100%;
+  }
+`;
+
+export const NavLinks = styled(Link)`
+  color: #fff;
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  height: 100%;
+  cursor: pointer;
+  &.active {
+    color: #4d4dff;
+  }
+  @media screen and (max-width: 768px) {
+    width: 100%;
+    text-align: center;
+    padding: 2rem;
+    display: table;
+    &.active {
+      color: #4d4dff;
+    }
+    &:hover {
+      color: #4d4dff;
+      transition: all 0.3s ease;
+    }
   }
 `;

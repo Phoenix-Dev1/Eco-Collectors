@@ -7,8 +7,6 @@ import Register from './pages/Register/register';
 import MapPage from './pages/Map/map';
 import Contact from './pages/Contact/contact';
 
-import Header from './components/Header/Header';
-
 import './index.css';
 
 function App() {
