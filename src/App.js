@@ -1,19 +1,26 @@
 import React from 'react';
+import Navbar from './components/Navbar';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Home from './pages/Home/home';
+import Login from './pages/Login/login';
+import Register from './pages/Register/register';
+import MapPage from './pages/Map/map';
 
 import Header from './components/Header/Header';
-import Map from './components/map/Map';
-import Login from './pages/Login/login';
 
 import './index.css';
 
 function App() {
-  console.log('In App');
   return (
-    <>
-      <Header heading="Test 0.1.0 - Bar Kaziro & Liran Barzilai" />
-      <Login />
-      <Map />
-    </>
+    <Router>
+      <Navbar />
+      <Routes>
+        <Route exact path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/map" element={<MapPage />} />
+      </Routes>
+    </Router>
   );
 }
 
