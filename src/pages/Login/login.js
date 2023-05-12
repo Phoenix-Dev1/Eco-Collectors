@@ -13,7 +13,7 @@ function SignInForm() {
             src="https://ibb.co/RBYV5qV"
             alt="logo"
           />
-          Flowbite
+          Eco Collectors
         </a>
         <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
@@ -33,7 +33,7 @@ function SignInForm() {
                   name="email"
                   id="email"
                   className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  placeholder="name@company.com"
+                  placeholder="email@company.com"
                   required
                 />
               </div>

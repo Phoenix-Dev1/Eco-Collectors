@@ -5,6 +5,7 @@ import Home from './pages/Home/home';
 import Login from './pages/Login/login';
 import Register from './pages/Register/register';
 import MapPage from './pages/Map/map';
+import Contact from './pages/Contact/contact';
 
 import Header from './components/Header/Header';
 
@@ -19,6 +20,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/map" element={<MapPage />} />
+        <Route path="/contact" element={<Contact />} />
       </Routes>
     </Router>
   );
