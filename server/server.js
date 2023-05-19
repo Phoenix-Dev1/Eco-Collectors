@@ -1,14 +1,17 @@
 const path = require('path');
 const express = require('express');
 const app = express();
-
+const requestsRoutes = require('./routes/requests.js');
 const port = process.env.PORT || 8800;
 
+/* Testing
 app.get('/api', (req, res) => {
-  res.json({ users: ['userOne, userTwo, userThree'] });
+  res.json({ users: ['userOne', 'userTwo', 'userThree'] });
 });
+*/
 
-// DB Connection
+app.use('/api/requests', requestsRoutes);
+
 app.use(express.json());
 
 /*

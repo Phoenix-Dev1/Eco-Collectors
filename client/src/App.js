@@ -75,6 +75,7 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
+  /* Testing
   const [backendData, setBackendData] = useState([{}]);
 
   useEffect(() => {
@@ -84,7 +85,7 @@ function App() {
         setBackendData(data);
       });
   }, []); // [] - run only on the first render of component
-
+*/
   return (
     <>
       <RouterProvider router={router} />
