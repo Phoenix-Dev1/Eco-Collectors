@@ -5,7 +5,7 @@ function SignInForm() {
     <section className="bg-gray-50 dark:bg-gray-900">
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
         <a
-          href="#"
+          href="/"
           className="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white"
         >
           <img
@@ -82,7 +82,7 @@ function SignInForm() {
               </div>
               <button
                 type="submit"
-                className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2.5 mt-4 transition-all duration-150 ease-in-out"
+                className="text-sm font-medium leading-6 text-gray-900 rounded-lg shadow-md focus:outline-none w-full h-12 transition-colors duration-150 ease-in-out bg-white hover:bg-gray-100 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700 dark:hover:text-primary-500"
               >
                 Sign In
               </button>
@@ -94,7 +94,7 @@ function SignInForm() {
                   Don't have an account?
                 </span>
                 <a
-                  href="#"
+                  href="/register"
                   className="ml-2 text-primary-600 hover:underline dark:text-primary-500"
                 >
                   Sign up
@@ -111,7 +111,7 @@ function SignInForm() {
                 >
                   <path d="M21.35,3.93a10,10,0,0,0-3.89-3.93L16,0H8L6.53.93A10,10,0,0,0,2.65,6.21L2,8.1V16l.93,1.47a10,10,0,0,0,3.88,3.93L8,24h8l1.47-.93a10,10,0,0,0,3.89-3.93L22,16V8ZM12,18a6,6,0,1,1,6-6A6,6,0,0,1,12,18Zm0-10a4,4,0,1,0,4,4A4,4,0,0,0,12,8Z"></path>
                 </svg>
-                <span>Continue with Google</span>
+                <span>Continue with Google(Beta)</span>
               </a>
             </div>
           </div>
