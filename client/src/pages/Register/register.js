@@ -1,6 +1,32 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 function SignupForm() {
+  const [inputs, setInputs] = useState({
+    username: '',
+    email: '',
+    password: '',
+  });
+
+  const [err, setError] = useState(null);
+
+  const handleChange = (e) => {
+    setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post('/auth/register', inputs);
+      navigate('/login');
+    } catch (err) {
+      setError(err.response.data);
+    }
+  };
+
   return (
     <section className="bg-gray-50 dark:bg-gray-900">
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
@@ -29,6 +55,7 @@ function SignupForm() {
                   Your email
                 </label>
                 <input
+                  onChange={handleChange}
                   type="email"
                   name="email"
                   id="email"
@@ -45,6 +72,7 @@ function SignupForm() {
                   User name
                 </label>
                 <input
+                  onChange={handleChange}
                   type="text"
                   name="username"
                   id="username"
@@ -61,6 +89,7 @@ function SignupForm() {
                   Password
                 </label>
                 <input
+                  onChange={handleChange}
                   type="password"
                   name="password"
                   id="password"
@@ -112,8 +141,14 @@ function SignupForm() {
                   </label>
                 </div>
               </div>
+              {err && (
+                <p className="flex items-center justify-center  text-s text-red-700 font-semibold ">
+                  {err}
+                </p>
+              )}
               <div>
                 <button
+                  onClick={handleSubmit}
                   type="submit"
                   className="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-primary-600 border border-transparent rounded-md shadow-sm hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500
                    leading-6 transition-colors duration-150 ease-in-out bg-white hover:bg-gray-100 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700 dark:hover:text-primary-500"

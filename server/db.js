@@ -1,8 +1,12 @@
-import mysql from 'mysql';
+const mysql = require('mysql');
 
-export const db = mysql.createConnection({
+const db = mysql.createConnection({
   host: 'localhost',
   user: 'root',
   password: '',
   database: 'eco_collectors',
 });
+
+module.exports = {
+  db: db,
+};
