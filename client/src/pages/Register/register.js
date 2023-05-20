@@ -11,12 +11,14 @@ function SignupForm() {
 
   const [err, setError] = useState(null);
 
+  // User Credentials
   const handleChange = (e) => {
     setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   const navigate = useNavigate();
 
+  // Submitting the register form
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {

@@ -22,13 +22,18 @@ const Footer = () => {
               </a>
             </li>
             <li>
-              <a href="/privacy" class="mr-4 hover:underline md:mr-6">
+              <a
+                href="/privacy"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="mr-4 hover:underline md:mr-6"
+              >
                 Privacy Policy
               </a>
             </li>
             <li>
               <a href="/contact-us" class="hover:underline">
-                Contact
+                Contact Us
               </a>
             </li>
           </ul>

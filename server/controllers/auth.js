@@ -24,7 +24,25 @@ const register = (req, res) => {
   });
 };
 
-const login = (req, res) => {};
+const login = (req, res) => {
+  // Check User existence in db
+
+  const q = 'SELECT * FROM users WHERE username = ?';
+  db.query(q, [req, body, username], (err, data) => {
+    if (err) return res.json(err);
+    if (data.length === 0) return res.status(404).json('User not found!');
+
+    // Check password
+    // data - is an array, check the first element
+    const isPasswordCorrect = bcrypt.compareSync(
+      req.body.password,
+      data[0].password
+    );
+
+    if (!isPasswordCorrect)
+      return res.status(400).json('Wrong username or password');
+  });
+};
 
 const logout = (req, res) => {};
 
