@@ -1,6 +1,7 @@
 const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const app = express();
 const authRoutes = require('./routes/auth.js');
 const usersRoutes = require('./routes/users.js');
@@ -15,11 +16,12 @@ app.get('/api', (req, res) => {
 });
 */
 
+// Middlewares
+app.use(express.json());
+app.use(cookieParser());
 app.use('/api/auth', authRoutes);
 app.use('/api/users', usersRoutes);
 app.use('/api/requests', requestsRoutes);
-
-app.use(express.json());
 
 /*
 app.use((req, res, next) => {

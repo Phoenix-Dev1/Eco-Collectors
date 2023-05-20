@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs');
 const { db } = require('../db.js');
+const jwt = require('jsonwebtoken');
 
 const register = (req, res) => {
   // Check Existing user
@@ -28,7 +29,7 @@ const login = (req, res) => {
   // Check User existence in db
 
   const q = 'SELECT * FROM users WHERE username = ?';
-  db.query(q, [req, body, username], (err, data) => {
+  db.query(q, [req.body.username], (err, data) => {
     if (err) return res.json(err);
     if (data.length === 0) return res.status(404).json('User not found!');
 
@@ -41,10 +42,36 @@ const login = (req, res) => {
 
     if (!isPasswordCorrect)
       return res.status(400).json('Wrong username or password');
+
+    // Using the user unique id to create a token
+    // jwtkey - can be replaced with a new key stored in the .env file
+    const token = jwt.sign({ id: data[0].id }, 'jwtkey');
+    // removing the password from the data array so it will not be sent
+    const { password, ...other } = data[0];
+
+    // sending the user a cookie via the cookie-parser
+    res
+      .cookie('access_token', token, {
+        // secuirty - scripts can't use this token, only API requests
+        httpOnly: true,
+      })
+      .status(200)
+      .json(other);
   });
 };
 
-const logout = (req, res) => {};
+const logout = (req, res) => {
+  res
+    .clearCookie('access_token', {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none',
+      expires: new Date(0),
+      path: '/',
+    })
+    .status(200)
+    .json('User has been logged out');
+};
 
 module.exports = {
   register: register,

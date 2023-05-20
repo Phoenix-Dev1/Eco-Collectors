@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { AuthContext } from '../../context/authContext';
 
 function SignInForm() {
   const [inputs, setInputs] = useState({
@@ -10,18 +10,22 @@ function SignInForm() {
 
   const [err, setError] = useState(null);
 
+  const navigate = useNavigate();
+
+  // For displaying the current user name on screen - localStorage
+  const { login } = useContext(AuthContext);
+
   // User Credentials
   const handleChange = (e) => {
     setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const navigate = useNavigate();
-
-  // Submitting the register form
+  // Submitting the register from authContext
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('/auth/login', inputs);
+      // Calling the login function from
+      await login(inputs);
       navigate('/');
     } catch (err) {
       setError(err.response.data);
