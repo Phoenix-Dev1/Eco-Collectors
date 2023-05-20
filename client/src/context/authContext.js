@@ -1,6 +1,5 @@
 import { createContext, useEffect, useState } from 'react';
 import axios from 'axios';
-
 export const AuthContext = createContext();
 
 // Used to wrap the Application with the user id and requests
@@ -21,10 +20,12 @@ export const AuthContextProvider = ({ children }) => {
     try {
       await axios.get('/auth/logout');
       setCurrentUser(null);
+      window.location.href = '/'; // Redirect to home page
     } catch (error) {
       console.log(error);
     }
   };
+
   useEffect(() => {
     localStorage.setItem('user', JSON.stringify(currentUser));
   }, [currentUser]);

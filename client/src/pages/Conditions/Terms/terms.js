@@ -7,11 +7,8 @@ function TermsAndConditions() {
       <p className="mb-4">
         These terms and conditions ("Agreement") set forth the general terms and
         conditions of your use of the{' '}
-        <a
-          href="https://www.eco-collectors.co.il"
-          className="text-blue-500 hover:underline"
-        >
-          eco-collectors.co.il
+        <a href="/" className="text-blue-500 hover:underline">
+          Eco-Collectors
         </a>{' '}
         website ("Website" or "Service") and any of its related products and
         services (collectively, "Services"). This Agreement is legally binding

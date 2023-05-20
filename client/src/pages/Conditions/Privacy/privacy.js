@@ -2,16 +2,19 @@ import React from 'react';
 
 const PrivacyPolicy = () => {
   return (
-    <div className="max-w-2xl mx-auto py-8">
+    <div className="max-w-3xl mx-auto py-8">
       <h1 className="text-3xl font-bold mb-4">
         Privacy Policy for Eco Collectors
       </h1>
 
       <p className="mb-4">
-        At Eco Collectors, accessible from https://www.eco-collectors.co.il, one
-        of our main priorities is the privacy of our visitors. This Privacy
-        Policy document contains types of information that is collected and
-        recorded by Eco Collectors and how we use it.
+        At Eco Collectors, accessible from{' '}
+        <a href="/" className="text-blue-500 hover:underline">
+          Eco-Collectors
+        </a>{' '}
+        , one of our main priorities is the privacy of our visitors. This
+        Privacy Policy document contains types of information that is collected
+        and recorded by Eco Collectors and how we use it.
       </p>
 
       <p className="mb-4">

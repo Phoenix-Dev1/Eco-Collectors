@@ -9,9 +9,10 @@ const register = (req, res) => {
   console.log(req.body);
   db.query(q, [req.body.email, req.body.name], (err, data) => {
     if (err) return res.json(err);
-    if (data.length) return res.status(409).json('User already exists!');
+    if (data.length)
+      return res.status(409).json('Username/Email address already exists!');
 
-    // Hash the password and create a user
+    // Encrypt the password and create a user
     const salt = bcrypt.genSaltSync(10);
     const hash = bcrypt.hashSync(req.body.password, salt);
 
