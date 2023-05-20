@@ -39,6 +39,11 @@ const router = createBrowserRouter([
         element: <Home />,
       },
       {
+        // duplication is on purpose for editing later
+        path: '/map/',
+        element: <MapPage />,
+      },
+      {
         path: '/map/:id',
         element: <MapPage />,
       },
