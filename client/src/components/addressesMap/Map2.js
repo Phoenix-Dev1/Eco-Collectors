@@ -1,7 +1,8 @@
-import { GoogleMap, MarkerF, useLoadScript } from '@react-google-maps/api';
-import { useMemo, useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { GoogleMap, Marker, useLoadScript } from '@react-google-maps/api';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
+import { geocode } from 'react-geocode';
 import classes from './map.module.css';
 
 const Map = () => {
@@ -9,7 +10,6 @@ const Map = () => {
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_API_KEY,
   });
 
-  // Fetching Markers by type
   const [markers, setMarkers] = useState([]);
 
   const type = useLocation().search;
@@ -18,7 +18,20 @@ const Map = () => {
     const fetchData = async () => {
       try {
         const res = await axios.get(`/markers${type}`);
-        setMarkers(res.data);
+        const dataWithLocation = await Promise.all(
+          res.data.map(async (marker) => {
+            const { address, city } = marker;
+            try {
+              const response = await geocode.fromAddress(`${address}, ${city}`);
+              const { lat, lng } = response.results[0].geometry.location;
+              return { ...marker, lat, lng };
+            } catch (error) {
+              console.error('Error occurred during geocoding:', error);
+              return marker;
+            }
+          })
+        );
+        setMarkers(dataWithLocation);
       } catch (err) {
         console.log(err);
       }
@@ -26,7 +39,7 @@ const Map = () => {
     fetchData();
   }, [type]);
 
-  const center = useMemo(() => ({ lat: 32.79413, lng: 34.98828 }), []);
+  const center = { lat: 32.79413, lng: 34.98828 };
 
   return (
     <div className={classes.Map}>
@@ -39,7 +52,7 @@ const Map = () => {
           zoom={12}
         >
           {markers.map(({ id, lat, lng }) => (
-            <MarkerF key={id} position={{ lat, lng }} />
+            <Marker key={id} position={{ lat, lng }} />
           ))}
         </GoogleMap>
       )}
