@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Navbar from './components/Navbar/Navbar';
 import {
   BrowserRouter as Router,
@@ -12,7 +12,7 @@ import Footer from './components/Footer/footer';
 import Home from './pages/Home/home';
 import Login from './pages/Login/login';
 import Register from './pages/Register/register';
-import MapPage from './pages/Map/map';
+import Map from './components/map/Map';
 import Contact from './pages/Contact/contact';
 import About from './pages/About/About';
 import TermsAndConditions from './pages/Conditions/Terms/terms';
@@ -41,11 +41,11 @@ const router = createBrowserRouter([
       {
         // duplication is on purpose for editing later
         path: '/map/',
-        element: <MapPage />,
+        element: <Map />,
       },
       {
         path: '/map/:id',
-        element: <MapPage />,
+        element: <Map />,
       },
       {
         path: '/contact-us',
@@ -80,17 +80,6 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  /* Testing
-  const [backendData, setBackendData] = useState([{}]);
-
-  useEffect(() => {
-    fetch('/api')
-      .then((response) => response.json())
-      .then((data) => {
-        setBackendData(data);
-      });
-  }, []); // [] - run only on the first render of component
-*/
   return (
     <>
       <RouterProvider router={router} />
