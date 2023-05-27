@@ -7,7 +7,12 @@ import {
 } from '@react-google-maps/api';
 import { useLocation } from 'react-router-dom';
 import classes from './map.module.css';
-import { fetchMarkers } from './bins';
+import {
+  fetchMarkers,
+  showAddress,
+  openGoogleMaps,
+  formatDate,
+} from './mapFunctions';
 
 const Map = () => {
   const { isLoaded } = useLoadScript({
@@ -28,8 +33,12 @@ const Map = () => {
 
   const center = useMemo(() => ({ lat: 32.79413, lng: 34.98828 }), []);
 
-  const showAddress = (address) => {
-    setSelectedMarker(address);
+  const handleShowAddress = (address) => {
+    showAddress(setSelectedMarker, address);
+  };
+
+  const handleOpenGoogleMaps = (lat, lng) => {
+    openGoogleMaps(lat, lng);
   };
 
   return (
@@ -51,16 +60,25 @@ const Map = () => {
                 icon={{
                   url: require(`../../img/icons/${type}.png`),
                 }}
-                onClick={() => showAddress(address)}
+                onClick={() => handleShowAddress(address)}
               >
                 {markerClicked && (
                   <InfoWindowF
                     onCloseClick={() => setSelectedMarker(null)}
                     disableAutoClose={true}
                   >
-                    <>
-                      <h1>{address}</h1>
-                    </>
+                    <div>
+                      <h1 className="font-bold pt-2 text-right">{address}</h1>
+                      <h2 className="pt-2 text-right">
+                        {formatDate(last_modified)}
+                      </h2>
+                      <h2
+                        className="cursor-pointer hover:cursor-pointer hover:underline hover:text-blue-500 pt-2 text-right"
+                        onClick={() => handleOpenGoogleMaps(lat, lng)}
+                      >
+                        Navigate
+                      </h2>
+                    </div>
                   </InfoWindowF>
                 )}
               </MarkerF>
