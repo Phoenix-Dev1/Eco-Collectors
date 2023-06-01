@@ -1,18 +1,43 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import smallLogo from '../../img/sm-logo.png';
 
 function SignupForm() {
+  const [inputs, setInputs] = useState({
+    username: '',
+    email: '',
+    password: '',
+  });
+
+  const [err, setError] = useState(null);
+
+  // User Credentials
+  const handleChange = (e) => {
+    setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const navigate = useNavigate();
+
+  // Submitting the register form
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post('/auth/register', inputs);
+      navigate('/login');
+    } catch (err) {
+      setError(err.response.data);
+    }
+  };
+
   return (
     <section className="bg-gray-50 dark:bg-gray-900">
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
         <a
-          href="#"
+          href="/"
           className="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white"
         >
-          <img
-            className="w-8 h-8 mr-2"
-            src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/logo.svg"
-            alt="logo"
-          />
+          <img className="w-8 h-8 mr-2" src={smallLogo} alt="logo" />
           Eco Collectors
         </a>
         <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
@@ -29,11 +54,29 @@ function SignupForm() {
                   Your email
                 </label>
                 <input
+                  onChange={handleChange}
                   type="email"
                   name="email"
                   id="email"
                   className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   placeholder="name@company.com"
+                  required
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="email"
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  User name
+                </label>
+                <input
+                  onChange={handleChange}
+                  type="text"
+                  name="username"
+                  id="username"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  placeholder="Enter user name"
                   required
                 />
               </div>
@@ -45,6 +88,7 @@ function SignupForm() {
                   Password
                 </label>
                 <input
+                  onChange={handleChange}
                   type="password"
                   name="password"
                   id="password"
@@ -61,7 +105,7 @@ function SignupForm() {
                   Confirm password
                 </label>
                 <input
-                  type="confirm-password"
+                  type="password"
                   name="confirm-password"
                   id="confirm-password"
                   placeholder="••••••••"
@@ -85,16 +129,28 @@ function SignupForm() {
                     className="font-medium text-gray-900 dark:text-white"
                   >
                     I agree to the{' '}
-                    <a href="#" className="underline">
-                      terms and conditions
+                    <a
+                      href="/terms"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="underline"
+                    >
+                      Terms & Conditions
                     </a>
                   </label>
                 </div>
               </div>
+              {err && (
+                <p className="flex items-center justify-center  text-s text-red-700 font-semibold ">
+                  {err}
+                </p>
+              )}
               <div>
                 <button
+                  onClick={handleSubmit}
                   type="submit"
-                  className="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-primary-600 border border-transparent rounded-md shadow-sm hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                  className="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-primary-600 border border-transparent rounded-md shadow-sm hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500
+                   leading-6 transition-colors duration-150 ease-in-out bg-white hover:bg-gray-100 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700 dark:hover:text-primary-500"
                 >
                   Create account
                 </button>
@@ -102,11 +158,21 @@ function SignupForm() {
             </form>
             <p className="text-base text-gray-400">
               By creating an account, you agree to our{' '}
-              <a href="#" className="underline">
+              <a
+                href="/terms"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline"
+              >
                 terms and conditions
               </a>{' '}
               and{' '}
-              <a href="#" className="underline">
+              <a
+                href="/privacy"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline"
+              >
                 privacy policy
               </a>
               .
