@@ -16,7 +16,7 @@ const Navbar = () => {
   const { currentUser, logout } = useContext(AuthContext);
 
   return (
-    <div className="flex justify-between items-center h-24 mx-auto px-4 text-white bg-gray-900  whitespace-nowrap">
+    <div className="flex justify-between items-center h-24 mx-auto px-4 text-white bg-gray-900  whitespace-nowrap z-50">
       <Link to="/">
         <img className="h-16 w-26" src={Logo} alt="Eco Collectors" />
       </Link>
@@ -60,7 +60,7 @@ const Navbar = () => {
       <div
         className={
           nav
-            ? 'fixed left-0 top-0 w-[60%] h-full border-r border-r-gray-900 bg-gray-900 ease-in-out duration-500'
+            ? 'fixed left-0 top-0 w-[60%] h-full border-r border-r-gray-900 bg-gray-900 ease-in-out duration-500 z-50'
             : 'fixed left-[-100%]'
         }
       >
