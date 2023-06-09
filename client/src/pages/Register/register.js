@@ -8,6 +8,9 @@ function SignupForm() {
     username: '',
     email: '',
     password: '',
+    city: '',
+    address: '',
+    phone: '',
   });
 
   const [err, setError] = useState(null);
@@ -65,7 +68,7 @@ function SignupForm() {
               </div>
               <div>
                 <label
-                  htmlFor="email"
+                  htmlFor="username"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
                   User name
@@ -110,6 +113,57 @@ function SignupForm() {
                   id="confirm-password"
                   placeholder="••••••••"
                   className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  required
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="city"
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  City
+                </label>
+                <input
+                  onChange={handleChange}
+                  type="text"
+                  name="city"
+                  id="city"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  placeholder="Enter your city"
+                  required
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="address"
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  Address
+                </label>
+                <input
+                  onChange={handleChange}
+                  type="text"
+                  name="address"
+                  id="address"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  placeholder="Enter your address"
+                  required
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="phone"
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  Phone
+                </label>
+                <input
+                  onChange={handleChange}
+                  type="text"
+                  name="phone"
+                  id="phone"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  placeholder="Enter your phone number"
                   required
                 />
               </div>
