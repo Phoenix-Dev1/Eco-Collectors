@@ -14,6 +14,7 @@ import Login from './pages/Login/login';
 import Register from './pages/Register/register';
 import Map from './components/map/Map';
 import AddRequest from './pages/AddRequest/addRequest';
+import RecyclerRegister from './pages/RecyclerRegister/recyclerRegister';
 import Contact from './pages/Contact/contact';
 import About from './pages/About/About';
 import TermsAndConditions from './pages/Conditions/Terms/terms';
@@ -31,7 +32,7 @@ const Layout = () => {
   );
 };
 
-const MapLayout = () => {
+const NoFooterLayout = () => {
   return (
     <>
       <Navbar />
@@ -89,7 +90,7 @@ const router = createBrowserRouter([
   },
   {
     path: '/map',
-    element: <MapLayout />,
+    element: <NoFooterLayout />,
     children: [
       {
         path: '/map/',
@@ -98,6 +99,16 @@ const router = createBrowserRouter([
       {
         path: '/map/:id',
         element: <Map />,
+      },
+    ],
+  },
+  {
+    path: '/join',
+    element: <NoFooterLayout />,
+    children: [
+      {
+        path: '/join',
+        element: <RecyclerRegister />,
       },
     ],
   },
