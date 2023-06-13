@@ -1,8 +1,18 @@
-import React, { useRef } from 'react';
+import React, { useRef, useContext, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import emailjs from '@emailjs/browser';
+import { AuthContext } from '../../context/authContext';
 
 function Contact() {
   const form = useRef();
+  const navigate = useNavigate();
+  const { currentUser } = useContext(AuthContext);
+
+  useEffect(() => {
+    if (currentUser) {
+      form.current.email.value = currentUser.email;
+    }
+  }, [currentUser]);
 
   const sendEmail = (e) => {
     e.preventDefault();
@@ -24,6 +34,7 @@ function Contact() {
       );
 
     e.target.reset();
+    navigate('/');
   };
 
   return (

@@ -35,28 +35,31 @@ const Navbar = () => {
         <img className="h-16 w-26" src={Logo} alt="Eco Collectors" />
       </Link>
       <ul className={'hidden md:flex'}>
-        <li className="p-4">
+        <li className="p-4 hover:text-blue-600">
           <Link to="/">Home</Link>
         </li>
         {currentUser && (
-          <li className="p-4">
+          <li className="p-4 hover:text-blue-600">
             <Link to="/add">Add Request</Link>
           </li>
         )}
-        <li className="p-4">
+        <li className="p-4 hover:text-blue-600">
           <Link to="/contact-us">Contact Us</Link>
         </li>
         {!currentUser && (
-          <li className="p-4">
+          <li className="p-4 hover:text-blue-600">
             <Link to="/register">Register</Link>
           </li>
         )}
         {currentUser ? (
-          <li className="p-4 cursor-pointer" onClick={handleLogout}>
+          <li
+            className="p-4 cursor-pointer hover:text-blue-600"
+            onClick={handleLogout}
+          >
             Logout
           </li>
         ) : (
-          <li className="p-4">
+          <li className="p-4 hover:text-blue-600">
             <Link to="/login">Login</Link>
           </li>
         )}
@@ -89,57 +92,57 @@ const Navbar = () => {
           </Link>
         </h1>
         <ul className="uppercase p-4">
-          <li className="p-4 border-b border-gray-600">
+          <li className="p-4 hover:text-blue-600">
             <Link to="/" onClick={closeNav}>
               Home
             </Link>
           </li>
           {currentUser && (
-            <li className="p-4">
-              <Link to="/add" onClick={closeNav}>
-                Add Request
-              </Link>
-            </li>
-          )}
-          <li className="p-4 border-b border-gray-600">
-            <Link to="/contact-us" onClick={closeNav}>
-              Contact Us
-            </Link>
-          </li>
-          {!currentUser && (
-            <li className="p-4 border-b border-gray-600">
-              <Link to="/register" onClick={closeNav}>
-                Register
-              </Link>
-            </li>
-          )}
-          {currentUser ? (
-            <li
-              className="p-4 border-b border-gray-600 cursor-pointer"
-              onClick={logout}
-            >
-              Logout
-            </li>
-          ) : (
-            <li className="p-4 border-b border-gray-600">
-              <Link to="/login" onClick={closeNav}>
-                Login
-              </Link>
-            </li>
-          )}
-          {currentUser && (
             <li className="p-4 border-b border-gray-600 text-orange-500">
               {currentUser.first_name}
             </li>
           )}
-
-          <li className="p-4">
+          <li className="p-4 hover:text-purple-600">
             {' '}
             <Link to="/map" onClick={closeNav}>
               {' '}
               Map
             </Link>
           </li>
+          {currentUser && (
+            <>
+              <li className="p-4 hover:text-blue-600">
+                <Link to="/add" onClick={closeNav}>
+                  Add Request
+                </Link>
+              </li>
+              <li className="p-4 border-b border-gray-600 hover:text-blue-600">
+                <Link to="/contact-us" onClick={closeNav}>
+                  Contact Us
+                </Link>
+              </li>
+              <li
+                className="p-4 border-b border-gray-600 cursor-pointer hover:text-red-500"
+                onClick={logout}
+              >
+                Logout
+              </li>
+            </>
+          )}
+          {!currentUser && (
+            <>
+              <li className="p-4 border-b border-gray-600 hover:text-blue-600">
+                <Link to="/register" onClick={closeNav}>
+                  Register
+                </Link>
+              </li>
+              <li className="p-4 border-b border-gray-600 hover:text-blue-600">
+                <Link to="/login" onClick={closeNav}>
+                  Login
+                </Link>
+              </li>
+            </>
+          )}
         </ul>
       </div>
     </div>
