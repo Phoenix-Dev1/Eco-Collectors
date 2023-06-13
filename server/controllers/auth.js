@@ -4,29 +4,34 @@ const jwt = require('jsonwebtoken');
 
 const register = (req, res) => {
   // Check Existing user
-  const q = 'SELECT * FROM users WHERE email = ? OR username = ?';
+  const q = 'SELECT * FROM users WHERE email = ?';
 
-  console.log(req.body);
-  db.query(q, [req.body.email, req.body.name], (err, data) => {
+  db.query(q, [req.body.email], (err, data) => {
+    console.log(req.body.email);
     if (err) return res.json(err);
-    if (data.length)
-      return res.status(409).json('Username/Email address already exists!');
+    if (data.length) {
+      return res.status(400).json('Username/Email address already exists!');
+    }
 
     // Encrypt the password and create a user
     const salt = bcrypt.genSaltSync(10);
     const hash = bcrypt.hashSync(req.body.password, salt);
-
+    const role = 2;
+    const active = 1;
     const q =
-      'INSERT INTO users(`username`,`email`,`password`,`city`,`address`,`phone`) VALUES (?)';
+      'INSERT INTO users(`role`,`first_name`,`last_name`,`email`,`password`,`city`,`address`,`phone`,`active`) VALUES (?)';
     const values = [
-      req.body.username,
+      role,
+      req.body.first_name,
+      req.body.last_name,
       req.body.email,
       hash,
       req.body.city,
       req.body.address,
       req.body.phone,
+      active,
     ];
-
+    console.log(values);
     db.query(q, [values], (err, data) => {
       if (err) return res.json(err);
       return res.status(200).json('User has been created');
@@ -37,8 +42,8 @@ const register = (req, res) => {
 const login = (req, res) => {
   // Check User existence in db
 
-  const q = 'SELECT * FROM users WHERE username = ?';
-  db.query(q, [req.body.username], (err, data) => {
+  const q = 'SELECT * FROM users WHERE email = ?';
+  db.query(q, [req.body.email], (err, data) => {
     if (err) return res.json(err);
     if (data.length === 0) return res.status(404).json('User not found!');
 
@@ -54,9 +59,10 @@ const login = (req, res) => {
 
     // Using the user unique id to create a token
     // jwtkey - can be replaced with a new key stored in the .env file
-    const token = jwt.sign({ id: data[0].id }, 'jwtkey');
+    const token = jwt.sign({ id: data[0].ID }, 'jwtkey');
+    //console.log(data[0].ID);
     // removing the password from the data array so it will not be sent
-    const { password, ...other } = data[0];
+    const { active, password, role, ...other } = data[0];
 
     // sending the user a cookie via the cookie-parser
     res

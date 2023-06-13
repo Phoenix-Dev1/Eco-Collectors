@@ -5,7 +5,7 @@ import smallLogo from '../../img/sm-logo.png';
 
 function SignInForm() {
   const [inputs, setInputs] = useState({
-    username: '',
+    email: '',
     password: '',
   });
 
@@ -25,7 +25,7 @@ function SignInForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Calling the login function from
+      // Calling the login function from AuthContext
       await login(inputs);
       navigate('/');
     } catch (err) {
@@ -54,15 +54,15 @@ function SignInForm() {
                   htmlFor="email"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
-                  Your username
+                  Your Email
                 </label>
                 <input
                   onChange={handleChange}
                   type="text"
-                  name="username"
-                  id="username"
+                  name="email"
+                  id="email"
                   className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  placeholder="Enter your username"
+                  placeholder="Enter your email"
                   required
                 />
               </div>
@@ -131,24 +131,11 @@ function SignInForm() {
                 </span>
                 <a
                   href="/register"
-                  className="ml-2 text-primary-600 hover:underline dark:text-primary-500"
+                  className="ml-2 text-primary-600 hover:underline text-purple-600 dark:text-primary-500"
                 >
                   Sign up
                 </a>
               </span>
-              <a
-                href="/google-auth"
-                className="flex items-center justify-center space-x-2 text-sm font-medium leading-6 text-gray-900 rounded-lg shadow-md focus:outline-none w-full h-12 transition-colors duration-150 ease-in-out bg-white hover:bg-gray-100 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700 dark:hover:text-primary-500"
-              >
-                <svg
-                  className="w-5 h-5"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                >
-                  <path d="M21.35,3.93a10,10,0,0,0-3.89-3.93L16,0H8L6.53.93A10,10,0,0,0,2.65,6.21L2,8.1V16l.93,1.47a10,10,0,0,0,3.88,3.93L8,24h8l1.47-.93a10,10,0,0,0,3.89-3.93L22,16V8ZM12,18a6,6,0,1,1,6-6A6,6,0,0,1,12,18Zm0-10a4,4,0,1,0,4,4A4,4,0,0,0,12,8Z"></path>
-                </svg>
-                <span>Continue with Google(Beta)</span>
-              </a>
             </div>
           </div>
         </div>

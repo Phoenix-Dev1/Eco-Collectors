@@ -11,6 +11,18 @@ export async function fetchMarkers(type) {
   }
 }
 
+// Fetching Requests from DB
+export async function fetchRequests(type) {
+  try {
+    const res = await axios.get(`/requests${type}`);
+    console.log(res.data);
+    return res.data;
+  } catch (err) {
+    console.log(err);
+    return [];
+  }
+}
+
 // Show a single Marker Address
 export function showAddress(setSelectedMarker, address) {
   setSelectedMarker(address);

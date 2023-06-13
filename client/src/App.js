@@ -13,10 +13,12 @@ import Home from './pages/Home/home';
 import Login from './pages/Login/login';
 import Register from './pages/Register/register';
 import Map from './components/map/Map';
+import AddRequest from './pages/AddRequest/addRequest';
 import Contact from './pages/Contact/contact';
 import About from './pages/About/About';
 import TermsAndConditions from './pages/Conditions/Terms/terms';
 import PrivacyPolicy from './pages/Conditions/Privacy/privacy';
+import NotFound from './pages/404/404';
 import './index.css';
 
 const Layout = () => {
@@ -25,6 +27,15 @@ const Layout = () => {
       <Navbar />
       <Outlet />
       <Footer />
+    </>
+  );
+};
+
+const MapLayout = () => {
+  return (
+    <>
+      <Navbar />
+      <Outlet />
     </>
   );
 };
@@ -39,13 +50,8 @@ const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        // duplication is on purpose for editing later
-        path: '/map/',
-        element: <Map />,
-      },
-      {
-        path: '/map/:id',
-        element: <Map />,
+        path: '/add',
+        element: <AddRequest />,
       },
       {
         path: '/contact-us',
@@ -76,6 +82,24 @@ const router = createBrowserRouter([
   {
     path: '/contact-us',
     element: <Contact />,
+  },
+  {
+    path: '*',
+    element: <NotFound />,
+  },
+  {
+    path: '/map',
+    element: <MapLayout />,
+    children: [
+      {
+        path: '/map/',
+        element: <Map />,
+      },
+      {
+        path: '/map/:id',
+        element: <Map />,
+      },
+    ],
   },
 ]);
 

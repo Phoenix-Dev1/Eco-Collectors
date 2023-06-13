@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { validateForm } from './formValidation'; // Import the validation functions
 import axios from 'axios';
 import smallLogo from '../../img/sm-logo.png';
 
 function SignupForm() {
   const [inputs, setInputs] = useState({
-    username: '',
+    first_name: '',
+    last_name: '',
     email: '',
     password: '',
     city: '',
@@ -25,216 +27,181 @@ function SignupForm() {
   // Submitting the register form
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      await axios.post('/auth/register', inputs);
-      navigate('/login');
-    } catch (err) {
-      setError(err.response.data);
+
+    const isValid = validateForm(inputs, setError, navigate); // Use the validateForm function
+
+    if (!isValid) {
+      return;
+    } else {
+      try {
+        await axios.post('/auth/register', inputs);
+        navigate('/login');
+      } catch (err) {
+        setError(err.response.data);
+      }
     }
   };
 
   return (
-    <section className="bg-gray-50 dark:bg-gray-900">
-      <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-        <a
-          href="/"
-          className="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white"
-        >
-          <img className="w-8 h-8 mr-2" src={smallLogo} alt="logo" />
-          Eco Collectors
-        </a>
-        <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
-          <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-            <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
-              Create an account
-            </h1>
-            <form className="space-y-4 md:space-y-6" action="#">
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  Your email
-                </label>
-                <input
-                  onChange={handleChange}
-                  type="email"
-                  name="email"
-                  id="email"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  placeholder="name@company.com"
-                  required
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="username"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  User name
-                </label>
-                <input
-                  onChange={handleChange}
-                  type="text"
-                  name="username"
-                  id="username"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  placeholder="Enter user name"
-                  required
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="password"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  Password
-                </label>
-                <input
-                  onChange={handleChange}
-                  type="password"
-                  name="password"
-                  id="password"
-                  placeholder="••••••••"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  required
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="confirm-password"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  Confirm password
-                </label>
-                <input
-                  type="password"
-                  name="confirm-password"
-                  id="confirm-password"
-                  placeholder="••••••••"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  required
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="city"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  City
-                </label>
-                <input
-                  onChange={handleChange}
-                  type="text"
-                  name="city"
-                  id="city"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  placeholder="Enter your city"
-                  required
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="address"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  Address
-                </label>
-                <input
-                  onChange={handleChange}
-                  type="text"
-                  name="address"
-                  id="address"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  placeholder="Enter your address"
-                  required
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="phone"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  Phone
-                </label>
-                <input
-                  onChange={handleChange}
-                  type="text"
-                  name="phone"
-                  id="phone"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  placeholder="Enter your phone number"
-                  required
-                />
-              </div>
-              <div className="flex items-start">
-                <div className="flex items-center h-5">
-                  <input
-                    id="terms"
-                    aria-describedby="terms"
-                    type="checkbox"
-                    className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:focus:border-primary-600"
-                    required
-                  />
-                </div>
-                <div className="ml-3 text-sm">
-                  <label
-                    htmlFor="terms"
-                    className="font-medium text-gray-900 dark:text-white"
-                  >
-                    I agree to the{' '}
-                    <a
-                      href="/terms"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="underline"
-                    >
-                      Terms & Conditions
-                    </a>
-                  </label>
-                </div>
-              </div>
-              {err && (
-                <p className="flex items-center justify-center  text-s text-red-700 font-semibold ">
-                  {err}
-                </p>
-              )}
-              <div>
-                <button
-                  onClick={handleSubmit}
-                  type="submit"
-                  className="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-primary-600 border border-transparent rounded-md shadow-sm hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500
-                   leading-6 transition-colors duration-150 ease-in-out bg-white hover:bg-gray-100 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700 dark:hover:text-primary-500"
-                >
-                  Create account
-                </button>
-              </div>
-            </form>
-            <p className="text-base text-gray-400">
-              By creating an account, you agree to our{' '}
-              <a
-                href="/terms"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline"
-              >
-                terms and conditions
-              </a>{' '}
-              and{' '}
-              <a
-                href="/privacy"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline"
-              >
-                privacy policy
-              </a>
-              .
-            </p>
+    <div className="flex items-center justify-center min-h-screen dark:bg-gray-900">
+      <div className="leading-loose bg-gray-50 dark:bg-gray-900 overflow-auto w-96">
+        <form className="m-0 p-8 bg-gray-50 dark:bg-gray-800 rounded shadow-xl">
+          <a
+            href="/"
+            className="flex items-center justify-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white "
+          >
+            <img className="w-8 h-8 mr-2" src={smallLogo} alt="logo" />
+            Register - Eco Collectors
+          </a>
+          <div className="inline-block mt-2 w-1/2 pr-1">
+            <label className="block text-sm text-white" htmlFor="first_name">
+              First Name
+            </label>
+            <input
+              onChange={handleChange}
+              className="w-full px-2 py-2 bg-gray-600 rounded border border-gray-300 text-white"
+              id="first_name"
+              name="first_name"
+              type="text"
+              required
+              placeholder="First Name"
+              aria-label="First name"
+            />
           </div>
-        </div>
+          <div className="inline-block mt-2 -mx-1 pl-1 w-1/2">
+            <label className="block text-sm text-white" htmlFor="last_name">
+              Last Name
+            </label>
+            <input
+              onChange={handleChange}
+              className="w-full px-2 py-2 bg-gray-600 rounded border border-gray-300 text-white"
+              id="last_name"
+              name="last_name"
+              type="text"
+              required
+              placeholder="Last Name"
+              aria-label="Last Name"
+            />
+          </div>
+          <div className="mt-2">
+            <label className="block text-sm text-white" htmlFor="email">
+              Email
+            </label>
+            <input
+              onChange={handleChange}
+              className="w-full px-2 py-2 bg-gray-600 rounded border border-gray-300 text-white"
+              id="email"
+              name="email"
+              type="email"
+              required
+              placeholder="ex: name@example.com"
+              aria-label="email"
+            />
+          </div>
+          <div className="mt-2">
+            <div className="inline-block mt-2 w-1/2 pr-1">
+              <label className="block text-sm text-white" htmlFor="address">
+                Address
+              </label>
+              <input
+                onChange={handleChange}
+                className="w-full px-2 py-2 bg-gray-600 rounded border border-gray-300 text-white"
+                id="address"
+                name="address"
+                type="text"
+                required
+                placeholder="Street"
+                aria-label="Address"
+              />
+            </div>
+            <div className="inline-block mt-2 -mx-1 pl-1 w-1/2">
+              <label className="block text-sm text-white" htmlFor="city">
+                City
+              </label>
+              <input
+                onChange={handleChange}
+                className="w-full px-2 py-2 bg-gray-600 rounded border border-gray-300 text-white"
+                id="city"
+                name="city"
+                type="text"
+                required
+                placeholder="City"
+                aria-label="City"
+              />
+            </div>
+          </div>
+          <div className="mt-2">
+            <label className="text-sm block text-white" htmlFor="phone">
+              Phone Number
+            </label>
+            <input
+              onChange={handleChange}
+              className="w-full px-2 py-2 bg-gray-600 rounded border border-gray-300 text-white"
+              id="phone"
+              name="phone"
+              type="tel"
+              required
+              placeholder="Enter your phone number"
+              aria-label="Phone Number"
+            />
+          </div>
+          <div className="mt-2">
+            <label className="text-sm block text-white" htmlFor="password">
+              Password
+            </label>
+            <input
+              onChange={handleChange}
+              className="w-full px-2 py-2 bg-gray-600 rounded border border-gray-300 text-white"
+              id="password"
+              name="password"
+              type="password"
+              required
+              placeholder="••••••••"
+              aria-label="Password"
+            />
+          </div>
+          <div className="mt-2">
+            <label
+              className="text-sm block text-white"
+              htmlFor="confirm_password"
+            >
+              Confirm Password
+            </label>
+            <input
+              onChange={handleChange}
+              className="w-full px-2 py-2 bg-gray-600 rounded border border-gray-300 text-white"
+              id="confirm_password"
+              name="confirm_password"
+              type="password"
+              required
+              placeholder="••••••••"
+              aria-label="Confirm Password"
+            />
+          </div>
+          {err && (
+            <p className="flex items-center justify-center text-sm text-red-700 font-semibold">
+              {err}
+            </p>
+          )}
+          <div className="mt-4 flex justify-center">
+            <a href="/login">
+              <p className="mb-4 underline text-gray-400 hover:text-gray-50">
+                Already have an account?
+              </p>
+            </a>
+          </div>
+          <div className="flex justify-center">
+            <button
+              onClick={handleSubmit}
+              className="px-4 py-1 text-white font-light tracking-wider bg-gray-900 rounded justify-center items-center hover:bg-black"
+              type="submit"
+            >
+              Create Account
+            </button>
+          </div>
+        </form>
       </div>
-    </section>
+    </div>
   );
 }
 

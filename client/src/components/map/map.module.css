@@ -1,9 +1,118 @@
-.mapContainer {
-  height: 100vh;
-  width: 100%;
-}
-
 .Map {
   height: 100%;
   width: 100%;
+  display: grid;
+  position: relative; /* Add position relative to the container */
+}
+
+.filters {
+  display: inline-grid;
+  font-size: 2rem;
+  grid-column: 1;
+  grid-row: 1;
+  z-index: 2;
+  position: absolute;
+  padding: 8px;
+  margin: 10px;
+  left: 30px;
+  background-color: white;
+  border-radius: 50%;
+  cursor: pointer; /* Add cursor pointer */
+}
+
+.filterWindow {
+  position: absolute;
+  top: 70px;
+  left: 15px; /* Change right to left */
+  padding: 10px;
+  background-color: white;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  border-radius: 5px;
+  z-index: 2;
+}
+
+.filterWindow ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  z-index: 2;
+}
+
+.filterWindow ul li {
+  padding-top: 5px; /* Add padding instead of margin */
+  cursor: pointer;
+  z-index: 2;
+}
+
+.filterWindow ul li:hover {
+  background-color: lightgray;
+  z-index: 2;
+}
+
+.closeFilterWindow {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  background-color: #be1717;
+  color: white;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.add {
+  display: inline-grid;
+  font-size: 2rem;
+  grid-column: 1;
+  grid-row: 1;
+  z-index: 2;
+  position: absolute;
+  padding: 10px;
+  margin-top: 8px;
+  left: 200px;
+  background-color: white;
+  border-radius: 50%;
+  cursor: pointer; /* Add cursor pointer */
+}
+
+.addForm {
+  position: absolute;
+  top: 70px;
+  left: 15px;
+  padding: 10px;
+  background-color: white;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  border-radius: 5px;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+}
+
+.closeAddWindow {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 65px;
+  left: 230px;
+  width: 20px;
+  height: 20px;
+  background-color: #be1717;
+  color: white;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 2;
+}
+.mapContainer {
+  height: 100vh;
+  width: 100%;
+  grid-column: 1;
+  grid-row: 1;
+  z-index: 1;
+  position: relative;
 }

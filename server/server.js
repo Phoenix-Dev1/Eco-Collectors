@@ -17,12 +17,6 @@ app.use('/api/auth', authRoutes);
 app.use('/api/requests', requestsRoutes);
 app.use('/api/markers', markersRoutes);
 
-/*
-app.use((req, res, next) => {
-  res.status(404).sendFile(path.join(__dirname, 'views', '404.html'));
-});
-*/
-
 app.listen(port, () => {
   console.log(`Server started on port ${port}`);
 });

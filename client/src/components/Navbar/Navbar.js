@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { AiOutlineClose, AiOutlineMenu } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Logo from '../../img/logo-no-bg.png';
 import { AuthContext } from '../../context/authContext';
 
@@ -12,8 +13,21 @@ const Navbar = () => {
     setNav(!nav);
   };
 
+  // Mobile
+  const closeNav = () => {
+    setNav(false);
+  };
+
   // Show user name
   const { currentUser, logout } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    const loggedOut = await logout();
+    if (loggedOut) {
+      navigate('/'); // Redirect to the home page
+    }
+  };
 
   return (
     <div className="flex justify-between items-center h-24 mx-auto px-4 text-white bg-gray-900  whitespace-nowrap z-50">
@@ -24,6 +38,11 @@ const Navbar = () => {
         <li className="p-4">
           <Link to="/">Home</Link>
         </li>
+        {currentUser && (
+          <li className="p-4">
+            <Link to="/add">Add Request</Link>
+          </li>
+        )}
         <li className="p-4">
           <Link to="/contact-us">Contact Us</Link>
         </li>
@@ -33,7 +52,7 @@ const Navbar = () => {
           </li>
         )}
         {currentUser ? (
-          <li className="p-4 cursor-pointer" onClick={logout}>
+          <li className="p-4 cursor-pointer" onClick={handleLogout}>
             Logout
           </li>
         ) : (
@@ -42,7 +61,7 @@ const Navbar = () => {
           </li>
         )}
         {currentUser && (
-          <li className="p-4 text-orange-500">{currentUser.username}</li>
+          <li className="p-4 text-orange-500">{currentUser.first_name}</li>
         )}
         <li>
           <Link
@@ -65,20 +84,33 @@ const Navbar = () => {
         }
       >
         <h1 className="w-full text-3xl font-bold m-4">
-          <Link to="/">
+          <Link to="/" onClick={closeNav}>
             <img className="h-16 w-26" src={Logo} alt="Eco Collectors" />
           </Link>
         </h1>
         <ul className="uppercase p-4">
           <li className="p-4 border-b border-gray-600">
-            <Link to="/">Home</Link>
+            <Link to="/" onClick={closeNav}>
+              Home
+            </Link>
           </li>
+          {currentUser && (
+            <li className="p-4">
+              <Link to="/add" onClick={closeNav}>
+                Add Request
+              </Link>
+            </li>
+          )}
           <li className="p-4 border-b border-gray-600">
-            <Link to="/contact-us">Contact Us</Link>
+            <Link to="/contact-us" onClick={closeNav}>
+              Contact Us
+            </Link>
           </li>
           {!currentUser && (
             <li className="p-4 border-b border-gray-600">
-              <Link to="/register">Register</Link>
+              <Link to="/register" onClick={closeNav}>
+                Register
+              </Link>
             </li>
           )}
           {currentUser ? (
@@ -90,18 +122,23 @@ const Navbar = () => {
             </li>
           ) : (
             <li className="p-4 border-b border-gray-600">
-              <Link to="/login">Login</Link>
+              <Link to="/login" onClick={closeNav}>
+                Login
+              </Link>
             </li>
           )}
           {currentUser && (
             <li className="p-4 border-b border-gray-600 text-orange-500">
-              {currentUser.username}
+              {currentUser.first_name}
             </li>
           )}
 
           <li className="p-4">
             {' '}
-            <Link to="/map"> Map</Link>
+            <Link to="/map" onClick={closeNav}>
+              {' '}
+              Map
+            </Link>
           </li>
         </ul>
       </div>
