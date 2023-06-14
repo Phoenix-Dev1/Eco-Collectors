@@ -1,9 +1,10 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useMemo, useState, useEffect, useRef } from 'react';
 import {
   GoogleMap,
   MarkerF,
   InfoWindowF,
   useLoadScript,
+  StandaloneSearchBox,
 } from '@react-google-maps/api';
 import { useLocation } from 'react-router-dom';
 import classes from './map.module.css';
@@ -18,10 +19,25 @@ import { Link } from 'react-router-dom';
 import { VscFilter } from 'react-icons/vsc';
 import { GiRecycle } from 'react-icons/gi';
 import { AiOutlineClose } from 'react-icons/ai';
+import PlaceInputBox from './PlaceInputBox';
+
+const libraries = [process.env.REACT_APP_GOOGLE_LIB];
 
 const Map = () => {
+  const inputRef = useRef();
+
+  const handlePlaceChanged = () => {
+    const [place] = inputRef.current.getPlaces();
+    if (place) {
+      console.log(place.formatted_address);
+      console.log(place.geometry.location.lat());
+      console.log(place.geometry.location.lng());
+    }
+  };
+
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_API_KEY,
+    libraries: libraries,
   });
 
   const [markers, setMarkers] = useState([]);
@@ -29,6 +45,7 @@ const Map = () => {
 
   const [selectedMarker, setSelectedMarker] = useState(null);
   const [showFilterWindow, setShowFilterWindow] = useState(false); // track filter window visibility
+  const [showAddWindow, setShowAddWindow] = useState(false); // track add window visibility
 
   const type = useLocation().search;
 
@@ -62,6 +79,10 @@ const Map = () => {
 
   const toggleFilterWindow = () => {
     setShowFilterWindow(!showFilterWindow);
+  };
+
+  const toggleAddWindow = () => {
+    setShowAddWindow(!showAddWindow);
   };
 
   return (
@@ -105,11 +126,29 @@ const Map = () => {
           </div>
         </div>
       )}
-      <div className={classes.add}>
-        <Link to="/add">
-          <GiRecycle />
-        </Link>
+      <div className={classes.add} onClick={toggleAddWindow}>
+        <GiRecycle />
       </div>
+      {showAddWindow && ( // Render the filter window only if showFilterWindow is true
+        <div className={classes.addForm}>
+          <ul>
+            <li>All</li>
+            <StandaloneSearchBox
+              onLoad={(ref) => (inputRef.current = ref)}
+              onPlacesChanged={handlePlaceChanged}
+            >
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Enter Location"
+              />
+            </StandaloneSearchBox>
+          </ul>
+          <div className={classes.closeAddWindow} onClick={toggleAddWindow}>
+            <AiOutlineClose />
+          </div>
+        </div>
+      )}
       {!isLoaded ? (
         <h1>Loading...</h1>
       ) : (

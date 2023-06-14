@@ -1,9 +1,6 @@
 import React, { useRef } from 'react';
 import { StandaloneSearchBox, LoadScript } from '@react-google-maps/api';
 
-const libraries = [process.env.REACT_APP_GOOGLE_LIB];
-const apiKey = process.env.REACT_APP_GOOGLE_API_KEY;
-
 const PlaceInputBox = ({ setReqAddress, setReqLat, setReqLng }) => {
   const inputRef = useRef();
 
