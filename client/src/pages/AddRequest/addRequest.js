@@ -1,18 +1,39 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../../context/authContext';
+import PlaceInputBox from '../../components/map/PlaceInputBox';
 import { useNavigate } from 'react-router-dom';
 import * as moment from 'moment';
 
 const AddRequest = () => {
   const { currentUser } = useContext(AuthContext);
   const navigate = useNavigate();
+  const form = useRef();
   const [bottlesNumber, setBottlesNumber] = useState('');
+  const [fullName, setFullName] = useState('');
   const [reqLat, setReqLat] = useState('');
   const [reqLng, setReqLng] = useState('');
   const [reqAddress, setReqAddress] = useState('');
   const [fromTime, setfromTime] = useState('');
   const [toTime, setToTime] = useState('');
+  const inputRef = useRef();
+
+  /*
+          <PlaceInputBox
+          className="mb-2 w-full"
+          inputRef={inputRef}
+          setReqAddress={setReqAddress}
+          setReqLat={setReqLat}
+          setReqLng={setReqLng}
+        />
+        */
+
+  useEffect(() => {
+    if (currentUser) {
+      form.current.full_name.value =
+        currentUser.first_name + ' ' + currentUser.last_name;
+    }
+  }, [currentUser]);
 
   const handleSubmit = async (e) => {
     const type = 'request';
@@ -20,13 +41,14 @@ const AddRequest = () => {
     if (currentUser) {
       try {
         await axios.post(`/requests/add`, {
-          bottlesNumber,
+          fullName,
           reqLat,
           reqLng,
           reqAddress,
-          reqDate: moment().format('YYYY-MM-DD HH:mm:ss'),
+          bottlesNumber,
           fromTime,
           toTime,
+          reqDate: moment().format('YYYY-MM-DD HH:mm:ss'),
           type,
         });
         navigate('/map');
@@ -41,7 +63,19 @@ const AddRequest = () => {
 
   return (
     <div className="flex items-center justify-center h-screen bg-gray-900">
-      <form>
+      <form ref={form} onSubmit={handleSubmit} action="#">
+        <label htmlFor="full_name" className="block text-white">
+          Full Name
+        </label>
+        <input
+          onChange={(e) => setFullName(e.target.value)}
+          className="rounded border border-black  text-center mb-3"
+          placeholder="Full Name"
+          id="full_name"
+          name="full_name"
+          value={fullName}
+          type="text"
+        />
         <label htmlFor="number_of_bottles" className="block text-white">
           Bottles
         </label>
@@ -54,42 +88,9 @@ const AddRequest = () => {
           value={bottlesNumber}
           type="text"
         />
-        <label htmlFor="lat" className="block text-white">
-          Lat:
-        </label>
-        <input
-          onChange={(e) => setReqLat(e.target.value)}
-          className="rounded border border-black text-center mb-3"
-          placeholder="0"
-          id="lat"
-          name="lat"
-          value={reqLat}
-          type="text"
-        />
-        <label htmlFor="lng" className="block text-white">
-          Lng:
-        </label>
-        <input
-          onChange={(e) => setReqLng(e.target.value)}
-          className="rounded border border-black text-center mb-3"
-          placeholder="0"
-          id="lng"
-          name="lng"
-          value={reqLng}
-          type="text"
-        />
-        <label htmlFor="req_address" className="block text-white">
+        <label htmlFor="req_address" className="block text-white mb-2">
           Address:
         </label>
-        <input
-          onChange={(e) => setReqAddress(e.target.value)}
-          className="rounded border border-black text-center mb-3"
-          placeholder="Street, number, city"
-          id="req_address"
-          name="req_address"
-          value={reqAddress}
-          type="text"
-        />
         <div>
           <label htmlFor="from_hour" className="mr-2 text-white">
             From:
@@ -114,10 +115,7 @@ const AddRequest = () => {
             className="rounded border border-black"
           />
         </div>
-        <button
-          onClick={handleSubmit}
-          className="text-white mt-5 bg-slate-500 py-2 px-4 inline-block rounded hover:bg-black"
-        >
+        <button className="text-white mt-5 bg-slate-500 py-2 px-4 inline-block rounded hover:bg-black">
           Add Request
         </button>
       </form>

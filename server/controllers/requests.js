@@ -25,8 +25,8 @@ const getRequest = (req, res) => {
 const addRequest = (req, res) => {
   const token = req.cookies.access_token;
   const reqStatus = 1;
-  const reqLat = parseFloat(req.body.reqLat);
-  const reqLng = parseFloat(req.body.reqLng);
+  //const reqLat = parseFloat(req.body.reqLat);
+  //const reqLng = parseFloat(req.body.reqLng);
   if (!token) return res.status(401).json('Not authenticated');
 
   jwt.verify(token, 'jwtkey', (err, decoded) => {
@@ -34,12 +34,13 @@ const addRequest = (req, res) => {
     const userId = decoded.id;
 
     const q =
-      'INSERT INTO user_requests (`user_id`,`req_lat`,`req_lng`,`req_address`,`bottles_number`,`from_hour`,`to_hour`,`request_date`,`status`,`type`) VALUES (?)';
+      'INSERT INTO user_requests (`user_id`,`full_name`,`req_lat`,`req_lng`,`req_address`,`bottles_number`,`from_hour`,`to_hour`,`request_date`,`status`,`type`) VALUES (?)';
 
     const values = [
       userId,
-      reqLat,
-      reqLng,
+      req.body.full_name,
+      req.body.reqLat,
+      req.body.reqLng,
       req.body.reqAddress,
       req.body.bottlesNumber,
       req.body.fromTime,
