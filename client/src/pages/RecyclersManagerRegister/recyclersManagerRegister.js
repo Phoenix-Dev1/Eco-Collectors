@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import * as moment from 'moment';
-import { FaFacebookF, FaTwitter, FaInstagram } from 'react-icons/fa';
 
-const RecyclerRegister = () => {
+const RecyclersManagerRegister = () => {
+  const [err, setError] = useState(null);
   const navigate = useNavigate();
   const [inputs, setInputs] = useState({
     join_date: moment().format('YYYY-MM-DD HH:mm:ss'),
@@ -23,36 +23,24 @@ const RecyclerRegister = () => {
   // Submitting the register form
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await axios.post('/recyclers/recyclerRegister', inputs);
-    navigate('/');
+    try {
+      await axios.post('/recyclers/recyclerRegister', inputs);
+      navigate('/');
+    } catch (err) {
+      setError(err.response.data);
+    }
   };
-
-  const handleIconClick = (url) => {
-    window.open(url, '_blank');
-  };
-
   return (
     <section className="bg-white dark:bg-gray-800">
       <div className="py-8 lg:py-16 px-4 mx-auto max-w-screen-md">
         <div className="snap-start bg-gray-800 p-2 min-h-fit flex font-extrabold text-center items-center justify-center text-4xl text-white">
           <p className="w-8/12 text-center">
             {' '}
-            Join Eco Collectors As A Recycler!
+            Join Eco Collectors As A Manager!
           </p>
         </div>
         <div className="snap-start p-2 bg-gray-800 min-h-fit flex font-extrabold text-center items-center justify-center text-2xl text-white">
-          <FaFacebookF
-            className="mr-5"
-            onClick={() => handleIconClick('https://www.facebook.com')}
-          />
-          <FaTwitter
-            className="mr-5"
-            onClick={() => handleIconClick('https://www.twitter.com')}
-          />
-          <FaInstagram
-            className=""
-            onClick={() => handleIconClick('https://www.instagram.com')}
-          />
+          Social media icons
         </div>
         <div className="snap-start p-3 bg-gray-800 min-h-fit flex items-center justify-center text-8xl">
           <form>
@@ -158,4 +146,4 @@ const RecyclerRegister = () => {
   );
 };
 
-export default RecyclerRegister;
+export default RecyclersManagerRegister;
