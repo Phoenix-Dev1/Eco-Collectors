@@ -116,3 +116,9 @@
   z-index: 1;
   position: relative;
 }
+
+.placesContainer {
+  width: 400px;
+  border: solid 4px red;
+  z-index: 0;
+}

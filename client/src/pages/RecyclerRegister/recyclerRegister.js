@@ -5,6 +5,7 @@ import * as moment from 'moment';
 import { FaFacebookF, FaTwitter, FaInstagram } from 'react-icons/fa';
 
 const RecyclerRegister = () => {
+  const [err, setError] = useState(null);
   const navigate = useNavigate();
   const [inputs, setInputs] = useState({
     join_date: moment().format('YYYY-MM-DD HH:mm:ss'),
@@ -23,8 +24,12 @@ const RecyclerRegister = () => {
   // Submitting the register form
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await axios.post('/recyclers/recyclerRegister', inputs);
-    navigate('/');
+    try {
+      await axios.post('/recyclers/recyclerRegister', inputs);
+      navigate('/');
+    } catch (err) {
+      setError(err.response.data);
+    }
   };
 
   // Opens a link on click
