@@ -1,10 +1,14 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useMemo, useState, useEffect, useRef, useContext } from 'react';
 import {
   GoogleMap,
   MarkerF,
   InfoWindowF,
   useLoadScript,
+  StandaloneSearchBox,
 } from '@react-google-maps/api';
+import axios from 'axios';
+import * as moment from 'moment';
+
 import { useLocation } from 'react-router-dom';
 import classes from './map.module.css';
 import {
@@ -14,14 +18,69 @@ import {
   formatDate,
   fetchRequests,
 } from './mapFunctions';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../context/authContext';
 import { VscFilter } from 'react-icons/vsc';
 import { GiRecycle } from 'react-icons/gi';
 import { AiOutlineClose } from 'react-icons/ai';
 
+const libraries = [process.env.REACT_APP_GOOGLE_LIB];
+
 const Map = () => {
+  // Add request Reference
+  const inputReference = useRef();
+  const { currentUser } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const form = useRef();
+  const [bottlesNumber, setBottlesNumber] = useState('');
+  const [fullName, setFullName] = useState('');
+  const [reqLat, setReqLat] = useState('');
+  const [reqLng, setReqLng] = useState('');
+  const [reqAddress, setReqAddress] = useState('');
+  const [fromTime, setFromTime] = useState('');
+  const [toTime, setToTime] = useState('');
+
+  // Add request Address GeoCoder Request
+  const handlePlaceChanged = () => {
+    const [place] = inputReference.current.getPlaces();
+    if (place) {
+      setReqAddress(place.formatted_address);
+      setReqLat(place.geometry.location.lat());
+      setReqLng(place.geometry.location.lng());
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    const type = 'request';
+    e.preventDefault();
+    if (currentUser) {
+      try {
+        await axios.post(`/requests/add`, {
+          fullName,
+          reqLat,
+          reqLng,
+          reqAddress,
+          bottlesNumber,
+          fromTime,
+          toTime,
+          reqDate: moment().format('YYYY-MM-DD HH:mm:ss'),
+          type,
+        });
+        toggleAddWindow();
+        navigate('/map');
+      } catch (err) {
+        console.log(err);
+      }
+    } else {
+      // User is not logged in, so redirect to login page
+      navigate('/login');
+    }
+  };
+
+  // Loading Google API Key and Libraries
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_API_KEY,
+    libraries: libraries,
   });
 
   const [markers, setMarkers] = useState([]);
@@ -29,7 +88,9 @@ const Map = () => {
 
   const [selectedMarker, setSelectedMarker] = useState(null);
   const [showFilterWindow, setShowFilterWindow] = useState(false); // track filter window visibility
+  const [showAddWindow, setShowAddWindow] = useState(false); // track add window visibility
 
+  // Fetching by DB row type
   const type = useLocation().search;
 
   // Bins
@@ -50,6 +111,7 @@ const Map = () => {
     loadRequestsData();
   }, [type]);
 
+  // Center the Map At Haifa Port
   const center = useMemo(() => ({ lat: 32.79413, lng: 34.98828 }), []);
 
   const handleShowAddress = (address) => {
@@ -62,6 +124,10 @@ const Map = () => {
 
   const toggleFilterWindow = () => {
     setShowFilterWindow(!showFilterWindow);
+  };
+
+  const toggleAddWindow = () => {
+    setShowAddWindow(!showAddWindow);
   };
 
   return (
@@ -105,11 +171,95 @@ const Map = () => {
           </div>
         </div>
       )}
-      <div className={classes.add}>
-        <Link to="/add">
-          <GiRecycle />
-        </Link>
+      <div className={classes.add} onClick={toggleAddWindow}>
+        <GiRecycle />
       </div>
+      {showAddWindow && ( // Render the filter window only if showFilterWindow is true
+        <div className={classes.addForm}>
+          <form ref={form} onSubmit={handleSubmit} action="#">
+            <div className="mb-4">
+              <label htmlFor="full_name" className="block text-black">
+                Full Name
+              </label>
+              <input
+                name="full_name"
+                id="full_name"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                placeholder="Enter your full name"
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <label htmlFor="number_of_bottles" className="block text-black">
+                Bottles
+              </label>
+              <input
+                onChange={(e) => setBottlesNumber(e.target.value)}
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                placeholder="0"
+                id="number_of_bottles"
+                name="number_of_bottles"
+                value={bottlesNumber}
+                type="text"
+              />
+            </div>
+            <div className="mb-4">
+              <label htmlFor="req_address" className="block text-black">
+                Address
+              </label>
+              <StandaloneSearchBox
+                onLoad={(ref) => (inputReference.current = ref)}
+                onPlacesChanged={handlePlaceChanged}
+              >
+                <input
+                  type="text"
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  placeholder="Enter Location"
+                  inputRef={inputReference}
+                  onChange={(e) => setReqAddress(e.target.value)}
+                />
+              </StandaloneSearchBox>
+            </div>
+            <div className="flex mb-4">
+              <div className="mr-4">
+                <label htmlFor="from_hour" className="block text-black">
+                  From
+                </label>
+                <input
+                  onChange={(e) => setFromTime(e.target.value)}
+                  id="from_hour"
+                  name="from_hour"
+                  type="time"
+                  value={fromTime}
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                />
+              </div>
+              <div>
+                <label htmlFor="to_hour" className="block text-black">
+                  To
+                </label>
+                <input
+                  onChange={(e) => setToTime(e.target.value)}
+                  id="to_hour"
+                  name="to_hour"
+                  type="time"
+                  value={toTime}
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                />
+              </div>
+            </div>
+            <button className="text-white bg-slate-500 py-2 px-4 rounded hover:bg-black ml-8">
+              Add Request
+            </button>
+          </form>
+
+          <div className={classes.closeAddWindow} onClick={toggleAddWindow}>
+            <AiOutlineClose />
+          </div>
+        </div>
+      )}
       {!isLoaded ? (
         <h1>Loading...</h1>
       ) : (
