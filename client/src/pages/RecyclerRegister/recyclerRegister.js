@@ -4,6 +4,7 @@ import axios from 'axios';
 import * as moment from 'moment';
 
 const RecyclerRegister = () => {
+  const [err, setError] = useState(null);
   const navigate = useNavigate();
   const [inputs, setInputs] = useState({
     join_date: moment().format('YYYY-MM-DD HH:mm:ss'),
@@ -22,8 +23,12 @@ const RecyclerRegister = () => {
   // Submitting the register form
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await axios.post('/recyclers/recyclerRegister', inputs);
-    navigate('/');
+    try {
+      await axios.post('/recyclers/recyclerRegister', inputs);
+      navigate('/');
+    } catch (err) {
+      setError(err.response.data);
+    }
   };
   return (
     <div className="snap-y snap-mandatory h-fit w-fit">
