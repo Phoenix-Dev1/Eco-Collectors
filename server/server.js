@@ -7,7 +7,7 @@ const authRoutes = require('./routes/auth.js');
 const requestsRoutes = require('./routes/requests.js');
 const markersRoutes = require('./routes/markers.js');
 const recyclers = require('./routes/recyclerRegister.js');
-const recyclersManagers = require('./routes/recyclersManagerRegister.js')
+const recyclersManagers = require('./routes/recyclersManagerRegister.js');
 const port = process.env.PORT || 8800;
 
 app.use(bodyParser.urlencoded({ extended: false }));

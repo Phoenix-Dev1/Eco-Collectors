@@ -38,7 +38,7 @@ const addRequest = (req, res) => {
 
     const values = [
       userId,
-      req.body.full_name,
+      req.body.fullName,
       req.body.reqLat,
       req.body.reqLng,
       req.body.reqAddress,
