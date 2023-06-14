@@ -27,6 +27,7 @@ const RecyclerRegister = () => {
     navigate('/');
   };
 
+  // Opens a link on click
   const handleIconClick = (url) => {
     window.open(url, '_blank');
   };
@@ -40,17 +41,17 @@ const RecyclerRegister = () => {
             Join Eco Collectors As A Recycler!
           </p>
         </div>
-        <div className="snap-start p-2 bg-gray-800 min-h-fit flex font-extrabold text-center items-center justify-center text-2xl text-white">
+        <div className="snap-start p-2 bg-gray-800 min-h-fit flex font-extrabold text-center items-center justify-center text-2xl text-white mt-5 mb-5">
           <FaFacebookF
-            className="mr-5"
+            className="mr-5 cursor-pointer"
             onClick={() => handleIconClick('https://www.facebook.com')}
           />
           <FaTwitter
-            className="mr-5"
+            className="mr-5 cursor-pointer"
             onClick={() => handleIconClick('https://www.twitter.com')}
           />
           <FaInstagram
-            className=""
+            className="cursor-pointer"
             onClick={() => handleIconClick('https://www.instagram.com')}
           />
         </div>

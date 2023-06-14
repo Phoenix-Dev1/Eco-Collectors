@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import * as moment from 'moment';
+import { FaFacebookF, FaTwitter, FaInstagram } from 'react-icons/fa';
 
 const RecyclersManagerRegister = () => {
   const [err, setError] = useState(null);
@@ -24,12 +25,18 @@ const RecyclersManagerRegister = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('/recyclers/recyclerRegister', inputs);
+      await axios.post('/recyclersManagers/recyclerManagerRegister', inputs);
       navigate('/');
     } catch (err) {
       setError(err.response.data);
     }
   };
+
+  // Opens a link on click
+  const handleIconClick = (url) => {
+    window.open(url, '_blank');
+  };
+
   return (
     <section className="bg-white dark:bg-gray-800">
       <div className="py-8 lg:py-16 px-4 mx-auto max-w-screen-md">
@@ -39,8 +46,19 @@ const RecyclersManagerRegister = () => {
             Join Eco Collectors As A Manager!
           </p>
         </div>
-        <div className="snap-start p-2 bg-gray-800 min-h-fit flex font-extrabold text-center items-center justify-center text-2xl text-white">
-          Social media icons
+        <div className="snap-start p-2 bg-gray-800 min-h-fit flex font-extrabold text-center items-center justify-center text-2xl text-white mt-5 mb-5">
+          <FaFacebookF
+            className="mr-5 cursor-pointer"
+            onClick={() => handleIconClick('https://www.facebook.com')}
+          />
+          <FaTwitter
+            className="mr-5 cursor-pointer"
+            onClick={() => handleIconClick('https://www.twitter.com')}
+          />
+          <FaInstagram
+            className="cursor-pointer"
+            onClick={() => handleIconClick('https://www.instagram.com')}
+          />
         </div>
         <div className="snap-start p-3 bg-gray-800 min-h-fit flex items-center justify-center text-8xl">
           <form>
