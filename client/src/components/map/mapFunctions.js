@@ -15,7 +15,6 @@ export async function fetchMarkers(type) {
 export async function fetchRequests(type) {
   try {
     const res = await axios.get(`/requests${type}`);
-    console.log(res.data);
     return res.data;
   } catch (err) {
     console.log(err);
