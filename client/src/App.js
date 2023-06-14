@@ -15,6 +15,7 @@ import Register from './pages/Register/register';
 import Map from './components/map/Map';
 import AddRequest from './pages/AddRequest/addRequest';
 import RecyclerRegister from './pages/RecyclerRegister/recyclerRegister';
+import RecyclersManagerRegister from './pages/RecyclerManagerRegister/recyclerManagerRegister';
 import Contact from './pages/Contact/contact';
 import About from './pages/About/About';
 import TermsAndConditions from './pages/Conditions/Terms/terms';
@@ -62,6 +63,14 @@ const router = createBrowserRouter([
         path: '/about',
         element: <About />,
       },
+      {
+        path: '/join',
+        element: <recyclerRegister />,
+      },
+      {
+        path: '/manager-join',
+        element: <recyclersManagerRegister />,
+      },
     ],
   },
   {
@@ -79,6 +88,14 @@ const router = createBrowserRouter([
   {
     path: '/privacy',
     element: <PrivacyPolicy />,
+  },
+  {
+    path: '/join',
+    element: <recyclerRegister />,
+  },
+  {
+    path: '/manager-join',
+    element: <recyclersManagerRegister />,
   },
   {
     path: '/contact-us',
