@@ -34,7 +34,7 @@ const addRequest = (req, res) => {
     const userId = decoded.id;
 
     const q =
-      'INSERT INTO user_requests (`user_id`,`full_name`,`req_lat`,`req_lng`,`req_address`,`bottles_number`,`from_hour`,`to_hour`,`request_date`,`status`,`type`) VALUES (?)';
+      'INSERT INTO user_requests (`user_id`,`full_name`,`req_lat`,`req_lng`,`req_address`,`phone_number`,`bottles_number`,`from_hour`,`to_hour`,`request_date`,`status`,`type`) VALUES (?)';
 
     const values = [
       userId,
@@ -42,6 +42,7 @@ const addRequest = (req, res) => {
       req.body.reqLat,
       req.body.reqLng,
       req.body.reqAddress,
+      req.body.phoneNumber,
       req.body.bottlesNumber,
       req.body.fromTime,
       req.body.toTime,

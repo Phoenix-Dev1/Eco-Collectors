@@ -32,11 +32,15 @@ const Map = () => {
   const { currentUser } = useContext(AuthContext);
   const navigate = useNavigate();
   const form = useRef();
+  const initialName = currentUser
+    ? currentUser.first_name + ' ' + currentUser.last_name
+    : '';
   const [bottlesNumber, setBottlesNumber] = useState('');
   const [fullName, setFullName] = useState('');
   const [reqLat, setReqLat] = useState('');
   const [reqLng, setReqLng] = useState('');
   const [reqAddress, setReqAddress] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [fromTime, setFromTime] = useState('');
   const [toTime, setToTime] = useState('');
 
@@ -60,6 +64,7 @@ const Map = () => {
           reqLat,
           reqLng,
           reqAddress,
+          phoneNumber,
           bottlesNumber,
           fromTime,
           toTime,
@@ -187,7 +192,9 @@ const Map = () => {
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                placeholder="Enter your full name"
+                placeholder={
+                  !currentUser ? 'Enter your full name' : initialName
+                }
                 required
               />
             </div>
@@ -203,6 +210,7 @@ const Map = () => {
                 name="number_of_bottles"
                 value={bottlesNumber}
                 type="text"
+                required
               />
             </div>
             <div className="mb-4">
@@ -219,8 +227,24 @@ const Map = () => {
                   placeholder="Enter Location"
                   inputRef={inputReference}
                   onChange={(e) => setReqAddress(e.target.value)}
+                  required
                 />
               </StandaloneSearchBox>
+            </div>
+            <div className="mb-4">
+              <label htmlFor="phoneNumber" className="block text-black">
+                Phone number
+              </label>
+              <input
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                placeholder="Enter your number"
+                id="phoneNumber"
+                name="phoneNumber"
+                value={phoneNumber}
+                type="tel"
+                required
+              />
             </div>
             <div className="flex mb-4">
               <div className="mr-4">
@@ -234,6 +258,7 @@ const Map = () => {
                   type="time"
                   value={fromTime}
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  required
                 />
               </div>
               <div>
@@ -247,10 +272,11 @@ const Map = () => {
                   type="time"
                   value={toTime}
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  required
                 />
               </div>
             </div>
-            <button className="text-white bg-slate-500 py-2 px-4 rounded hover:bg-black ml-8">
+            <button className="text-white bg-slate-500 py-2 px-4 rounded hover:bg-black ml-11">
               Add Request
             </button>
           </form>

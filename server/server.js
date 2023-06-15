@@ -12,12 +12,13 @@ const port = process.env.PORT || 8800;
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
-// Serve static files from the 'public' directory
-app.use(express.static(path.join(__dirname, 'public')));
-
 // Middlewares
 app.use(express.json());
 app.use(cookieParser());
+
+// Serve static files from the 'public' / 'src' directory
+app.use(express.static(path.join(__dirname, 'src')));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Routes
 app.use('/api/auth', authRoutes);
