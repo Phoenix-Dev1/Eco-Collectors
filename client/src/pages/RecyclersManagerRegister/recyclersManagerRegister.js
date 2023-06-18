@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { validateForm } from './managerFormValidation';
 import axios from 'axios';
 import * as moment from 'moment';
 import { FaFacebookF, FaTwitter, FaInstagram } from 'react-icons/fa';
@@ -24,11 +25,17 @@ const RecyclersManagerRegister = () => {
   // Submitting the register form
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      await axios.post('/recyclersManagers/recyclerManagerRegister', inputs);
-      navigate('/');
-    } catch (err) {
-      setError(err.response.data);
+
+    const isValid = validateForm(inputs, setError, navigate); // Use the validateForm function
+    if (!isValid) {
+      return;
+    } else {
+      try {
+        await axios.post('/recyclersManagers/recyclerManagerRegister', inputs);
+        navigate('/');
+      } catch (err) {
+        setError(err.response.data);
+      }
     }
   };
 
@@ -60,8 +67,8 @@ const RecyclersManagerRegister = () => {
             onClick={() => handleIconClick('https://www.instagram.com')}
           />
         </div>
-        <div className="snap-start p-3 bg-gray-800 min-h-fit flex items-center justify-center text-8xl">
-          <form>
+        <div className="p-3 bg-gray-800 min-h-fit flex items-center justify-center text-8xl w-96 ml-auto mr-auto">
+          <form className="m-0 p-8 bg-gray-50 dark:bg-gray-800 rounded shadow-xl">
             <div className="grid md:grid-cols-2 md:gap-6 w-fit ">
               <div className="relative z-0 w-fit mb-6 group">
                 <input
@@ -150,6 +157,11 @@ const RecyclersManagerRegister = () => {
                 *Message
               </label>
             </div>
+            {err && (
+              <p className="flex items-center justify-center text-sm text-red-700 font-semibold">
+                {err}
+              </p>
+            )}
             <button
               onClick={handleSubmit}
               type="submit"

@@ -68,7 +68,7 @@ const RecyclerRegister = () => {
             onClick={() => handleIconClick('https://www.instagram.com')}
           />
         </div>
-        <div className="snap-start p-3 bg-gray-800 min-h-fit flex items-center justify-center text-8xl w-96">
+        <div className="p-3 bg-gray-800 min-h-fit flex items-center justify-center text-8xl w-96 ml-auto mr-auto">
           <form className="m-0 p-8 bg-gray-50 dark:bg-gray-800 rounded shadow-xl">
             <div className="grid md:grid-cols-2 md:gap-6 w-fit ">
               <div className="relative z-0 w-fit mb-6 group">

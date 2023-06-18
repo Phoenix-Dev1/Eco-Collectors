@@ -7,7 +7,7 @@ export const validateForm = (inputs, setError, navigate) => {
     'phone',
     'message',
   ];
-  
+
   const missingFields = requiredFields.filter((field) => !inputs[field]);
 
   if (missingFields.length > 0) {
@@ -32,6 +32,12 @@ export const validateForm = (inputs, setError, navigate) => {
   const phoneRegex = /^\d{9,10}$/;
   if (!phoneRegex.test(inputs.phone)) {
     setError('Invalid phone number');
+    return false;
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(inputs.email)) {
+    setError('Invalid email address');
     return false;
   }
 
