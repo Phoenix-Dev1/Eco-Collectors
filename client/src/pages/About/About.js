@@ -3,8 +3,14 @@ import {
   Accordion,
   AccordionHeader,
   AccordionBody,
+  Avatar
 } from '@material-tailwind/react';
 import { ArrowDownIcon, ArrowUpIcon } from '@heroicons/react/solid';
+import ec from '../../img/sm-logo.png';
+import liran from '../../img/liran.jpg';
+import bar from '../../img/bar.jpg';
+import manager from '../../img/recyclers-manager-icon.png';
+import maps from '../../img/google-maps-icon.webp';
 
 export default function About() {
   const [open, setOpen] = useState(0);
@@ -30,6 +36,7 @@ export default function About() {
           onClick={() => handleOpen(1)}
           className="bg-gray-800 text-white px-12 py-8 flex items-center justify-between"
         >
+          <Avatar src={ec} alt="avatar" className="mr-5" />
           About Eco-Collectors
           {open === 1 ? (
             <ArrowUpIcon className="w-5 h-5 ml-auto" />
@@ -57,6 +64,7 @@ export default function About() {
           onClick={() => handleOpen(2)}
           className="bg-gray-800 text-white px-12 py-8"
         >
+          <Avatar src={liran} alt="avatar" className="mr-5" />
           Liran - The Collector
           {open === 2 ? (
             <ArrowUpIcon className="w-5 h-5 ml-auto" />
@@ -83,6 +91,7 @@ export default function About() {
           onClick={() => handleOpen(3)}
           className="bg-gray-800 text-white px-12 py-8"
         >
+          <Avatar src={bar} alt="avatar" className="mr-5" />
           Bar - The Recycler
           {open === 3 ? (
             <ArrowUpIcon className="w-5 h-5 ml-auto" />
@@ -110,6 +119,7 @@ export default function About() {
           onClick={() => handleOpen(4)}
           className="bg-gray-800 text-white px-12 py-8"
         >
+          <Avatar src={manager} alt="avatar" className="mr-5" />
           The Recycler's Manager
           {open === 4 ? (
             <ArrowUpIcon className="w-5 h-5 ml-auto" />
@@ -137,6 +147,7 @@ export default function About() {
           onClick={() => handleOpen(5)}
           className="bg-gray-800 text-white px-12 py-8"
         >
+          <Avatar src={maps} alt="avatar" className="mr-5" />
           Google Maps Integration
           {open === 5 ? (
             <ArrowUpIcon className="w-5 h-5 ml-auto" />
