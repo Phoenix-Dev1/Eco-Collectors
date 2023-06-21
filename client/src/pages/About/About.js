@@ -1,174 +1,169 @@
-import React from 'react';
+import { useState, Fragment } from 'react';
+import {
+  Accordion,
+  AccordionHeader,
+  AccordionBody,
+  Avatar
+} from '@material-tailwind/react';
+import { ArrowDownIcon, ArrowUpIcon } from '@heroicons/react/solid';
+import ec from '../../img/sm-logo.png';
+import liran from '../../img/liran.jpg';
+import bar from '../../img/bar.jpg';
+import manager from '../../img/recyclers-manager-icon.png';
+import maps from '../../img/google-maps-icon.webp';
 
-function About() {
+export default function About() {
+  const [open, setOpen] = useState(0);
+
+  const handleOpen = (value) => {
+    setOpen(open === value ? 0 : value);
+  };
+
+  const customAnimation = {
+    mount: { scale: 1 },
+    unmount: { scale: 0.9 },
+  };
+
   return (
-    <div id="accordion-collapse" data-accordion="collapse">
-      <h2 id="accordion-collapse-heading-1">
-        <button
-          type="button"
-          class="flex items-center justify-between w-full p-5 font-medium text-left text-gray-500 border border-b-0 border-gray-200 rounded-t-xl focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800"
-          data-accordion-target="#accordion-collapse-body-1"
-          aria-expanded="true"
-          aria-controls="accordion-collapse-body-1"
-        >
-          <span>What is Flowbite?</span>
-          <svg
-            data-accordion-icon
-            class="w-6 h-6 rotate-180 shrink-0"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-              clip-rule="evenodd"
-            ></path>
-          </svg>
-        </button>
-      </h2>
-      <div
-        id="accordion-collapse-body-1"
-        class="hidden"
-        aria-labelledby="accordion-collapse-heading-1"
+    <Fragment>
+      {/* About Eco-Collectors Accordion */}
+      <Accordion
+        open={open === 1}
+        animate={customAnimation}
+        className="bg-gray-700"
       >
-        <div class="p-5 border border-b-0 border-gray-200 dark:border-gray-700 dark:bg-gray-900">
-          <p class="mb-2 text-gray-500 dark:text-gray-400">
-            Flowbite is an open-source library of interactive components built
-            on top of Tailwind CSS including buttons, dropdowns, modals,
-            navbars, and more.
-          </p>
-          <p class="text-gray-500 dark:text-gray-400">
-            Check out this guide to learn how to{' '}
-            <a
-              href="/docs/getting-started/introduction/"
-              class="text-blue-600 dark:text-blue-500 hover:underline"
-            >
-              get started
-            </a>{' '}
-            and start developing websites even faster with components on top of
-            Tailwind CSS.
-          </p>
-        </div>
-      </div>
-      <h2 id="accordion-collapse-heading-2">
-        <button
-          type="button"
-          class="flex items-center justify-between w-full p-5 font-medium text-left text-gray-500 border border-b-0 border-gray-200 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800"
-          data-accordion-target="#accordion-collapse-body-2"
-          aria-expanded="false"
-          aria-controls="accordion-collapse-body-2"
+        <AccordionHeader
+          onClick={() => handleOpen(1)}
+          className="bg-gray-800 text-white px-12 py-8 flex items-center justify-between"
         >
-          <span>Is there a Figma file available?</span>
-          <svg
-            data-accordion-icon
-            class="w-6 h-6 shrink-0"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-              clip-rule="evenodd"
-            ></path>
-          </svg>
-        </button>
-      </h2>
-      <div
-        id="accordion-collapse-body-2"
-        class="hidden"
-        aria-labelledby="accordion-collapse-heading-2"
+          <Avatar src={ec} alt="avatar" className="mr-5" />
+          About Eco-Collectors
+          {open === 1 ? (
+            <ArrowUpIcon className="w-5 h-5 ml-auto" />
+          ) : (
+            <ArrowDownIcon className="w-5 h-5 ml-auto" />
+          )}
+        </AccordionHeader>
+        {open === 1 && (
+          <AccordionBody className="text-white text-base font-bold px-6 py-4">
+            Eco-Collectors is a recycling initiative founded by Liran and Bar,
+            two students at the Technion University in Haifa, Israel. Our
+            mission is to promote recycling and contribute to a cleaner
+            environment.
+          </AccordionBody>
+        )}
+      </Accordion>
+
+      {/* Liran - The Collector Accordion */}
+      <Accordion
+        open={open === 2}
+        animate={customAnimation}
+        className="bg-gray-700"
       >
-        <div class="p-5 border border-b-0 border-gray-200 dark:border-gray-700">
-          <p class="mb-2 text-gray-500 dark:text-gray-400">
-            Flowbite is first conceptualized and designed using the Figma
-            software so everything you see in the library has a design
-            equivalent in our Figma file.
-          </p>
-          <p class="text-gray-500 dark:text-gray-400">
-            Check out the{' '}
-            <a
-              href="https://flowbite.com/figma/"
-              class="text-blue-600 dark:text-blue-500 hover:underline"
-            >
-              Figma design system
-            </a>{' '}
-            based on the utility classes from Tailwind CSS and components from
-            Flowbite.
-          </p>
-        </div>
-      </div>
-      <h2 id="accordion-collapse-heading-3">
-        <button
-          type="button"
-          class="flex items-center justify-between w-full p-5 font-medium text-left text-gray-500 border border-gray-200 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800"
-          data-accordion-target="#accordion-collapse-body-3"
-          aria-expanded="false"
-          aria-controls="accordion-collapse-body-3"
+        <AccordionHeader
+          onClick={() => handleOpen(2)}
+          className="bg-gray-800 text-white px-12 py-8"
         >
-          <span>
-            What are the differences between Flowbite and Tailwind UI?
-          </span>
-          <svg
-            data-accordion-icon
-            class="w-6 h-6 shrink-0"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-              clip-rule="evenodd"
-            ></path>
-          </svg>
-        </button>
-      </h2>
-      <div
-        id="accordion-collapse-body-3"
-        class="hidden"
-        aria-labelledby="accordion-collapse-heading-3"
+          <Avatar src={liran} alt="avatar" className="mr-5" />
+          Liran - The Collector
+          {open === 2 ? (
+            <ArrowUpIcon className="w-5 h-5 ml-auto" />
+          ) : (
+            <ArrowDownIcon className="w-5 h-5 ml-auto" />
+          )}
+        </AccordionHeader>
+        {open === 2 && (
+          <AccordionBody className="text-white text-base font-bold px-6 py-4">
+            Liran is a dedicated collector who gathers bottles for recycling. He
+            plays a vital role in our initiative by collecting bottles from
+            various sources and ensuring they are properly recycled.
+          </AccordionBody>
+        )}
+      </Accordion>
+
+      {/* Bar - The Recycler Accordion */}
+      <Accordion
+        open={open === 3}
+        animate={customAnimation}
+        className="bg-gray-700"
       >
-        <div class="p-5 border border-t-0 border-gray-200 dark:border-gray-700">
-          <p class="mb-2 text-gray-500 dark:text-gray-400">
-            The main difference is that the core components from Flowbite are
-            open source under the MIT license, whereas Tailwind UI is a paid
-            product. Another difference is that Flowbite relies on smaller and
-            standalone components, whereas Tailwind UI offers sections of pages.
-          </p>
-          <p class="mb-2 text-gray-500 dark:text-gray-400">
-            However, we actually recommend using both Flowbite, Flowbite Pro,
-            and even Tailwind UI as there is no technical reason stopping you
-            from using the best of two worlds.
-          </p>
-          <p class="mb-2 text-gray-500 dark:text-gray-400">
-            Learn more about these technologies:
-          </p>
-          <ul class="pl-5 text-gray-500 list-disc dark:text-gray-400">
-            <li>
-              <a
-                href="https://flowbite.com/pro/"
-                class="text-blue-600 dark:text-blue-500 hover:underline"
-              >
-                Flowbite Pro
-              </a>
-            </li>
-            <li>
-              <a
-                href="https://tailwindui.com/"
-                rel="nofollow"
-                class="text-blue-600 dark:text-blue-500 hover:underline"
-              >
-                Tailwind UI
-              </a>
-            </li>
-          </ul>
-        </div>
-          
-      </div>
-    </div>
+        <AccordionHeader
+          onClick={() => handleOpen(3)}
+          className="bg-gray-800 text-white px-12 py-8"
+        >
+          <Avatar src={bar} alt="avatar" className="mr-5" />
+          Bar - The Recycler
+          {open === 3 ? (
+            <ArrowUpIcon className="w-5 h-5 ml-auto" />
+          ) : (
+            <ArrowDownIcon className="w-5 h-5 ml-auto" />
+          )}
+        </AccordionHeader>
+        {open === 3 && (
+          <AccordionBody className="text-white text-base font-bold px-6 py-4">
+            Bar is responsible for recycling the collected bottles. After
+            requesting collection, Bar meets with the designated collector,
+            receives the bottles, and ensures they are placed in the appropriate
+            recycling facilities.
+          </AccordionBody>
+        )}
+      </Accordion>
+
+      {/* The Recycler's Manager Accordion */}
+      <Accordion
+        open={open === 4}
+        animate={customAnimation}
+        className="bg-gray-700"
+      >
+        <AccordionHeader
+          onClick={() => handleOpen(4)}
+          className="bg-gray-800 text-white px-12 py-8"
+        >
+          <Avatar src={manager} alt="avatar" className="mr-5" />
+          The Recycler's Manager
+          {open === 4 ? (
+            <ArrowUpIcon className="w-5 h-5 ml-auto" />
+          ) : (
+            <ArrowDownIcon className="w-5 h-5 ml-auto" />
+          )}
+        </AccordionHeader>
+        {open === 4 && (
+          <AccordionBody className="text-white text-base font-bold px-6 py-4">
+            The Recycler's Manager, handled by Liran and Bar, oversees the
+            operations and addresses user complaints. Additionally, the manager
+            reviews and approves new recyclers who submit their information
+            through the authorization form on our website.
+          </AccordionBody>
+        )}
+      </Accordion>
+
+      {/* Google Maps Integration Accordion */}
+      <Accordion
+        open={open === 5}
+        animate={customAnimation}
+        className="bg-gray-700"
+      >
+        <AccordionHeader
+          onClick={() => handleOpen(5)}
+          className="bg-gray-800 text-white px-12 py-8"
+        >
+          <Avatar src={maps} alt="avatar" className="mr-5" />
+          Google Maps Integration
+          {open === 5 ? (
+            <ArrowUpIcon className="w-5 h-5 ml-auto" />
+          ) : (
+            <ArrowDownIcon className="w-5 h-5 ml-auto" />
+          )}
+        </AccordionHeader>
+        {open === 5 && (
+          <AccordionBody className="text-white text-base font-bold px-6 py-4">
+            We have integrated the Google Maps API into our website to provide a
+            map interface where users can view and upload requests for bottle
+            collection. Currently, we are focusing on serving the city of Haifa,
+            Israel.
+          </AccordionBody>
+        )}
+      </Accordion>
+    </Fragment>
   );
 }
-
-export default About;
