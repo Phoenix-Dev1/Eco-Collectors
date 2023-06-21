@@ -13,7 +13,6 @@ import Home from './pages/Home/home';
 import Login from './pages/Login/login';
 import Register from './pages/Register/register';
 import Map from './components/map/Map';
-import AddRequest from './pages/AddRequest/addRequest';
 import RecyclerRegister from './pages/RecyclerRegister/recyclerRegister';
 import RecyclersManagerRegister from './pages/RecyclersManagerRegister/recyclersManagerRegister';
 import User from './pages/Users/user';
@@ -51,10 +50,6 @@ const router = createBrowserRouter([
       {
         path: '/',
         element: <Home />,
-      },
-      {
-        path: '/add',
-        element: <AddRequest />,
       },
       {
         path: '/contact-us',

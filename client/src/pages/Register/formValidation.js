@@ -57,8 +57,9 @@ export const validateForm = (inputs, setError, navigate) => {
     return false;
   }
 
+  const addressRegex = /^[A-Za-z0-9\s.-]+$/;
   // Check city and address
-  if (!nameRegex.test(inputs.city) || inputs.city.length > 50) {
+  if (!addressRegex.test(inputs.city) || inputs.city.length > 50) {
     setError('Invalid city');
     return false;
   }
