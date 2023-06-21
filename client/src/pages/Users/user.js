@@ -1,3 +1,7 @@
 export default function user() {
-  return <div>Profile</div>;
+  return (
+    <div>
+      Profile
+    </div>
+  );
 }
