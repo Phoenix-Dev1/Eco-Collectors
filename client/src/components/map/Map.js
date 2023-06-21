@@ -25,9 +25,8 @@ import { GiRecycle } from 'react-icons/gi';
 import { AiOutlineClose } from 'react-icons/ai';
 import { validateInputs } from './InputValidation';
 
-const libraries = [process.env.REACT_APP_GOOGLE_LIB];
-
 const Map = () => {
+  const libraries = [process.env.REACT_APP_GOOGLE_LIB];
   // Add request Reference
   const inputReference = useRef();
   const { currentUser } = useContext(AuthContext);

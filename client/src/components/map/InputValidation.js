@@ -8,8 +8,7 @@ export function validateInputs({
   fromTime,
   toTime,
 }) {
-  // Perform input validation checks here
-  if (!/^[A-Za-z\s]+$/.test(fullName)) {
+  if (!/^[A-Za-z]{2,}\s[A-Za-z]{2,}$/.test(fullName)) {
     return {
       isValid: false,
       message: 'Please enter a valid name.',
