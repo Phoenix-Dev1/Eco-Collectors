@@ -25,6 +25,7 @@ const getRequest = (req, res) => {
 const addRequest = (req, res) => {
   const token = req.cookies.access_token;
   const reqStatus = 1;
+  const reqType = 'request';
   //const reqLat = parseFloat(req.body.reqLat);
   //const reqLng = parseFloat(req.body.reqLng);
   if (!token) return res.status(401).json('Not authenticated');
@@ -48,7 +49,7 @@ const addRequest = (req, res) => {
       req.body.toTime,
       req.body.reqDate,
       reqStatus,
-      req.body.type,
+      reqType,
     ];
     db.query(q, [values], (err, data) => {
       if (err) return res.status(500).send(err);
