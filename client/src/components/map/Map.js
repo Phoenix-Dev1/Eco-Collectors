@@ -23,6 +23,7 @@ import { AuthContext } from '../../context/authContext';
 import { VscFilter } from 'react-icons/vsc';
 import { GiRecycle } from 'react-icons/gi';
 import { AiOutlineClose } from 'react-icons/ai';
+import { validateInputs } from './InputValidation';
 
 const libraries = [process.env.REACT_APP_GOOGLE_LIB];
 
@@ -32,14 +33,20 @@ const Map = () => {
   const { currentUser } = useContext(AuthContext);
   const navigate = useNavigate();
   const form = useRef();
+  const initialName = currentUser
+    ? currentUser.first_name + ' ' + currentUser.last_name
+    : '';
   const [bottlesNumber, setBottlesNumber] = useState('');
   const [fullName, setFullName] = useState('');
   const [reqLat, setReqLat] = useState('');
   const [reqLng, setReqLng] = useState('');
   const [reqAddress, setReqAddress] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [fromTime, setFromTime] = useState('');
   const [toTime, setToTime] = useState('');
 
+  // errors handling
+  const [err, setError] = useState(null);
   // Add request Address GeoCoder Request
   const handlePlaceChanged = () => {
     const [place] = inputReference.current.getPlaces();
@@ -50,26 +57,51 @@ const Map = () => {
     }
   };
 
+  // Request submit handling
   const handleSubmit = async (e) => {
-    const type = 'request';
     e.preventDefault();
     if (currentUser) {
-      try {
-        await axios.post(`/requests/add`, {
-          fullName,
-          reqLat,
-          reqLng,
-          reqAddress,
-          bottlesNumber,
-          fromTime,
-          toTime,
-          reqDate: moment().format('YYYY-MM-DD HH:mm:ss'),
-          type,
-        });
-        toggleAddWindow();
-        navigate('/map');
-      } catch (err) {
-        console.log(err);
+      const validation = validateInputs({
+        fullName,
+        reqLat,
+        reqLng,
+        reqAddress,
+        phoneNumber,
+        bottlesNumber,
+        fromTime,
+        toTime,
+      });
+
+      if (validation.isValid) {
+        try {
+          await axios.post(`/requests/add`, {
+            fullName,
+            reqLat,
+            reqLng,
+            reqAddress,
+            phoneNumber,
+            bottlesNumber,
+            fromTime,
+            toTime,
+            reqDate: moment().format('YYYY-MM-DD HH:mm:ss'),
+          });
+          toggleAddWindow();
+          navigate('/map');
+          // Clear the form fields after successful submission
+          setFullName('');
+          setReqLat('');
+          setReqLng('');
+          setReqAddress('');
+          setPhoneNumber('');
+          setBottlesNumber('');
+          setFromTime('');
+          setToTime('');
+          setError(null);
+        } catch (err) {
+          console.log(err);
+        }
+      } else {
+        setError(validation.message);
       }
     } else {
       // User is not logged in, so redirect to login page
@@ -83,6 +115,7 @@ const Map = () => {
     libraries: libraries,
   });
 
+  // States for Markers and Requests
   const [markers, setMarkers] = useState([]);
   const [requests, setRequests] = useState([]);
 
@@ -187,7 +220,9 @@ const Map = () => {
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                placeholder="Enter your full name"
+                placeholder={
+                  !currentUser ? 'Enter your full name' : initialName
+                }
                 required
               />
             </div>
@@ -203,6 +238,7 @@ const Map = () => {
                 name="number_of_bottles"
                 value={bottlesNumber}
                 type="text"
+                required
               />
             </div>
             <div className="mb-4">
@@ -219,8 +255,24 @@ const Map = () => {
                   placeholder="Enter Location"
                   inputRef={inputReference}
                   onChange={(e) => setReqAddress(e.target.value)}
+                  required
                 />
               </StandaloneSearchBox>
+            </div>
+            <div className="mb-4">
+              <label htmlFor="phoneNumber" className="block text-black">
+                Phone number
+              </label>
+              <input
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                placeholder="Enter your number"
+                id="phoneNumber"
+                name="phoneNumber"
+                value={phoneNumber}
+                type="tel"
+                required
+              />
             </div>
             <div className="flex mb-4">
               <div className="mr-4">
@@ -234,6 +286,7 @@ const Map = () => {
                   type="time"
                   value={fromTime}
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  required
                 />
               </div>
               <div>
@@ -247,10 +300,16 @@ const Map = () => {
                   type="time"
                   value={toTime}
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  required
                 />
               </div>
             </div>
-            <button className="text-white bg-slate-500 py-2 px-4 rounded hover:bg-black ml-8">
+            {err && (
+              <p className="flex items-center justify-center text-sm text-red-700 font-semibold mb-2">
+                {err}
+              </p>
+            )}
+            <button className="text-white bg-slate-500 py-2 px-4 rounded hover:bg-black ml-11">
               Add Request
             </button>
           </form>
@@ -307,6 +366,7 @@ const Map = () => {
               req_lat,
               req_lng,
               req_address,
+              phone_number,
               bottles_number,
               from_hour,
               to_hour,
@@ -335,17 +395,17 @@ const Map = () => {
                       <h1 className="font-bold pt-2 text-right">
                         {req_address}
                       </h1>
-                      <h2 className="pt-2 text-right">
+                      <h2 className="pt-2 text-left">
                         Bottles: {bottles_number}
                       </h2>
-                      <h2 className="pt-2 text-right">
+                      <h2 className="pt-2 text-left">
                         Hours: {from_hour} - {to_hour}
                       </h2>
-                      <h2 className="pt-2 text-right">
+                      <h2 className="pt-2 text-left">Phone: {phone_number}</h2>
+                      <h2 className="pt-2 text-left">
                         Request Date: {request_date}
                       </h2>
-                      <h2 className="pt-2 text-right">Status: {status}</h2>
-                      <h2 className="pt-2 text-right">Type: {type}</h2>
+                      <h2 className="pt-2 text-left">Status: {status}</h2>
                     </div>
                   </InfoWindowF>
                 )}
