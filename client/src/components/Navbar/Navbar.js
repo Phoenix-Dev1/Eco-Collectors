@@ -48,6 +48,11 @@ const Navbar = () => {
             <Link to="/manager-join">Manager Registration</Link>
           </li>
         )}
+        {currentUser && (
+          <li className="p-4 hover:text-blue-600">
+            <Link to="/user">My Profile</Link>
+          </li>
+        )}
         <li className="p-4 hover:text-blue-600">
           <Link to="/contact-us">Contact Us</Link>
         </li>
@@ -116,6 +121,9 @@ const Navbar = () => {
           </li>
           {currentUser && (
             <>
+              <li className="p-4 hover:text-blue-600">
+                <Link to="/user">My Profile</Link>
+              </li>
               <li className="p-4 hover:text-blue-600">
                 <Link to="/join">Recycler Registration</Link>
               </li>

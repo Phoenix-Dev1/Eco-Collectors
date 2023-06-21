@@ -15,7 +15,8 @@ import Register from './pages/Register/register';
 import Map from './components/map/Map';
 import AddRequest from './pages/AddRequest/addRequest';
 import RecyclerRegister from './pages/RecyclerRegister/recyclerRegister';
-import RecyclersManagerRegister from './pages/RecyclersManagerRegister/recyclersManagerRegister'
+import RecyclersManagerRegister from './pages/RecyclersManagerRegister/recyclersManagerRegister';
+import User from './pages/Users/user';
 import Contact from './pages/Contact/contact';
 import About from './pages/About/About';
 import TermsAndConditions from './pages/Conditions/Terms/terms';
@@ -66,6 +67,10 @@ const router = createBrowserRouter([
       {
         path: '/manager-join',
         element: <RecyclersManagerRegister />,
+      },
+      {
+        path: '/user',
+        element: <User />,
       },
     ],
   },

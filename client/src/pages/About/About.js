@@ -1,9 +1,9 @@
-import { useState, Fragment } from 'react';
+import { useState, Fragment, useEffect } from 'react';
 import {
   Accordion,
   AccordionHeader,
   AccordionBody,
-  Avatar
+  Avatar,
 } from '@material-tailwind/react';
 import { ArrowDownIcon, ArrowUpIcon } from '@heroicons/react/solid';
 import ec from '../../img/sm-logo.png';
@@ -23,6 +23,10 @@ export default function About() {
     mount: { scale: 1 },
     unmount: { scale: 0.9 },
   };
+
+  useEffect(() => {
+    setOpen(1); // Open the first accordion on initial load or refresh
+  }, []);
 
   return (
     <Fragment>
