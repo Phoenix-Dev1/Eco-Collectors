@@ -25,8 +25,8 @@ import { GiRecycle } from 'react-icons/gi';
 import { AiOutlineClose } from 'react-icons/ai';
 import { validateInputs } from './InputValidation';
 
+const libraries = [process.env.REACT_APP_GOOGLE_LIB];
 const Map = () => {
-  const libraries = [process.env.REACT_APP_GOOGLE_LIB];
   // Add request Reference
   const inputReference = useRef();
   const { currentUser } = useContext(AuthContext);
@@ -156,10 +156,12 @@ const Map = () => {
 
   const toggleFilterWindow = () => {
     setShowFilterWindow(!showFilterWindow);
+    setShowAddWindow(false);
   };
 
   const toggleAddWindow = () => {
     setShowAddWindow(!showAddWindow);
+    setShowFilterWindow(false);
   };
 
   return (
@@ -252,7 +254,7 @@ const Map = () => {
                   type="text"
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   placeholder="Enter Location"
-                  inputRef={inputReference}
+                  inputref={inputReference}
                   onChange={(e) => setReqAddress(e.target.value)}
                   required
                 />
