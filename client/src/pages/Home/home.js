@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const Home = () => {
   return (
-    <div className="font-sans bg-white dark:bg-gray-900 text-white">
+    <div className="font-sans bg-white dark:bg-gray-800 text-white">
       <main className="container mx-auto flex flex-col py-8">
         <div className="max-w-2xl mx-auto">
           <h2 className="text-3xl font-semibold mb-4">
