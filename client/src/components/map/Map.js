@@ -8,7 +8,7 @@ import {
 } from '@react-google-maps/api';
 import axios from 'axios';
 import * as moment from 'moment';
-
+import { Link } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import classes from './map.module.css';
 import {
@@ -17,6 +17,8 @@ import {
   openGoogleMaps,
   formatDate,
   fetchRequests,
+  formatDateTime,
+  formatTime,
 } from './mapFunctions';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/authContext';
@@ -404,9 +406,23 @@ const Map = () => {
                       </h2>
                       <h2 className="pt-2 text-left">Phone: {phone_number}</h2>
                       <h2 className="pt-2 text-left">
-                        Request Date: {request_date}
+                        Date: {formatDateTime(request_date)}
+                      </h2>
+                      <h2 className="pt-2 text-left">
+                        Hour: {formatTime(request_date)}
                       </h2>
                       <h2 className="pt-2 text-left">Status: {status}</h2>
+                      {(currentUser.role === 1 || currentUser.role === 3) &&
+                        status !== 2 && (
+                          <h2 className="pt-2 text-center">
+                            <Link
+                              to={`/collect?Id=${request_id}`}
+                              className="cursor-pointer hover:cursor-pointer hover:underline hover:text-blue-500 pt-2 text-right"
+                            >
+                              Collect
+                            </Link>
+                          </h2>
+                        )}
                     </div>
                   </InfoWindowF>
                 )}

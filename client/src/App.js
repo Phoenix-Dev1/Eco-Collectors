@@ -17,6 +17,7 @@ import RecyclerRegister from './pages/RecyclerRegister/recyclerRegister';
 import RecyclersManagerRegister from './pages/RecyclersManagerRegister/recyclersManagerRegister';
 import User from './pages/Users/user';
 import Contact from './pages/Contact/contact';
+import CollectRequest from './pages/CollectRequest/CollectRequest';
 import About from './pages/About/About';
 import TermsAndConditions from './pages/Conditions/Terms/terms';
 import PrivacyPolicy from './pages/Conditions/Privacy/privacy';
@@ -50,6 +51,10 @@ const router = createBrowserRouter([
       {
         path: '/',
         element: <Home />,
+      },
+      {
+        path: '/collect',
+        element: <CollectRequest />,
       },
       {
         path: '/contact-us',

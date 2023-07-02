@@ -59,10 +59,10 @@ const login = (req, res) => {
 
     // Using the user unique id to create a token
     // jwtkey - can be replaced with a new key stored in the .env file
-    const token = jwt.sign({ id: data[0].ID }, 'jwtkey');
-    //console.log(data[0].ID);
+    // console.log(data[0]);
+    const token = jwt.sign({ id: data[0].ID, role: data[0].role }, 'jwtkey');
     // removing the password from the data array so it will not be sent
-    const { active, password, role, ...other } = data[0];
+    const { active, password, ...other } = data[0];
 
     // sending the user a cookie via the cookie-parser
     res

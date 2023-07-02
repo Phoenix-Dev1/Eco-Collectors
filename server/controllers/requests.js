@@ -13,12 +13,22 @@ const getRequests = (req, res) => {
 };
 
 const getRequest = (req, res) => {
-  const q =
-    'SELECT `ID`,`first_name`,`last_name`,`username` FROM users u JOIN user_requests r ON u.ID=r.user_id   WHERE r.id=?';
-  db.query(q, [req.params.id], (err, data) => {
-    if (err) return res.status(500).send(err);
+  const token = req.cookies.access_token;
+  if (!token) return res.status(401).json('Not authenticated');
 
-    return res.status(200).json(data[0]);
+  jwt.verify(token, 'jwtkey', (err, decoded) => {
+    if (err) return res.status(403).json('Token is not valid');
+    const userRole = decoded.role;
+    if (userRole === 1 || userRole === 3) {
+      const q =
+        'SELECT `request_id`,`user_id`,`full_name`,`req_lat`, `req_lng`, `req_address`,`phone_number`,`bottles_number`,`from_hour`,`to_hour`,`request_date`,`type` FROM user_requests WHERE request_id = ?';
+      db.query(q, [req.params.id], (err, data) => {
+        if (err) return res.status(500).send(err);
+        return res.status(200).json(data[0]);
+      });
+    } else {
+      return res.status(403).json('Invalid user role');
+    }
   });
 };
 
@@ -77,7 +87,24 @@ const deleteRequest = (req, res) => {
 };
 
 const updateRequest = (req, res) => {
-  res.json('From request controller');
+  const token = req.cookies.access_token;
+  const type = 'pending';
+  const status = 2;
+  if (!token) return res.status(401).json('Not authenticated!');
+
+  jwt.verify(token, 'jwtkey', (err, userInfo) => {
+    if (err) return res.status(403).json('Token is not valid!');
+    console.log('User Id:' + userInfo.id);
+    const requestId = req.params.id;
+    const q =
+      'UPDATE user_requests SET `recycler_id`=?,`status`=?, `type`=? WHERE `request_id` = ?';
+    const values = [userInfo.id, status, type];
+
+    db.query(q, [...values, requestId], (err, data) => {
+      if (err) return res.status(500).json(err);
+      return res.json('Request has been updated.');
+    });
+  });
 };
 
 module.exports = {
