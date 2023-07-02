@@ -39,6 +39,7 @@ export function formatDate(dateString) {
   return date.toLocaleDateString('en-GB');
 }
 
+// Validating the request details
 export function addRequestValidation(
   fullName,
   bottlesNumber,
@@ -70,4 +71,28 @@ export function addRequestValidation(
   }
 
   return true;
+}
+
+// Foramtting Date & Time
+export function formatDateTime(datetime) {
+  const date = new Date(datetime);
+  const day = date.getDate();
+  const month = date.getMonth() + 1;
+  const year = date.getFullYear();
+
+  const formattedDate = `${day}/${month}/${year}`;
+
+  return formattedDate;
+}
+
+export function formatTime(datetime) {
+  const date = new Date(datetime);
+  const hours = date.getHours();
+  const minutes = date.getMinutes();
+
+  const formattedTime = `${hours.toString().padStart(2, '0')}:${minutes
+    .toString()
+    .padStart(2, '0')}`;
+
+  return formattedTime;
 }
