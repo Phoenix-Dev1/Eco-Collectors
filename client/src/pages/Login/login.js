@@ -27,7 +27,7 @@ function SignInForm() {
     try {
       // Calling the login function from AuthContext
       await login(inputs);
-      navigate('/');
+      navigate('/user');
     } catch (err) {
       setError(err.response.data);
     }
