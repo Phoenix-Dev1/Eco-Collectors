@@ -22,6 +22,7 @@ import About from './pages/About/About';
 import TermsAndConditions from './pages/Conditions/Terms/terms';
 import PrivacyPolicy from './pages/Conditions/Privacy/privacy';
 import NotFound from './pages/404/404';
+import Dashboard from './pages/Users/usersDashboard';
 import './index.css';
 
 const Layout = () => {
@@ -42,6 +43,16 @@ const NoFooterLayout = () => {
     </>
   );
 };
+
+const DashboardLayout = () => {
+  return (
+    <>
+      <Navbar />
+      <User />
+      <Dashboard />
+    </>
+  )
+}
 
 const router = createBrowserRouter([
   {
@@ -68,11 +79,14 @@ const router = createBrowserRouter([
         path: '/manager-join',
         element: <RecyclersManagerRegister />,
       },
-      {
-        path: '/user',
-        element: <User />,
-      },
     ],
+  },
+  {
+    path: '/user',
+    element: <DashboardLayout />,
+    children: [
+
+    ]
   },
   {
     path: '/terms',
