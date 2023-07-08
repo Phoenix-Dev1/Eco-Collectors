@@ -18,22 +18,27 @@ const RequestStatus = () => {
   }, [currentUser]);
 
   useEffect(() => {
-    const fetchRecyclerData = async (recyclerId, index) => {
-      const data = await fetchRecyclerDetails(recyclerId);
-      if (data && data.length > 0) {
-        setUserRequests((prevUserRequests) => {
-          const updatedUserRequests = [...prevUserRequests];
-          updatedUserRequests[index].recycler = data[0];
-          return updatedUserRequests;
+    const fetchRecyclerData = async () => {
+      const recyclerIds = userRequests.map((request) => request.recycler_id);
+      const recyclerDetails = await Promise.all(
+        recyclerIds.map((recyclerId) => fetchRecyclerDetails(recyclerId))
+      );
+      setUserRequests((prevUserRequests) => {
+        const updatedUserRequests = prevUserRequests.map((request, index) => {
+          const recyclerDetail = recyclerDetails[index];
+          if (recyclerDetail && recyclerDetail.length > 0) {
+            request.recycler = recyclerDetail[0];
+          }
+          return request;
         });
-      }
+        return updatedUserRequests;
+      });
     };
 
-    userRequests.forEach((request, index) => {
-      const recyclerId = request.recycler_id;
-      fetchRecyclerData(recyclerId, index);
-    });
-  }, [userRequests]);
+    if (userRequests.length > 0) {
+      fetchRecyclerData();
+    }
+  }, [userRequests.length]); // Use userRequests.length as the dependency
 
   return (
     <div className="text-center">
@@ -71,8 +76,13 @@ const RequestStatus = () => {
                   {request.bottles_number}
                 </td>
                 <td className="border px-4 py-2 max-w-xs truncate">
-                  {request.recycler && request.recycler.first_name}{' '}
-                  {request.recycler && request.recycler.last_name}
+                  {request.recycler ? (
+                    `${request.recycler.first_name} ${request.recycler.last_name}`
+                  ) : (
+                    <span className="text-blue-700 font-bold">
+                      Awaits Recycler
+                    </span>
+                  )}
                 </td>
                 <td className="border px-4 py-2 max-w-xs truncate">
                   {request.recycler && request.recycler.phone}
