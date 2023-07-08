@@ -1,11 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { AuthContext } from '../../context/authContext';
-import {
-  fetchUserRequests,
-  fetchRecyclerDetails,
-  getStatusColor,
-  renderButtons,
-} from './UserFunctions';
+import { fetchUserRequests, fetchRecyclerDetails } from './UserFunctions';
+import { getStatusColor, renderButtons } from './RequestUtils';
 
 const RequestStatus = () => {
   const { currentUser } = useContext(AuthContext);
