@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
+import { Link } from 'react-router-dom';
 import { AuthContext } from '../../context/authContext';
-import smallLogo from '../../img/sm-logo.png';
 
 const Dashboard = () => {
   const { currentUser } = useContext(AuthContext);
@@ -12,7 +12,7 @@ const Dashboard = () => {
             Eco-<span className="text-blue-500">Dashboard</span>
           </h1>
           <p className="text-slate-500 text-sm mb-8">
-            Manage your actions and activities
+            Manage your actions & activities
           </p>
           <p className="text-white">Welcome back,</p>
           <div className="flex items-center mt-1">
@@ -20,8 +20,8 @@ const Dashboard = () => {
               {currentUser.first_name} {currentUser.last_name}
             </span>
           </div>
-          <nav className="mt-8">
-            <a className="block py-2 px-4 rounded text-white text-lg hover:bg-white/5 transition ease-linear duration-150 flex items-center mb-4">
+          <nav className="mt-4">
+            <div className="block py-2 px-4 rounded text-white text-lg hover:bg-white/5 transition ease-linear duration-150 flex items-center mb-2">
               <div>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -40,15 +40,14 @@ const Dashboard = () => {
               </div>
               <div className="ml-2">
                 <span className="text-lg font-bold leading-5 text-white">
-                  Dashboard
+                  <Link to="/user/request-status">Requests Status</Link>
                 </span>
                 <span className="text-sm text-white/50 hidden md:block">
                   Data Overview
                 </span>
               </div>
-            </a>
-
-            <a className="block py-2 px-4 rounded text-white text-lg hover:bg-white/5 transition ease-linear duration-150 flex items-center mb-4">
+            </div>
+            <div className="block py-2 px-4 rounded text-white text-lg hover:bg-white/5 transition ease-linear duration-150 flex items-center mb-4">
               <div>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -67,14 +66,14 @@ const Dashboard = () => {
               </div>
               <div className="ml-2">
                 <span className="text-lg font-bold leading-5 text-white">
-                  NextOption
+                  <Link to="/user/manage-account">Manage Account</Link>
                 </span>
                 <span className="text-sm text-white/50 hidden md:block">
-                  NextOption
+                  Personal Info
                 </span>
               </div>
-            </a>
-            <a className="block py-2 px-4 rounded text-white text-lg hover:bg-white/5 transition ease-linear duration-150 flex items-center mb-4">
+            </div>
+            <div className="block py-2 px-4 rounded text-white text-lg hover:bg-white/5 transition ease-linear duration-150 flex items-center mb-4">
               <div>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -99,8 +98,8 @@ const Dashboard = () => {
                   Manage Your Reports
                 </span>
               </div>
-            </a>
-            <a className="block py-2 px-4 rounded text-white text-lg hover:bg-white/5 transition ease-linear duration-150 flex items-center">
+            </div>
+            <div className="block py-2 px-4 rounded text-white text-lg hover:bg-white/5 transition ease-linear duration-150 flex items-center">
               <div>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -125,27 +124,9 @@ const Dashboard = () => {
                   Edit App Settings
                 </span>
               </div>
-            </a>
+            </div>
           </nav>
-          <footer className="mt-auto ml-auto mr-auto">
-            <a className="flex items-center mb-4 sm:mb-3">
-              <img
-                src={smallLogo}
-                className="h-8 mr-3"
-                alt="Eco Collectors Logo"
-              />
-              <span className="text-xl font-medium whitespace-nowrap dark:text-white">
-                Eco Collectors
-              </span>
-            </a>
-            <span className="block text-xs text-gray-500 sm:text-center dark:text-gray-400">
-              © 2023{' '}
-              <a href="/about" className="hover:underline">
-                Bar Kaziro & Liran Barzilai
-              </a>
-              <p>All Rights Reserved.</p>
-            </span>
-          </footer>
+          <footer className="mt-auto ml-auto mr-auto"></footer>
         </aside>
       </div>
     </div>

@@ -48,11 +48,6 @@ const Navbar = () => {
             <Link to="/manager-join">Manager Registration</Link>
           </li>
         )}
-        {currentUser && (
-          <li className="p-4 hover:text-blue-600">
-            <Link to="/user">My Profile</Link>
-          </li>
-        )}
         <li className="p-4 hover:text-blue-600">
           <Link to="/contact-us">Contact Us</Link>
         </li>
@@ -63,7 +58,7 @@ const Navbar = () => {
         )}
         {currentUser ? (
           <li
-            className="p-4 cursor-pointer hover:text-blue-600"
+            className="p-4 cursor-pointer hover:text-red-500"
             onClick={handleLogout}
           >
             Logout
@@ -74,7 +69,9 @@ const Navbar = () => {
           </li>
         )}
         {currentUser && (
-          <li className="p-4 text-orange-500">{currentUser.first_name}</li>
+          <li className="p-4 text-orange-500  hover:text-green-600">
+            <Link to="/user">{currentUser.first_name}</Link>
+          </li>
         )}
         <li>
           <Link
@@ -108,8 +105,8 @@ const Navbar = () => {
             </Link>
           </li>
           {currentUser && (
-            <li className="p-4 border-b border-gray-600 text-orange-500">
-              {currentUser.first_name}
+            <li className="p-4 border-b border-gray-600 text-orange-500  hover:text-green-600">
+              <Link to="/user">{currentUser.first_name}</Link>
             </li>
           )}
           <li className="p-4 hover:text-purple-600">
@@ -121,9 +118,6 @@ const Navbar = () => {
           </li>
           {currentUser && (
             <>
-              <li className="p-4 hover:text-blue-600">
-                <Link to="/user">My Profile</Link>
-              </li>
               <li className="p-4 hover:text-blue-600">
                 <Link to="/join">Recycler Registration</Link>
               </li>
