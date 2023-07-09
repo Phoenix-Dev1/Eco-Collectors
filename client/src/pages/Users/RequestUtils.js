@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 // set row color per status
 export function getStatusColor(status) {
   switch (status) {
@@ -17,15 +19,25 @@ export function getStatusColor(status) {
 }
 
 // Buttons rendering
-export function renderButtons(status) {
+export function renderButtons(
+  status,
+  requestId,
+  handleAccept,
+  handleDecline,
+  handleCancel,
+  handleAcceptAndClose
+) {
   switch (status) {
     case 1:
       return (
         <>
           <button className="mb-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-            Update
+            <Link to={`/user/update-request?Id=${requestId}`}>Update</Link>
           </button>
-          <button className="mb-2 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+          <button
+            onClick={() => handleCancel(requestId)}
+            className=" mb-2 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+          >
             Cancel Request
           </button>
         </>
@@ -33,10 +45,16 @@ export function renderButtons(status) {
     case 2:
       return (
         <>
-          <button className="mb-2 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+          <button
+            onClick={() => handleAccept(requestId)}
+            className="mb-2 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+          >
             Accept
           </button>
-          <button className="mb-2 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+          <button
+            onClick={() => handleDecline(requestId)}
+            className="mb-2 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+          >
             Decline
           </button>
         </>
@@ -57,10 +75,16 @@ export function renderButtons(status) {
       return (
         <>
           <>
-            <button className="mb-2 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+            <button
+              onClick={() => handleAcceptAndClose(requestId)}
+              className="mb-2 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+            >
               Accept & Close
             </button>
-            <button className="mb-2 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+            <button
+              onClick={() => handleDecline(requestId)}
+              className="mb-2 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+            >
               Cancel Pickup
             </button>
           </>{' '}

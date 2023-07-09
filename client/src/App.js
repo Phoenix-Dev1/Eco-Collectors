@@ -18,6 +18,7 @@ import NotFound from './pages/404/404';
 import UserLayout from './layouts/UserLayout';
 import ManageAccount from './pages/Users/ManageAccount';
 import RequestStatus from './pages/Users/RequestStatus';
+import UpdateRequest from './pages/Users/UpdateRequest';
 
 import './index.css';
 
@@ -34,6 +35,7 @@ export default function App() {
         <Route path="/user/*" element={<UserLayout />}>
           <Route path="manage-account" element={<ManageAccount />} />
           <Route path="request-status" element={<RequestStatus />} />
+          <Route path="update-request" element={<UpdateRequest />} />
         </Route>
         <Route path="/terms" element={<TermsAndConditions />} />
         <Route path="/login" element={<Login />} />

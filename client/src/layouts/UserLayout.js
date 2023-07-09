@@ -3,7 +3,6 @@ import { Outlet } from 'react-router-dom';
 
 // components
 import Dashboard from '../components/Sidebar/usersDashboard';
-import ManageAccount from '../pages/Users/ManageAccount';
 
 export default function UserLayout() {
   return (
