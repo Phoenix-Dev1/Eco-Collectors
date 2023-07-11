@@ -240,7 +240,8 @@ const Map = () => {
                 id="number_of_bottles"
                 name="number_of_bottles"
                 value={bottlesNumber}
-                type="text"
+                type="number"
+                min="1"
                 required
               />
             </div>
