@@ -16,7 +16,7 @@ import TermsAndConditions from './pages/Conditions/Terms/terms';
 import PrivacyPolicy from './pages/Conditions/Privacy/privacy';
 import NotFound from './pages/404/404';
 import UserLayout from './layouts/UserLayout';
-import ManageAccount from './pages/Users/ManageAccount';
+import Update from './pages/Users/UpdateAccount';
 import RequestStatus from './pages/Users/RequestStatus';
 import UpdateRequest from './pages/Users/UpdateRequest';
 
@@ -33,7 +33,7 @@ export default function App() {
         <Route path="/about" element={<About />} />
         <Route path="/manager-join" element={<RecyclersManagerRegister />} />
         <Route path="/user/*" element={<UserLayout />}>
-          <Route path="manage-account" element={<ManageAccount />} />
+          <Route path="update-account" element={<Update />} />
           <Route path="request-status" element={<RequestStatus />} />
           <Route path="update-request" element={<UpdateRequest />} />
         </Route>

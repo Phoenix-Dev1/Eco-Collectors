@@ -66,7 +66,7 @@ const Dashboard = () => {
               </div>
               <div className="ml-2">
                 <span className="text-lg font-bold leading-5 text-white">
-                  <Link to="/user/manage-account">Manage Account</Link>
+                  <Link to="/user/update-account">Manage Account</Link>
                 </span>
                 <span className="text-sm text-white/50 hidden md:block">
                   Personal Info
