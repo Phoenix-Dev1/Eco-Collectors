@@ -48,7 +48,7 @@ export default function Update() {
       return;
     } else {
       try {
-        await axios.post('/user/update', texts);
+        await axios.put('/user/update', texts);
         navigate('/user');
       } catch (err) {
         setError(err.response.data);
