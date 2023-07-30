@@ -86,7 +86,7 @@ const deleteRequest = (req, res) => {
   });
 };
 
-const updateRequest = (req, res) => {
+const updateRequestType = (req, res) => {
   const token = req.cookies.access_token;
   const type = 'pending';
   const status = 2;
@@ -112,5 +112,5 @@ module.exports = {
   getRequest: getRequest,
   addRequest: addRequest,
   deleteRequest: deleteRequest,
-  updateRequest: updateRequest,
+  updateRequestType: updateRequestType,
 };

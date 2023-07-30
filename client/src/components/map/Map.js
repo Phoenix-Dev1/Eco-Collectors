@@ -240,7 +240,8 @@ const Map = () => {
                 id="number_of_bottles"
                 name="number_of_bottles"
                 value={bottlesNumber}
-                type="text"
+                type="number"
+                min="1"
                 required
               />
             </div>
@@ -412,8 +413,9 @@ const Map = () => {
                         Hour: {formatTime(request_date)}
                       </h2>
                       <h2 className="pt-2 text-left">Status: {status}</h2>
-                      {(currentUser.role === 1 || currentUser.role === 3) &&
-                        status !== 2 && (
+                      {(currentUser?.role === 1 || currentUser?.role === 3) &&
+                        status !== 2 &&
+                        currentUser && (
                           <h2 className="pt-2 text-center">
                             <Link
                               to={`/collect?Id=${request_id}`}

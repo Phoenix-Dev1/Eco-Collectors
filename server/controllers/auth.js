@@ -10,7 +10,7 @@ const register = (req, res) => {
     console.log(req.body.email);
     if (err) return res.json(err);
     if (data.length) {
-      return res.status(400).json('Username/Email address already exists!');
+      return res.status(400).json('Email address already exists!');
     }
 
     // Encrypt the password and create a user
