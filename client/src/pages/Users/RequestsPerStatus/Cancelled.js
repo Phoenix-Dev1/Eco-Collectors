@@ -76,22 +76,27 @@ const Cancelled = () => {
 
   // Define columns for the data table
   const columns = [
-    { name: 'Address', selector: 'req_address', sortable: true, wrap: true },
+    {
+      name: 'Address',
+      selector: (row) => row.req_address,
+      sortable: true,
+      wrap: true,
+    },
     {
       name: 'Bottles Number',
-      selector: 'bottles_number',
+      selector: (row) => row.bottles_number,
       sortable: true,
       center: true,
     },
     {
       name: 'Recycler Name',
-      selector: 'recyclerFullName',
+      selector: (row) => row.recyclerFullName,
       sortable: true,
       center: true,
     },
     {
       name: 'Phone Number',
-      selector: 'recyclerPhone',
+      selector: (row) => row.recyclerPhone,
       sortable: true,
       center: true,
     },
@@ -115,7 +120,7 @@ const Cancelled = () => {
     },
     {
       name: 'Status',
-      selector: 'status',
+      selector: (row) => row.status,
       sortable: true,
       center: true,
       cell: (row) => {
@@ -123,7 +128,7 @@ const Cancelled = () => {
           case 1:
             return 'Awaits Recycler';
           case 2:
-            return 'Awaits Approvel';
+            return 'Awaits Approval';
           case 3:
             return 'Completed';
           case 4:

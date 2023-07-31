@@ -46,30 +46,45 @@ const Completed = () => {
     }
   }, [completedRequests.length]); // Use completedRequests.length as the dependency
 
+  const formatDate = (dateString) => {
+    const [date, time] = dateString.split(', ');
+    const [day, month, year] = date.split('.');
+    const [hours, minutes, seconds] = time.split(':');
+    const formattedDate = new Date(
+      `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.000Z`
+    );
+    return formattedDate.toLocaleString();
+  };
+
   // Define columns for the data table
   const columns = [
-    { name: 'Address', selector: 'req_address', sortable: true, wrap: true },
+    {
+      name: 'Address',
+      selector: (row) => row.req_address, // Use a selector function
+      sortable: true,
+      wrap: true,
+    },
     {
       name: 'Bottles Number',
-      selector: 'bottles_number',
+      selector: (row) => row.bottles_number, // Use a selector function
       sortable: true,
       center: true,
     },
     {
       name: 'Recycler Name',
-      selector: 'recyclerFullName',
+      selector: (row) => row.recyclerFullName, // Use a selector function
       sortable: true,
       center: true,
     },
     {
       name: 'Phone Number',
-      selector: 'recyclerPhone',
+      selector: (row) => row.recyclerPhone, // Use a selector function
       sortable: true,
       center: true,
     },
     {
       name: 'Status',
-      selector: 'status',
+      selector: (row) => row.status, // Use a selector function
       sortable: true,
       center: true,
       cell: (row) => {
@@ -77,7 +92,7 @@ const Completed = () => {
           case 1:
             return 'Awaits Recycler';
           case 2:
-            return 'Awaits Approvel';
+            return 'Awaits Approval';
           case 3:
             return 'Completed';
           case 4:
@@ -89,9 +104,21 @@ const Completed = () => {
         }
       },
     },
+    {
+      name: 'Completed Date',
+      selector: (row) => row.completed_date, // Use a selector function
+      sortable: true,
+      center: true,
+      cell: (row) => {
+        //console.log(row.completed_date);
+        return row.completed_date &&
+          row.completed_date !== '0000-00-00 00:00:00'
+          ? row.completed_date
+          : 'N/A';
+      },
+    },
   ];
-
-  // Transform completedRequests data to include 'recyclerFullName' and 'recyclerPhone'
+  // Transform completedRequests data to include 'recyclerFullName', 'recyclerPhone', and 'completed_date'
   const data = completedRequests.map((request) => ({
     ...request,
     recyclerFullName:
@@ -101,6 +128,9 @@ const Completed = () => {
         ? `${request.recycler.first_name} ${request.recycler.last_name}`
         : 'Awaits Recycler',
     recyclerPhone: request.recycler ? request.recycler.phone : '',
+    completed_date: request.completed_date
+      ? new Date(request.completed_date).toLocaleString()
+      : 'N/A',
   }));
 
   // Custom styles for the table

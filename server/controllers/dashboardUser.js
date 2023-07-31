@@ -11,6 +11,7 @@ const getUserRequests = (req, res) => {
     const q = 'SELECT * FROM user_requests WHERE user_id = ?';
     db.query(q, userId, (err, data) => {
       if (err) return res.status(500).send(err);
+      //console.log(data[0]);
       return res.status(200).json(data);
     });
   });

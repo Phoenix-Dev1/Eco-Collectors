@@ -103,12 +103,24 @@ const RequestStatus = () => {
 
   // Define columns for the data table
   const columns = [
-    { name: 'User ID', selector: 'user_id', sortable: true },
-    { name: 'Request ID', selector: 'request_id', sortable: true },
-    { name: 'Address', selector: 'req_address', sortable: true },
-    { name: 'Bottles Number', selector: 'bottles_number', sortable: true },
-    { name: 'Recycler Name', selector: 'recyclerFullName', sortable: true },
-    { name: 'Phone Number', selector: 'recyclerPhone', sortable: true },
+    { name: 'User ID', selector: (row) => row.user_id, sortable: true },
+    { name: 'Request ID', selector: (row) => row.request_id, sortable: true },
+    { name: 'Address', selector: (row) => row.req_address, sortable: true },
+    {
+      name: 'Bottles Number',
+      selector: (row) => row.bottles_number,
+      sortable: true,
+    },
+    {
+      name: 'Recycler Name',
+      selector: (row) => row.recyclerFullName,
+      sortable: true,
+    },
+    {
+      name: 'Phone Number',
+      selector: (row) => row.recyclerPhone,
+      sortable: true,
+    },
     {
       name: 'Actions',
       cell: (row) => {
@@ -126,7 +138,7 @@ const RequestStatus = () => {
         );
       },
     },
-    { name: 'Status', selector: 'status', sortable: true },
+    { name: 'Status', selector: (row) => row.status, sortable: true },
   ];
 
   // Transform userRequests data to include 'recyclerFullName' and 'recyclerPhone'

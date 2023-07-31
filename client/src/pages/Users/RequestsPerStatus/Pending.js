@@ -56,42 +56,78 @@ const Pending = () => {
 
   // Accepting recycler pickup request
   const handleAccept = async (requestId) => {
-    // Implementation for accepting request
+    try {
+      const response = await acceptRequest(requestId);
+      if (response) {
+        // Reload the page
+        window.location.reload();
+      }
+    } catch (error) {
+      console.log('Error accepting request:', error);
+    }
   };
 
   // Declining recycler pickup request
   const handleDecline = async (requestId) => {
-    // Implementation for declining request
+    try {
+      const response = await declineRequest(requestId);
+      if (response) {
+        // Reload the page
+        window.location.reload();
+      }
+    } catch (error) {
+      console.log('Error declining request:', error);
+    }
   };
 
   // Canceling request by request id
   const handleCancel = async (requestId) => {
-    // Implementation for canceling request
+    try {
+      const response = await cancelRequest(requestId);
+      if (response) {
+        // Reload the page or update the request status locally
+        window.location.reload();
+      }
+    } catch (error) {
+      console.log('Error canceling request:', error);
+    }
   };
 
   // Accept & Close the request
   const handleAcceptAndClose = async (requestId) => {
-    // Implementation for accepting and closing request
+    try {
+      const response = await acceptAndCloseRequest(requestId);
+      if (response) {
+        window.location.reload(); // Reload the page
+      }
+    } catch (error) {
+      console.log('Error accepting and closing request:', error);
+    }
   };
 
   // Define columns for the data table
   const columns = [
-    { name: 'Address', selector: 'req_address', sortable: true, wrap: true },
+    {
+      name: 'Address',
+      selector: (row) => row.req_address,
+      sortable: true,
+      wrap: true,
+    },
     {
       name: 'Bottles Number',
-      selector: 'bottles_number',
+      selector: (row) => row.bottles_number,
       sortable: true,
       center: true,
     },
     {
       name: 'Recycler Name',
-      selector: 'recyclerFullName',
+      selector: (row) => row.recyclerFullName,
       sortable: true,
       center: true,
     },
     {
       name: 'Phone Number',
-      selector: 'recyclerPhone',
+      selector: (row) => row.recyclerPhone,
       sortable: true,
       center: true,
     },
@@ -115,7 +151,7 @@ const Pending = () => {
     },
     {
       name: 'Status',
-      selector: 'status',
+      selector: (row) => row.status,
       sortable: true,
       center: true,
       cell: (row) => {
@@ -123,7 +159,7 @@ const Pending = () => {
           case 1:
             return 'Awaits Recycler';
           case 2:
-            return 'Awaits Approvel';
+            return 'Awaits Approval';
           case 3:
             return 'Completed';
           case 4:
