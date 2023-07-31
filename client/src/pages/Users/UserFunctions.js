@@ -85,7 +85,9 @@ export async function acceptAndCloseRequest(requestId) {
   }
 
   try {
-    const res = await axios.put(`/dashboardUser/${requestId}`, { status: 3 });
+    const res = await axios.put(`/dashboardUser/${requestId}`, {
+      status: 3,
+    });
     return res.data;
   } catch (err) {
     console.log(err);

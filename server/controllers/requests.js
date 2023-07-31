@@ -1,6 +1,14 @@
 const { db } = require('../db.js');
 const jwt = require('jsonwebtoken');
 
+// Utility function to get current date and time in 'YYYY-MM-DD HH:mm:ss' format with GMT+3 offset
+const getCurrentDateTime = () => {
+  const now = new Date();
+  now.setHours(now.getHours() + 3); // Add 3 hours to account for GMT+3
+  const formattedDate = now.toISOString().slice(0, 19).replace('T', ' ');
+  return formattedDate;
+};
+
 const getRequests = (req, res) => {
   const q = 'SELECT * FROM user_requests WHERE status = 1 OR status = 2';
   db.query(q, (err, data) => {
@@ -21,9 +29,10 @@ const getRequest = (req, res) => {
     const userRole = decoded.role;
     if (userRole === 1 || userRole === 3) {
       const q =
-        'SELECT `request_id`,`user_id`,`full_name`,`req_lat`, `req_lng`, `req_address`,`phone_number`,`bottles_number`,`from_hour`,`to_hour`,`request_date`,`type` FROM user_requests WHERE request_id = ?';
+        'SELECT `request_id`,`user_id`,`full_name`,`req_lat`, `req_lng`, `req_address`,`phone_number`,`bottles_number`,`from_hour`,`to_hour`,`request_date`,`completed_date`,`type` FROM user_requests WHERE request_id = ?';
       db.query(q, [req.params.id], (err, data) => {
         if (err) return res.status(500).send(err);
+        console.log(data[0]);
         return res.status(200).json(data[0]);
       });
     } else {
@@ -94,11 +103,12 @@ const updateRequestType = (req, res) => {
 
   jwt.verify(token, 'jwtkey', (err, userInfo) => {
     if (err) return res.status(403).json('Token is not valid!');
-    console.log('User Id:' + userInfo.id);
+    //console.log('User Id:' + userInfo.id);
     const requestId = req.params.id;
     const q =
-      'UPDATE user_requests SET `recycler_id`=?,`status`=?, `type`=? WHERE `request_id` = ?';
-    const values = [userInfo.id, status, type];
+      'UPDATE user_requests SET `recycler_id`=?, `status`=?, `type`=?, `completed_date`=DATE_FORMAT(?, "%Y-%m-%d %H:%i:%s") WHERE `request_id` = ?';
+    const completedDate = getCurrentDateTime();
+    const values = [userInfo.id, status, type, completedDate];
 
     db.query(q, [...values, requestId], (err, data) => {
       if (err) return res.status(500).json(err);

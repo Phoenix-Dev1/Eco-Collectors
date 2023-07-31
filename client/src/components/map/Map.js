@@ -98,6 +98,8 @@ const Map = () => {
           setFromTime('');
           setToTime('');
           setError(null);
+          // Show an alert for successful submission
+          window.alert('Request added successfully!');
         } catch (err) {
           console.log(err);
         }
@@ -143,7 +145,7 @@ const Map = () => {
       setRequests(data);
     };
     loadRequestsData();
-  }, [type]);
+  }, [type, requests]); // Add 'requests' as a dependency
 
   // Center the Map At Haifa Port
   const center = useMemo(() => ({ lat: 32.79413, lng: 34.98828 }), []);
@@ -413,7 +415,7 @@ const Map = () => {
                         Hour: {formatTime(request_date)}
                       </h2>
                       <h2 className="pt-2 text-left">Status: {status}</h2>
-                      {(currentUser?.role === 1 || currentUser?.role === 3) &&
+                      {currentUser?.role !== 2 &&
                         status !== 2 &&
                         currentUser && (
                           <h2 className="pt-2 text-center">
