@@ -15,7 +15,7 @@ const port = process.env.PORT || 8800;
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
-// Middlewares
+// Middleware
 app.use(express.json());
 app.use(cookieParser());
 
