@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { AuthContext } from '../../context/authContext';
+import { AuthContext } from '../../../context/authContext';
 import DataTable from 'react-data-table-component';
 import {
   fetchUserRequests,
@@ -8,19 +8,21 @@ import {
   declineRequest,
   cancelRequest,
   acceptAndCloseRequest,
-} from './UserFunctions';
-import { getStatusColor, renderButtons } from './RequestUtils';
+} from '../UserFunctions';
+import { getStatusColor, renderButtons } from '../RequestUtils';
 
-const RequestStatus = () => {
+const Pending = () => {
   const { currentUser } = useContext(AuthContext);
-  const [userRequests, setUserRequests] = useState([]);
+  const [pendingRequests, setPendingRequests] = useState([]);
 
   // Fetching user request by user id
   useEffect(() => {
     const fetchData = async () => {
       const userId = currentUser.ID;
       const data = await fetchUserRequests(userId);
-      setUserRequests(data);
+      setPendingRequests(
+        data.filter((request) => request.status !== 3 && request.status !== 4)
+      );
     };
 
     fetchData();
@@ -29,26 +31,28 @@ const RequestStatus = () => {
   // fetching recycler details based on recycler id in user_request table
   useEffect(() => {
     const fetchRecyclerData = async () => {
-      const recyclerIds = userRequests.map((request) => request.recycler_id);
+      const recyclerIds = pendingRequests.map((request) => request.recycler_id);
       const recyclerDetails = await Promise.all(
         recyclerIds.map((recyclerId) => fetchRecyclerDetails(recyclerId))
       );
-      setUserRequests((prevUserRequests) => {
-        const updatedUserRequests = prevUserRequests.map((request, index) => {
-          const recyclerDetail = recyclerDetails[index];
-          if (recyclerDetail && recyclerDetail.length > 0) {
-            request.recycler = recyclerDetail[0];
+      setPendingRequests((prevPendingRequests) => {
+        const updatedPendingRequests = prevPendingRequests.map(
+          (request, index) => {
+            const recyclerDetail = recyclerDetails[index];
+            if (recyclerDetail && recyclerDetail.length > 0) {
+              request.recycler = recyclerDetail[0];
+            }
+            return request;
           }
-          return request;
-        });
-        return updatedUserRequests;
+        );
+        return updatedPendingRequests;
       });
     };
 
-    if (userRequests.length > 0) {
+    if (pendingRequests.length > 0) {
       fetchRecyclerData();
     }
-  }, [userRequests.length]); // Use userRequests.length as the dependency
+  }, [pendingRequests.length]); // Use pendingRequests.length as the dependency
 
   // Accepting recycler pickup request
   const handleAccept = async (requestId) => {
@@ -103,23 +107,29 @@ const RequestStatus = () => {
 
   // Define columns for the data table
   const columns = [
-    { name: 'User ID', selector: (row) => row.user_id, sortable: true },
-    { name: 'Request ID', selector: (row) => row.request_id, sortable: true },
-    { name: 'Address', selector: (row) => row.req_address, sortable: true },
+    {
+      name: 'Address',
+      selector: (row) => row.req_address,
+      sortable: true,
+      wrap: true,
+    },
     {
       name: 'Bottles Number',
       selector: (row) => row.bottles_number,
       sortable: true,
+      center: true,
     },
     {
       name: 'Recycler Name',
       selector: (row) => row.recyclerFullName,
       sortable: true,
+      center: true,
     },
     {
       name: 'Phone Number',
       selector: (row) => row.recyclerPhone,
       sortable: true,
+      center: true,
     },
     {
       name: 'Actions',
@@ -137,12 +147,34 @@ const RequestStatus = () => {
           </div>
         );
       },
+      center: true,
     },
-    { name: 'Status', selector: (row) => row.status, sortable: true },
+    {
+      name: 'Status',
+      selector: (row) => row.status,
+      sortable: true,
+      center: true,
+      cell: (row) => {
+        switch (row.status) {
+          case 1:
+            return 'Awaits Recycler';
+          case 2:
+            return 'Awaits Approval';
+          case 3:
+            return 'Completed';
+          case 4:
+            return 'Cancelled';
+          case 5:
+            return 'Awaits Pickup';
+          default:
+            return 'Unknown Status';
+        }
+      },
+    },
   ];
 
-  // Transform userRequests data to include 'recyclerFullName' and 'recyclerPhone'
-  const data = userRequests.map((request) => ({
+  // Transform pendingRequests data to include 'recyclerFullName' and 'recyclerPhone'
+  const data = pendingRequests.map((request) => ({
     ...request,
     recyclerFullName:
       request.status === 4
@@ -153,10 +185,39 @@ const RequestStatus = () => {
     recyclerPhone: request.recycler ? request.recycler.phone : '',
   }));
 
+  // Custom styles for the table
+  const customStyles = {
+    table: {
+      style: {
+        minWidth: '100%',
+      },
+    },
+    rows: {
+      style: {
+        textAlign: 'center',
+      },
+    },
+  };
+
+  // Custom cell renderer to allow text wrapping for the "Address" column
+  const customCell = (cell) => {
+    return (
+      <div
+        style={{
+          whiteSpace: 'normal',
+          wordWrap: 'break-word',
+          textAlign: 'center',
+        }}
+      >
+        {cell}
+      </div>
+    );
+  };
+
   return (
     <div className="text-center">
-      <h2 className="text-lg font-bold mb-4">All Requests:</h2>
-      {userRequests.length > 0 ? (
+      <h2 className="text-lg font-bold mb-4">Pending Requests:</h2>
+      {pendingRequests.length > 0 ? (
         <div className="mx-auto w-full max-w-6xl text-center">
           <DataTable
             columns={columns}
@@ -164,14 +225,16 @@ const RequestStatus = () => {
             striped
             highlightOnHover
             pagination
+            customStyles={customStyles}
+            customCell={customCell}
             className="border w-full"
           />
         </div>
       ) : (
-        <p>No requests found</p>
+        <p>No pending requests found</p>
       )}
     </div>
   );
 };
 
-export default RequestStatus;
+export default Pending;
