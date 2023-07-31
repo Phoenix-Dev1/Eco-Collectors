@@ -1,17 +1,16 @@
 import React, { useEffect, useState, useContext, useRef } from 'react';
-import { validateForm } from '../Users/ValidateForm';
+import { validateForm } from '../ValidateForm';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { AuthContext } from '../../context/authContext';
+import { AuthContext } from '../../../context/authContext';
 
-export default function Update() {
+export default function UpdateUserInformation() {
   const form = useRef();
   const { currentUser } = useContext(AuthContext);
 
   const [texts, setTexts] = useState({
     first_name: '',
     last_name: '',
-    password: '',
     email: '',
     city: '',
     address: '',
@@ -141,35 +140,6 @@ export default function Update() {
               name="phone"
               type="tel"
               aria-label="Phone Number"
-            />
-          </div>
-          <div className="mt-2">
-            <label className="text-sm block text-white" htmlFor="password">
-              Password
-            </label>
-            <input
-              onChange={handleChange}
-              className="w-full px-2 py-2 bg-gray-600 rounded border border-gray-300 text-white"
-              id="password"
-              name="password"
-              type="password"
-              aria-label="Password"
-            />
-          </div>
-          <div className="mt-2">
-            <label
-              className="text-sm block text-white"
-              htmlFor="confirm_password"
-            >
-              Confirm Password
-            </label>
-            <input
-              onChange={handleChange}
-              className="w-full px-2 py-2 bg-gray-600 rounded border border-gray-300 text-white"
-              id="confirm_password"
-              name="confirm_password"
-              type="password"
-              aria-label="Confirm Password"
             />
           </div>
           {err && (

@@ -9,7 +9,9 @@ const Dashboard = () => {
       <div className="flex">
         <aside className="bg-gray-900 w-64 p-6  flex flex-col justify-between">
           <h1 className="text-3xl font-semibold text-white">
-            Eco-<span className="text-blue-500">Dashboard</span>
+            <Link to="/user/welcome">
+              Eco-<span className="text-blue-500">Dashboard</span>{' '}
+            </Link>
           </h1>
           <p className="text-slate-500 text-sm mb-8">
             Manage your actions & activities
@@ -72,10 +74,13 @@ const Dashboard = () => {
               </div>
               <div className="ml-2">
                 <span className="text-lg font-bold leading-5 text-white">
-                  <Link to="/user/update-account">Manage Account</Link>
+                  Manage Account
                 </span>
-                <span className="text-sm text-white/50 hidden md:block">
-                  Personal Info
+                <span className="text-sm text-white/50 hidden md:block hover:bg-white/5 transition ease-linear duration-150">
+                  <Link to="/user/update-user-info">Personal Info</Link>
+                </span>
+                <span className="text-sm text-white/50 hidden md:block hover:bg-white/5 transition ease-linear duration-150">
+                  <Link to="/user/change-password">Change Password</Link>
                 </span>
               </div>
             </div>
