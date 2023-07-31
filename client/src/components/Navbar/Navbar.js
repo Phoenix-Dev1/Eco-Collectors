@@ -70,7 +70,7 @@ const Navbar = () => {
         )}
         {currentUser && (
           <li className="p-4 text-orange-500  hover:text-green-600">
-            <Link to="/user">{currentUser.first_name}</Link>
+            <Link to="/user/welcome">{currentUser.first_name}</Link>
           </li>
         )}
         <li>

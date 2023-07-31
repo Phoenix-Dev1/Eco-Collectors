@@ -19,6 +19,7 @@ import UserLayout from './layouts/UserLayout';
 import Update from './pages/Users/UpdateAccount';
 import RequestStatus from './pages/Users/RequestStatus';
 import UpdateRequest from './pages/Users/UpdateRequest';
+import WelcomeUser from './pages/Users/WelcomeUser';
 
 import './index.css';
 
@@ -33,7 +34,12 @@ export default function App() {
         <Route path="/about" element={<About />} />
         <Route path="/manager-join" element={<RecyclersManagerRegister />} />
         <Route path="/user/*" element={<UserLayout />}>
+<<<<<<< Updated upstream
           <Route path="update-account" element={<Update />} />
+=======
+          <Route path="welcome" element={<WelcomeUser />} />
+          <Route path="manage-account" element={<ManageAccount />} />
+>>>>>>> Stashed changes
           <Route path="request-status" element={<RequestStatus />} />
           <Route path="update-request" element={<UpdateRequest />} />
         </Route>
