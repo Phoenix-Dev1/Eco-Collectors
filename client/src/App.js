@@ -19,7 +19,9 @@ import UserLayout from './layouts/UserLayout';
 import Update from './pages/Users/UpdateAccount';
 import RequestStatus from './pages/Users/RequestStatus';
 import UpdateRequest from './pages/Users/UpdateRequest';
-
+import Cancelled from './pages/Users/RequestsPerStatus/Cancelled';
+import Completed from './pages/Users/RequestsPerStatus/completed';
+import Pending from './pages/Users/RequestsPerStatus/Pending';
 import './index.css';
 
 export default function App() {
@@ -36,6 +38,9 @@ export default function App() {
           <Route path="update-account" element={<Update />} />
           <Route path="request-status" element={<RequestStatus />} />
           <Route path="update-request" element={<UpdateRequest />} />
+          <Route path="cancelled-requests" element={<Cancelled />} />
+          <Route path="completed-requests" element={<Completed />} />
+          <Route path="pending-requests" element={<Pending />} />
         </Route>
         <Route path="/terms" element={<TermsAndConditions />} />
         <Route path="/login" element={<Login />} />

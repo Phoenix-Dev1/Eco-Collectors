@@ -1,5 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { AuthContext } from '../../context/authContext';
+import DataTable from 'react-data-table-component';
 import {
   fetchUserRequests,
   fetchRecyclerDetails,
@@ -100,74 +101,60 @@ const RequestStatus = () => {
     }
   };
 
+  // Define columns for the data table
+  const columns = [
+    { name: 'User ID', selector: 'user_id', sortable: true },
+    { name: 'Request ID', selector: 'request_id', sortable: true },
+    { name: 'Address', selector: 'req_address', sortable: true },
+    { name: 'Bottles Number', selector: 'bottles_number', sortable: true },
+    { name: 'Recycler Name', selector: 'recyclerFullName', sortable: true },
+    { name: 'Phone Number', selector: 'recyclerPhone', sortable: true },
+    {
+      name: 'Actions',
+      cell: (row) => {
+        return (
+          <div className="flex flex-col">
+            {renderButtons(
+              row.status,
+              row.request_id,
+              handleAccept,
+              handleDecline,
+              handleCancel,
+              handleAcceptAndClose
+            )}
+          </div>
+        );
+      },
+    },
+    { name: 'Status', selector: 'status', sortable: true },
+  ];
+
+  // Transform userRequests data to include 'recyclerFullName' and 'recyclerPhone'
+  const data = userRequests.map((request) => ({
+    ...request,
+    recyclerFullName:
+      request.status === 4
+        ? 'Canceled'
+        : request.recycler
+        ? `${request.recycler.first_name} ${request.recycler.last_name}`
+        : 'Awaits Recycler',
+    recyclerPhone: request.recycler ? request.recycler.phone : '',
+  }));
+
   return (
     <div className="text-center">
-      <h2 className="text-lg font-bold mb-4">My Requests:</h2>
+      <h2 className="text-lg font-bold mb-4">All Requests:</h2>
       {userRequests.length > 0 ? (
-        <table className="mx-auto w-full max-w-4xl text-center">
-          <thead>
-            <tr>
-              <th className="px-4 py-2">User ID</th>
-              <th className="px-4 py-2">Request ID</th>
-              <th className="px-4 py-2">Address</th>
-              <th className="px-4 py-2">Bottles Number</th>
-              <th className="px-4 py-2">Recycler Name</th>
-              <th className="px-4 py-2">Phone Number</th>
-              <th className="px-4 py-2">Actions</th>
-              <th className="px-4 py-2">Status</th>
-            </tr>
-          </thead>
-          <tbody className="text-black">
-            {userRequests.map((request) => (
-              <tr
-                key={request.request_id}
-                className={getStatusColor(request.status)}
-              >
-                <td className="border px-4 py-2 max-w-xs truncate">
-                  {request.user_id}
-                </td>
-                <td className="border px-4 py-2 max-w-xs truncate">
-                  {request.request_id}
-                </td>
-                <td className="border px-4 py-2 max-w-xs truncate">
-                  {request.req_address}
-                </td>
-                <td className="border px-4 py-2 max-w-xs truncate">
-                  {request.bottles_number}
-                </td>
-                <td className="border px-4 py-2 max-w-xs truncate">
-                  {request.status === 4 ? (
-                    <span className="text-red-700 font-bold">Canceled</span>
-                  ) : request.recycler ? (
-                    `${request.recycler.first_name} ${request.recycler.last_name}`
-                  ) : (
-                    <span className="text-blue-700 font-bold">
-                      Awaits Recycler
-                    </span>
-                  )}
-                </td>
-                <td className="border px-4 py-2 max-w-xs truncate">
-                  {request.recycler && request.recycler.phone}
-                </td>
-                <td className="border px-4 py-2 max-w-xs truncate">
-                  <div className="flex flex-col">
-                    {renderButtons(
-                      request.status,
-                      request.request_id,
-                      handleAccept,
-                      handleDecline,
-                      handleCancel,
-                      handleAcceptAndClose
-                    )}
-                  </div>
-                </td>
-                <td className="border px-4 py-2 max-w-xs truncate">
-                  {request.status}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div className="mx-auto w-full max-w-6xl text-center">
+          <DataTable
+            columns={columns}
+            data={data}
+            striped
+            highlightOnHover
+            pagination
+            className="border w-full"
+          />
+        </div>
       ) : (
         <p>No requests found</p>
       )}

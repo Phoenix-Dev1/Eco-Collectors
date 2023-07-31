@@ -42,8 +42,14 @@ const Dashboard = () => {
                 <span className="text-lg font-bold leading-5 text-white">
                   <Link to="/user/request-status">Requests Status</Link>
                 </span>
-                <span className="text-sm text-white/50 hidden md:block">
-                  Data Overview
+                <span className="text-sm text-white/50 hidden md:block hover:bg-white/5 transition ease-linear duration-150">
+                  <Link to="/user/pending-requests">Pending</Link>
+                </span>
+                <span className="text-sm text-white/50 hidden md:block hover:bg-white/5 transition ease-linear duration-150">
+                  <Link to="/user/completed-requests">Completed</Link>
+                </span>
+                <span className="text-sm text-white/50 hidden md:block hover:bg-white/5 transition ease-linear duration-150">
+                  <Link to="/user/cancelled-requests">Cancelled</Link>
                 </span>
               </div>
             </div>
