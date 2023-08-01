@@ -22,22 +22,15 @@ const updateUser = (req, res) => {
       const updateQuery =
         'UPDATE users SET `first_name`=?, `last_name`=?, `email`=?, `city`=?, `address`=?, `phone`=? WHERE ID=?';
 
-      let queryParams = [
-        req.body.first_name || currentUser.first_name,
-        req.body.last_name || currentUser.last_name,
-        req.body.email || currentUser.email,
-        req.body.city || currentUser.city,
-        req.body.address || currentUser.address,
-        req.body.phone || currentUser.phone,
+      const queryParams = [
+        req.body.first_name || userInfo.first_name,
+        req.body.last_name || userInfo.last_name,
+        req.body.email || userInfo.email,
+        req.body.city || userInfo.city,
+        req.body.address || userInfo.address,
+        req.body.phone || userInfo.phone,
         userInfo.id,
       ];
-
-      if (req.body.password) {
-        const salt = bcrypt.genSaltSync(10);
-        const hash = bcrypt.hashSync(req.body.password, salt);
-        updateQuery.replace('WHERE', ', `password`=? WHERE');
-        queryParams.splice(queryParams.length - 1, 0, hash);
-      }
 
       db.query(updateQuery, queryParams, (err, data) => {
         if (err) return res.status(500).json(err);

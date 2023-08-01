@@ -30,14 +30,31 @@ export default function UpdateUserInformation() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const isValid = validateInfo(texts, setError, navigate); // Use the validateForm function
+    const isValid = validateInfo(texts, setError, navigate);
 
     if (!isValid) {
       return;
     } else {
       try {
-        await axios.put('/user/update', texts);
-        navigate('/user');
+        const response = await axios.put('/user/update', texts);
+        console.log(response);
+        // Update the currentUser state with the new user data
+        const updatedUser = {
+          ID: currentUser.ID,
+          amount: currentUser.amount,
+          first_name: texts.first_name,
+          last_name: texts.last_name,
+          email: texts.email,
+          city: texts.city,
+          address: texts.address,
+          phone: texts.phone,
+          role: currentUser.role,
+        };
+
+        // Update the 'user' data in localStorage
+        localStorage.setItem('user', JSON.stringify(updatedUser));
+
+        navigate('/user/welcome');
       } catch (err) {
         setError(err.response.data);
       }

@@ -1,5 +1,4 @@
 export const validateInfo = (inputs, setError) => {
-  // Check if all required fields are filled in
   const requiredFields = [
     'first_name',
     'last_name',
@@ -18,8 +17,6 @@ export const validateInfo = (inputs, setError) => {
   }
 
   const nameRegex = /^[a-zA-Z\s]+$/; // Allow alphabets and spaces
-
-  // Check first_name and last_name
   if (!nameRegex.test(inputs.first_name) || inputs.first_name.length > 55) {
     setError('Invalid first name');
     return false;
@@ -29,23 +26,28 @@ export const validateInfo = (inputs, setError) => {
     return false;
   }
 
-  const addressRegex = /^[A-Za-z0-9\s.-]+$/;
+  // Check email
+  const emailRegex = /^\S+@\S+\.\S+$/;
+  if (!emailRegex.test(inputs.email)) {
+    setError('Invalid email address');
+    return false;
+  }
 
   // Check city and address
+  const addressRegex = /^[A-Za-z0-9\s.-]+$/;
   if (!addressRegex.test(inputs.city) || inputs.city.length > 50) {
     setError('Invalid city');
     return false;
   }
 
   // Check address
-  if (inputs.address.length > 50) {
-    setError('Address cannot exceed 50 characters');
+  if (inputs.address.trim() === '') {
+    setError('Address cannot be empty');
     return false;
   }
 
-  const phoneRegex = /^\d{9,10}$/;
-
   // Check phone
+  const phoneRegex = /^\d{9,10}$/;
   if (!phoneRegex.test(inputs.phone)) {
     setError('Invalid phone number');
     return false;
