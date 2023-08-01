@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext, useRef } from 'react';
-import { validateForm } from '../ValidateForm';
+import { validateInfo } from './ValidateInfo';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../../context/authContext';
@@ -8,40 +8,29 @@ export default function UpdateUserInformation() {
   const form = useRef();
   const { currentUser } = useContext(AuthContext);
 
+  // Initialize the texts state with currentUser values directly
   const [texts, setTexts] = useState({
-    first_name: '',
-    last_name: '',
-    email: '',
-    city: '',
-    address: '',
-    phone: '',
+    first_name: currentUser?.first_name || '',
+    last_name: currentUser?.last_name || '',
+    email: currentUser?.email || '',
+    city: currentUser?.city || '',
+    address: currentUser?.address || '',
+    phone: currentUser?.phone || '',
   });
-
-  //console.log(currentUser);
-  useEffect(() => {
-    if (currentUser) {
-      form.current.first_name.value = currentUser.first_name;
-      form.current.last_name.value = currentUser.last_name;
-      form.current.email.value = currentUser.email;
-      form.current.address.value = currentUser.address;
-      form.current.city.value = currentUser.city;
-      form.current.phone.value = currentUser.phone;
-    }
-  }, [currentUser]);
 
   const [err, setError] = useState(null);
 
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    setTexts((prev) => ({ ...prev, [e.target.name]: [e.target.value] }));
+    setTexts((prev) => ({ ...prev, [e.target.name]: e.target.value }));
     //console.log(e.target.value);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const isValid = validateForm(texts, setError, navigate); // Use the validateForm function
+    const isValid = validateInfo(texts, setError, navigate); // Use the validateForm function
 
     if (!isValid) {
       return;
@@ -73,6 +62,7 @@ export default function UpdateUserInformation() {
               name="first_name"
               type="text"
               aria-label="First name"
+              value={texts.first_name}
             />
           </div>
           <div className="inline-block mt-2 -mx-1 pl-1 w-1/2">
@@ -86,6 +76,7 @@ export default function UpdateUserInformation() {
               name="last_name"
               type="text"
               aria-label="Last Name"
+              value={texts.last_name}
             />
           </div>
           <div className="mt-2">
@@ -99,6 +90,8 @@ export default function UpdateUserInformation() {
               name="email"
               type="email"
               aria-label="email"
+              required
+              value={texts.email}
             />
           </div>
           <div className="mt-2">
@@ -113,6 +106,7 @@ export default function UpdateUserInformation() {
                 name="address"
                 type="text"
                 aria-label="Address"
+                value={texts.address}
               />
             </div>
             <div className="inline-block mt-2 -mx-1 pl-1 w-1/2">
@@ -126,6 +120,7 @@ export default function UpdateUserInformation() {
                 name="city"
                 type="text"
                 aria-label="City"
+                value={texts.city}
               />
             </div>
           </div>
@@ -140,6 +135,7 @@ export default function UpdateUserInformation() {
               name="phone"
               type="tel"
               aria-label="Phone Number"
+              value={texts.phone}
             />
           </div>
           {err && (
