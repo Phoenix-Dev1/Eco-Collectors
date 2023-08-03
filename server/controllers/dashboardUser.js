@@ -17,6 +17,7 @@ const getUserRequests = (req, res) => {
   });
 };
 
+// Update request status
 const updateRequestStatus = (req, res) => {
   const token = req.cookies.access_token;
   if (!token) return res.status(401).json('Not authenticated');
@@ -59,10 +60,10 @@ const updateRequestStatus = (req, res) => {
         }
 
         const updateQ =
-          'UPDATE user_requests SET `status`=?, `type`=?, `recycler_id`=? WHERE `request_id` = ?';
+          'UPDATE user_requests SET `status`=?, `type`=?, `recycler_id`=?, `completed_date`= CASE WHEN ? = 3 THEN NOW() ELSE NULL END WHERE `request_id` = ?';
         db.query(
           updateQ,
-          [status, type, recyclerId, requestId],
+          [status, type, recyclerId, status, requestId],
           (err, data) => {
             if (err) return res.status(500).send(err);
 
@@ -76,7 +77,13 @@ const updateRequestStatus = (req, res) => {
                 (err, data) => {
                   if (err) return res.status(500).send(err);
 
-                  return res.status(200).json(data);
+                  // Update the completed_date to the current time
+                  const completedQ =
+                    'UPDATE user_requests SET `completed_date`= NOW() WHERE `request_id` = ?';
+                  db.query(completedQ, [requestId], (err, data) => {
+                    if (err) return res.status(500).send(err);
+                    return res.status(200).json(data);
+                  });
                 }
               );
             } else {
