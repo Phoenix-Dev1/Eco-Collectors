@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import validatePassword from './validatePassword';
 
 export default function ChangePassword() {
   const [passwords, setPasswords] = useState({
@@ -28,12 +29,26 @@ export default function ChangePassword() {
       return;
     }
 
+    // Perform password validation checks using the validatePassword function
+    const passwordErrors = validatePassword(new_password);
+    if (passwordErrors.length > 0) {
+      setError(passwordErrors.join('\n'));
+      return;
+    } else {
+      setError(''); // Clear the error if password is valid
+    }
+
     try {
       await axios.put('/user/change-password', {
         old_password,
         new_password,
       });
-      navigate('/user');
+
+      // Show a success alert to the user
+      alert('Password changed successfully!');
+
+      // Redirect to the user page
+      navigate('/user/welcome');
     } catch (err) {
       setError(err.response.data);
     }

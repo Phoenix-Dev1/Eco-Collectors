@@ -41,6 +41,51 @@ const updateUser = (req, res) => {
   });
 };
 
+const changePassword = (req, res) => {
+  const token = req.cookies.access_token;
+  if (!token) return res.status(401).json('Not authenticated');
+
+  jwt.verify(token, 'jwtkey', (err, userInfo) => {
+    if (err) return res.status(403).json('Token is not valid!');
+
+    const { old_password, new_password } = req.body;
+
+    // Fetch the user's data from the database based on the user ID (userInfo.id)
+    const selectQuery = 'SELECT * FROM users WHERE ID = ?';
+    db.query(selectQuery, [userInfo.id], (err, data) => {
+      if (err) return res.status(500).json(err);
+      if (data.length === 0) return res.status(404).json('User not found!');
+
+      // Check if the old password provided by the user matches the hashed password in the database
+      const isPasswordCorrect = bcrypt.compareSync(
+        old_password,
+        data[0].password
+      );
+      if (!isPasswordCorrect) {
+        return res.status(400).json('Invalid old password');
+      }
+
+      // Hash the new password
+      const salt = bcrypt.genSaltSync(10);
+      const hashedPassword = bcrypt.hashSync(new_password, salt);
+
+      // Update the user's password in the database
+      const updatePasswordQuery = 'UPDATE users SET password = ? WHERE ID = ?';
+      db.query(
+        updatePasswordQuery,
+        [hashedPassword, userInfo.id],
+        (err, result) => {
+          if (err) return res.status(500).json(err);
+          if (result.affectedRows > 0)
+            return res.json('Password changed successfully!');
+          return res.status(500).json('Failed to change password');
+        }
+      );
+    });
+  });
+};
+
 module.exports = {
   updateUser: updateUser,
+  changePassword: changePassword,
 };
