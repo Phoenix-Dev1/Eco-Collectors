@@ -45,14 +45,16 @@ const changePassword = (req, res) => {
   const token = req.cookies.access_token;
   if (!token) return res.status(401).json('Not authenticated');
 
-  jwt.verify(token, 'jwtkey', (err, userInfo) => {
+  jwt.verify(token, 'jwtkey', (err, decodedToken) => {
     if (err) return res.status(403).json('Token is not valid!');
 
     const { old_password, new_password } = req.body;
+    const userId = decodedToken.id;
+    //console.log('User ID: ' + userId);
 
-    // Fetch the user's data from the database based on the user ID (userInfo.id)
+    // Fetch the user's data from the database based on the user ID (userId)
     const selectQuery = 'SELECT * FROM users WHERE ID = ?';
-    db.query(selectQuery, [userInfo.id], (err, data) => {
+    db.query(selectQuery, [userId], (err, data) => {
       if (err) return res.status(500).json(err);
       if (data.length === 0) return res.status(404).json('User not found!');
 
@@ -71,16 +73,33 @@ const changePassword = (req, res) => {
 
       // Update the user's password in the database
       const updatePasswordQuery = 'UPDATE users SET password = ? WHERE ID = ?';
-      db.query(
-        updatePasswordQuery,
-        [hashedPassword, userInfo.id],
-        (err, result) => {
-          if (err) return res.status(500).json(err);
-          if (result.affectedRows > 0)
-            return res.json('Password changed successfully!');
-          return res.status(500).json('Failed to change password');
-        }
-      );
+      db.query(updatePasswordQuery, [hashedPassword, userId], (err, result) => {
+        if (err) return res.status(500).json(err);
+        if (result.affectedRows > 0)
+          return res.json('Password changed successfully!');
+        return res.status(500).json('Failed to change password');
+      });
+    });
+  });
+};
+
+const getUserInfo = (req, res) => {
+  const token = req.cookies.access_token;
+  if (!token) return res.status(401).json('Not authenticated');
+
+  jwt.verify(token, 'jwtkey', (err, decodedToken) => {
+    if (err) return res.status(403).json('Token is not valid!');
+
+    const userId = decodedToken.id;
+
+    // Fetch the user's data from the database based on the user ID (userId)
+    const selectQuery = 'SELECT * FROM users WHERE ID = ?';
+    db.query(selectQuery, [userId], (err, data) => {
+      if (err) return res.status(500).json(err);
+      if (data.length === 0) return res.status(404).json('User not found!');
+
+      const userData = data[0];
+      res.json(userData);
     });
   });
 };
@@ -88,4 +107,5 @@ const changePassword = (req, res) => {
 module.exports = {
   updateUser: updateUser,
   changePassword: changePassword,
+  getUserInfo: getUserInfo,
 };

@@ -8,19 +8,43 @@ export default function UpdateUserInformation() {
   const form = useRef();
   const { currentUser } = useContext(AuthContext);
 
-  // Initialize the texts state with currentUser values directly
+  // Initialize the texts state with empty values
   const [texts, setTexts] = useState({
-    first_name: currentUser?.first_name || '',
-    last_name: currentUser?.last_name || '',
-    email: currentUser?.email || '',
-    city: currentUser?.city || '',
-    address: currentUser?.address || '',
-    phone: currentUser?.phone || '',
+    first_name: '',
+    last_name: '',
+    email: '',
+    city: '',
+    address: '',
+    phone: '',
   });
 
+  const [isDataFetched, setDataFetched] = useState(false);
   const [err, setError] = useState(null);
-
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Fetch user information from the server using the GET method
+    const fetchUserInformation = async () => {
+      try {
+        const response = await axios.get('/user/info');
+        const userData = response.data;
+        setTexts({
+          first_name: userData.first_name,
+          last_name: userData.last_name,
+          email: userData.email,
+          city: userData.city,
+          address: userData.address,
+          phone: userData.phone,
+        });
+        setDataFetched(true);
+      } catch (error) {
+        setError('Error fetching user information');
+        console.log(isDataFetched);
+      }
+    };
+
+    fetchUserInformation();
+  }, [isDataFetched]);
 
   const handleChange = (e) => {
     setTexts((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -30,7 +54,7 @@ export default function UpdateUserInformation() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const isValid = validateInfo(texts, setError, navigate);
+    const isValid = validateInfo(texts, setError);
 
     if (!isValid) {
       return;
@@ -38,17 +62,16 @@ export default function UpdateUserInformation() {
       try {
         const response = await axios.put('/user/update', texts);
         console.log(response);
+
         // Update the currentUser state with the new user data
         const updatedUser = {
-          ID: currentUser.ID,
-          amount: currentUser.amount,
+          ...currentUser,
           first_name: texts.first_name,
           last_name: texts.last_name,
           email: texts.email,
           city: texts.city,
           address: texts.address,
           phone: texts.phone,
-          role: currentUser.role,
         };
 
         // Update the 'user' data in localStorage
