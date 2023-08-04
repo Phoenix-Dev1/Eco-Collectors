@@ -24,6 +24,7 @@ import UpdateRequest from './pages/Users/UpdateRequest';
 import Cancelled from './pages/Users/RequestsPerStatus/Cancelled';
 import Completed from './pages/Users/RequestsPerStatus/completed';
 import Pending from './pages/Users/RequestsPerStatus/Pending';
+import UserManagement from './pages/Users/AdminPanel/UserManagement';
 import './index.css';
 
 export default function App() {
@@ -45,6 +46,9 @@ export default function App() {
           <Route path="cancelled-requests" element={<Cancelled />} />
           <Route path="completed-requests" element={<Completed />} />
           <Route path="pending-requests" element={<Pending />} />
+        </Route>
+        <Route path="/admin/*" element={<UserLayout />}>
+          <Route path="user-management" element={<UserManagement />} />
         </Route>
         <Route path="/terms" element={<TermsAndConditions />} />
         <Route path="/login" element={<Login />} />
