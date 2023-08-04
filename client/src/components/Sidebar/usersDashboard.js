@@ -33,7 +33,7 @@ const Dashboard = () => {
           <p className="text-slate-500 text-sm mb-8">
             Manage your actions & activities
           </p>
-          <p className="text-white">Welcome back Admin,</p>
+          <p className="text-white">Welcome back,</p>
           <div className="flex items-center mt-1">
             <span className="text-base md:text-lg text-white font-bold block py-2 px-4">
               {currentUser.first_name} {currentUser.last_name}
@@ -41,7 +41,7 @@ const Dashboard = () => {
           </div>
           <nav className="mt-4">
             {userRole === 1 && (
-              <div className="block py-2 px-4 rounded text-white text-lg hover:bg-white/5 transition ease-linear duration-150 flex items-center mb-2">
+              <div className=" py-2 px-4 rounded text-white text-lg hover:bg-white/5 transition ease-linear duration-150 flex items-center mb-2">
                 <div>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -54,29 +54,31 @@ const Dashboard = () => {
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                      d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"
+                      d="M2.25 7.125C2.25 6.504 2.754 6 3.375 6h6c.621 0 1.125.504 1.125 1.125v3.75c0 .621-.504 1.125-1.125 1.125h-6a1.125 1.125 0 01-1.125-1.125v-3.75zM14.25 8.625c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125v8.25c0 .621-.504 1.125-1.125 1.125h-5.25a1.125 1.125 0 01-1.125-1.125v-8.25zM3.75 16.125c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125v2.25c0 .621-.504 1.125-1.125 1.125h-5.25a1.125 1.125 0 01-1.125-1.125v-2.25z"
                     />
                   </svg>
                 </div>
                 <div className="ml-2">
                   <span className="text-lg font-bold leading-5 text-white">
-                    <Link to="/user/request-status">Panel</Link>
+                    <Link to="/user/welcome">Panel</Link>
                   </span>
                   <span className="text-sm text-white/50 hidden md:block hover:bg-white/5 transition ease-linear duration-150">
-                    <Link to="/user/pending-requests">Pending</Link>
+                    <Link to="/admin/user-management">User Management</Link>
                   </span>
                   <span className="text-sm text-white/50 hidden md:block hover:bg-white/5 transition ease-linear duration-150">
-                    <Link to="/user/completed-requests">Completed</Link>
+                    <Link to="/admin/permissions">Permissions</Link>
                   </span>
                   <span className="text-sm text-white/50 hidden md:block hover:bg-white/5 transition ease-linear duration-150">
-                    <Link to="/user/cancelled-requests">Cancelled</Link>
+                    <Link to="/admin/requests-management">
+                      Requests Management
+                    </Link>
                   </span>
                 </div>
               </div>
             )}
 
             {userRole === 2 && (
-              <div className="block py-2 px-4 rounded text-white text-lg hover:bg-white/5 transition ease-linear duration-150 flex items-center mb-2">
+              <div className=" py-2 px-4 rounded text-white text-lg hover:bg-white/5 transition ease-linear duration-150 flex items-center mb-2">
                 <div>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -111,7 +113,7 @@ const Dashboard = () => {
             )}
 
             {userRole === 3 && (
-              <div className="block py-2 px-4 rounded text-white text-lg hover:bg-white/5 transition ease-linear duration-150 flex items-center mb-2">
+              <div className=" py-2 px-4 rounded text-white text-lg hover:bg-white/5 transition ease-linear duration-150 flex items-center mb-2">
                 <div>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -146,7 +148,7 @@ const Dashboard = () => {
             )}
 
             {userRole === 4 && (
-              <div className="block py-2 px-4 rounded text-white text-lg hover:bg-white/5 transition ease-linear duration-150 flex items-center mb-2">
+              <div className=" py-2 px-4 rounded text-white text-lg hover:bg-white/5 transition ease-linear duration-150 flex items-center mb-2">
                 <div>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -190,7 +192,42 @@ const Dashboard = () => {
                   <p> Role undefined - Contact support </p>
                 </div>
               )}
-            <div className="block py-2 px-4 rounded text-white text-lg hover:bg-white/5 transition ease-linear duration-150 flex items-center mb-4">
+            {userRole !== 2 && (
+              <div className=" py-2 px-4 rounded text-white text-lg hover:bg-white/5 transition ease-linear duration-150 flex items-center mb-2">
+                <div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth="1.5"
+                    stroke="currentColor"
+                    className="w-6 h-6 text-white"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"
+                    />
+                  </svg>
+                </div>
+                <div className="ml-2">
+                  <span className="text-lg font-bold leading-5 text-white">
+                    <Link to="/user/request-status">Requests Status</Link>
+                  </span>
+                  <span className="text-sm text-white/50 hidden md:block hover:bg-white/5 transition ease-linear duration-150">
+                    <Link to="/user/pending-requests">Pending</Link>
+                  </span>
+                  <span className="text-sm text-white/50 hidden md:block hover:bg-white/5 transition ease-linear duration-150">
+                    <Link to="/user/completed-requests">Completed</Link>
+                  </span>
+                  <span className="text-sm text-white/50 hidden md:block hover:bg-white/5 transition ease-linear duration-150">
+                    <Link to="/user/cancelled-requests">Cancelled</Link>
+                  </span>
+                </div>
+              </div>
+            )}
+
+            <div className=" py-2 px-4 rounded text-white text-lg hover:bg-white/5 transition ease-linear duration-150 flex items-center mb-4">
               <div>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -220,7 +257,7 @@ const Dashboard = () => {
               </div>
             </div>
 
-            <div className="block py-2 px-4 rounded text-white text-lg hover:bg-white/5 transition ease-linear duration-150 flex items-center mb-4">
+            <div className=" py-2 px-4 rounded text-white text-lg hover:bg-white/5 transition ease-linear duration-150 flex items-center mb-4">
               <div>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -246,7 +283,7 @@ const Dashboard = () => {
                 </span>
               </div>
             </div>
-            <div className="block py-2 px-4 rounded text-white text-lg hover:bg-white/5 transition ease-linear duration-150 flex items-center">
+            <div className=" py-2 px-4 rounded text-white text-lg hover:bg-white/5 transition ease-linear duration-150 flex items-center">
               <div>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
