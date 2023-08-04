@@ -60,7 +60,9 @@ const login = (req, res) => {
     // Using the user unique id to create a token
     // jwtkey - can be replaced with a new key stored in the .env file
     // console.log(data[0]);
-    const token = jwt.sign({ id: data[0].ID, role: data[0].role }, 'jwtkey');
+    const token = jwt.sign({ id: data[0].ID, role: data[0].role }, 'jwtkey', {
+      expiresIn: '1d', // Set the expiration time for the token
+    });
     // removing the password from the data array so it will not be sent
     const { active, password, ...other } = data[0];
 

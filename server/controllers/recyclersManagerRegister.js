@@ -13,7 +13,7 @@ const signUp = (req, res) => {
     }
 
     const q =
-      'INSERT INTO recyclers_manager_join_requests(`join_date`,`first_name`,`last_name`,`email`,`phone`,`message`) VALUES (?)';
+      'INSERT INTO recyclers_manager_join_requests(`join_date`,`first_name`,`last_name`,`email`,`phone`,`message`,`user_id`) VALUES (?, ?, ?, ?, ?, ?, ?)';
     const values = [
       req.body.join_date,
       req.body.first_name,
@@ -21,9 +21,10 @@ const signUp = (req, res) => {
       req.body.email,
       req.body.phone,
       req.body.message,
+      req.body.user_id,
     ];
-    console.log(values);
-    db.query(q, [values], (err, data) => {
+
+    db.query(q, values, (err, data) => {
       if (err) return res.json(err);
       return res.status(200).json('Request has been sent');
     });
