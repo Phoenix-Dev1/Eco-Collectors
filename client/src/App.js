@@ -16,7 +16,7 @@ import TermsAndConditions from './pages/Conditions/Terms/terms';
 import PrivacyPolicy from './pages/Conditions/Privacy/privacy';
 import NotFound from './pages/404/404';
 import UserLayout from './layouts/UserLayout';
-import WelcomeUser from './pages/Users/WelcomeUser';
+import WelcomeHandler from './pages/Users/WelcomePerUser/WelcomeHandler';
 import UpdateUserInformation from './pages/Users/ManageAccount/UpdateUserInformation';
 import ChangePassword from './pages/Users/ManageAccount/ChangePassword';
 import RequestStatus from './pages/Users/RequestStatus';
@@ -37,7 +37,7 @@ export default function App() {
         <Route path="/about" element={<About />} />
         <Route path="/manager-join" element={<RecyclersManagerRegister />} />
         <Route path="/user/*" element={<UserLayout />}>
-          <Route path="welcome" element={<WelcomeUser />} />
+          <Route path="welcome" element={<WelcomeHandler />} />
           <Route path="update-user-info" element={<UpdateUserInformation />} />
           <Route path="change-password" element={<ChangePassword />} />
           <Route path="request-status" element={<RequestStatus />} />
