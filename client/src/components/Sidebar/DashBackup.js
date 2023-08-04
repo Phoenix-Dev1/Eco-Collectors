@@ -4,10 +4,6 @@ import { AuthContext } from '../../context/authContext';
 
 const Dashboard = () => {
   const { currentUser } = useContext(AuthContext);
-
-  // Assuming that `currentUser` contains a property called `role`
-  const userRole = currentUser?.role || ''; // Default to empty string if role is not available
-
   return (
     <div className="flex bg-slate-100 min-h-screen antialiased text-slate-300 w-64">
       <div className="flex">
@@ -27,41 +23,38 @@ const Dashboard = () => {
             </span>
           </div>
           <nav className="mt-4">
-            {userRole === 2 && (
-              <div className="block py-2 px-4 rounded text-white text-lg hover:bg-white/5 transition ease-linear duration-150 flex items-center mb-2">
-                <div>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth="1.5"
-                    stroke="currentColor"
-                    className="w-6 h-6 text-white"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"
-                    />
-                  </svg>
-                </div>
-                <div className="ml-2">
-                  <span className="text-lg font-bold leading-5 text-white">
-                    <Link to="/user/request-status">Requests Status</Link>
-                  </span>
-                  <span className="text-sm text-white/50 hidden md:block hover:bg-white/5 transition ease-linear duration-150">
-                    <Link to="/user/pending-requests">Pending</Link>
-                  </span>
-                  <span className="text-sm text-white/50 hidden md:block hover:bg-white/5 transition ease-linear duration-150">
-                    <Link to="/user/completed-requests">Completed</Link>
-                  </span>
-                  <span className="text-sm text-white/50 hidden md:block hover:bg-white/5 transition ease-linear duration-150">
-                    <Link to="/user/cancelled-requests">Cancelled</Link>
-                  </span>
-                </div>
+            <div className="block py-2 px-4 rounded text-white text-lg hover:bg-white/5 transition ease-linear duration-150 flex items-center mb-2">
+              <div>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  stroke="currentColor"
+                  className="w-6 h-6 text-white"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"
+                  />
+                </svg>
               </div>
-            )}
-
+              <div className="ml-2">
+                <span className="text-lg font-bold leading-5 text-white">
+                  <Link to="/user/request-status">Requests Status</Link>
+                </span>
+                <span className="text-sm text-white/50 hidden md:block hover:bg-white/5 transition ease-linear duration-150">
+                  <Link to="/user/pending-requests">Pending</Link>
+                </span>
+                <span className="text-sm text-white/50 hidden md:block hover:bg-white/5 transition ease-linear duration-150">
+                  <Link to="/user/completed-requests">Completed</Link>
+                </span>
+                <span className="text-sm text-white/50 hidden md:block hover:bg-white/5 transition ease-linear duration-150">
+                  <Link to="/user/cancelled-requests">Cancelled</Link>
+                </span>
+              </div>
+            </div>
             <div className="block py-2 px-4 rounded text-white text-lg hover:bg-white/5 transition ease-linear duration-150 flex items-center mb-4">
               <div>
                 <svg
@@ -91,7 +84,6 @@ const Dashboard = () => {
                 </span>
               </div>
             </div>
-
             <div className="block py-2 px-4 rounded text-white text-lg hover:bg-white/5 transition ease-linear duration-150 flex items-center mb-4">
               <div>
                 <svg
@@ -145,7 +137,6 @@ const Dashboard = () => {
               </div>
             </div>
           </nav>
-
           <footer className="mt-auto ml-auto mr-auto"></footer>
         </aside>
       </div>
