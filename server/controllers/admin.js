@@ -15,7 +15,8 @@ const getAllUsers = (req, res) => {
         .json('You are not authorized to access this resource');
     }
 
-    const selectQuery = 'SELECT * FROM users';
+    const selectQuery =
+      'SELECT ID, role, first_name, last_name, email, city, address, phone, amount, active FROM users';
 
     db.query(selectQuery, (err, data) => {
       if (err) return res.status(500).json(err);

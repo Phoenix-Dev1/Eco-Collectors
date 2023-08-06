@@ -10,6 +10,7 @@ const UserManagement = () => {
   useEffect(() => {
     const fetchData = async () => {
       const data = await fetchAllUsers();
+      console.log(data);
       setUsers(data);
     };
 
@@ -18,9 +19,19 @@ const UserManagement = () => {
 
   const columns = [
     { name: 'ID', selector: (row) => row.ID, sortable: true },
-    { name: 'First Name', selector: (row) => row.first_name, sortable: true },
-    { name: 'Last Name', selector: (row) => row.last_name, sortable: true },
-    { name: 'Email', selector: (row) => row.email, sortable: true },
+    {
+      name: 'First Name',
+      selector: (row) => row.first_name,
+      sortable: true,
+      wrap: true,
+    },
+    {
+      name: 'Last Name',
+      selector: (row) => row.last_name,
+      sortable: true,
+      wrap: true,
+    },
+    { name: 'Email', selector: (row) => row.email, sortable: true, wrap: true },
     { name: 'City', selector: (row) => row.city, sortable: true },
     { name: 'Address', selector: (row) => row.address, sortable: true },
     { name: 'Phone', selector: (row) => row.phone, sortable: true },
@@ -36,7 +47,7 @@ const UserManagement = () => {
     <div className="text-center">
       <h2 className="text-lg font-bold mb-4">All Users:</h2>
       {users.length > 0 ? (
-        <div className="mx-auto w-full max-w-6xl text-center">
+        <div className="mx-auto w-full px-4 md:max-w-3xl lg:max-w-4xl xl:max-w-6xl text-center">
           <DataTable
             columns={columns}
             data={users}
