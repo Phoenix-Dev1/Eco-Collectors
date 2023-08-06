@@ -41,36 +41,46 @@ const register = (req, res) => {
 
 const login = (req, res) => {
   // Check User existence in db
-
   const q = 'SELECT * FROM users WHERE email = ?';
   db.query(q, [req.body.email], (err, data) => {
-    if (err) return res.json(err);
-    if (data.length === 0) return res.status(404).json('User not found!');
+    if (err) {
+      console.error('Error in login:', err);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+
+    if (data.length === 0) {
+      return res.status(404).json({ error: 'User not found!' });
+    }
+
+    if (data[0].active === 0) {
+      return res
+        .status(401)
+        .json({ error: 'Account is inactive. Login is not permitted.' });
+    }
 
     // Check password
-    // data - is an array, check the first element
     const isPasswordCorrect = bcrypt.compareSync(
       req.body.password,
       data[0].password
     );
 
-    if (!isPasswordCorrect)
-      return res.status(400).json('Wrong username or password');
+    if (!isPasswordCorrect) {
+      return res.status(401).json({ error: 'Wrong username or password' });
+    }
 
     // Using the user unique id to create a token
-    // jwtkey - can be replaced with a new key stored in the .env file
-    // console.log(data[0]);
     const token = jwt.sign({ id: data[0].ID, role: data[0].role }, 'jwtkey', {
-      expiresIn: '1d', // Set the expiration time for the token
+      expiresIn: '1d', // Set the expiration time for the token to 1 day
     });
-    // removing the password from the data array so it will not be sent
+
+    // removing the password from the data object so it will not be sent
     const { active, password, ...other } = data[0];
 
-    // sending the user a cookie via the cookie-parser
+    // sending the user a secure cookie via the cookie-parser
     res
       .cookie('access_token', token, {
-        // secuirty - scripts can't use this token, only API requests
         httpOnly: true,
+        secure: true, // Only transmit the cookie over HTTPS
       })
       .status(200)
       .json(other);

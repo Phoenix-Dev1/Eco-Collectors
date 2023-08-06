@@ -10,7 +10,7 @@ const UserManagement = () => {
   useEffect(() => {
     const fetchData = async () => {
       const data = await fetchAllUsers();
-      console.log(data);
+      //console.log(data);
       setUsers(data);
     };
 
@@ -18,7 +18,7 @@ const UserManagement = () => {
   }, []);
 
   const columns = [
-    { name: 'ID', selector: (row) => row.ID, sortable: true },
+    { name: 'ID', selector: (row) => row.ID, sortable: true, wrap: true },
     {
       name: 'First Name',
       selector: (row) => row.first_name,
@@ -31,15 +31,31 @@ const UserManagement = () => {
       sortable: true,
       wrap: true,
     },
-    { name: 'Email', selector: (row) => row.email, sortable: true, wrap: true },
-    { name: 'City', selector: (row) => row.city, sortable: true },
-    { name: 'Address', selector: (row) => row.address, sortable: true },
-    { name: 'Phone', selector: (row) => row.phone, sortable: true },
-    { name: 'Amount', selector: (row) => row.amount || '-', sortable: true },
+    {
+      name: 'Email',
+      selector: (row) => row.email,
+      sortable: true,
+      wrap: true,
+    },
+    { name: 'City', selector: (row) => row.city, sortable: true, wrap: true },
+    {
+      name: 'Address',
+      selector: (row) => row.address,
+      sortable: true,
+      wrap: true,
+    },
+    { name: 'Phone', selector: (row) => row.phone, sortable: true, wrap: true },
+    {
+      name: 'Amount',
+      selector: (row) => row.amount || '-',
+      sortable: true,
+      wrap: true,
+    },
     {
       name: 'Active',
       selector: (row) => (row.active ? 'Yes' : 'No'),
       sortable: true,
+      wrap: true,
     },
   ];
 
