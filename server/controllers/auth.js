@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 const { db } = require('../db.js');
 const jwt = require('jsonwebtoken');
+const transporter = require('../nodeMailer.js');
 
 const register = (req, res) => {
   // Check Existing user
@@ -100,8 +101,90 @@ const logout = (req, res) => {
     .json('User has been logged out');
 };
 
+const forgotPassword = async (req, res) => {
+  try {
+    // Generate new password
+    let newPassword = generatePassword();
+    // Hash password
+    let hashedPassword = await bcrypt.hash(newPassword, 10);
+    let userEmail = req.body.email;
+
+    // Check if user exists
+    const userExistsQuery = 'SELECT * FROM users WHERE email = ?';
+    db.query(userExistsQuery, [userEmail], async (err, result) => {
+      if (err) {
+        return res.status(500).json({ error: err.message });
+      }
+
+      if (result.length === 0) {
+        return res.status(400).json({ error: 'User does not exist.' });
+      }
+
+      // Update user password in the database
+      const updateUserPasswordQuery =
+        'UPDATE users SET password = ? WHERE email = ?';
+      db.query(
+        updateUserPasswordQuery,
+        [hashedPassword, userEmail],
+        async (err, result) => {
+          if (err) {
+            return res.status(500).json({ error: err.message });
+          }
+
+          // Send email with the new password to the user
+          let mailOptions = {
+            from: 'Eco Collectors',
+            to: userEmail,
+            subject: 'Password Reset Request',
+            html: `
+            <div style="font-family: Arial, sans-serif;">
+              <h1>Hello ${userEmail},</h1>
+              <p>We have received a request to reset your password for your Eco Collectors account.</p>
+              <p>Your new password is:</p>
+              <p style="font-weight: bold; font-size: 18px;">${newPassword}</p>
+              <p>Please ensure to change your password immediately after logging in for security purposes.</p>
+              <p>If you did not request a password reset, please ignore this email or contact our support team.</p>
+              <br>
+              <p>Best regards,</p>
+              <p>The Eco Collectors Team</p>
+            </div>
+          `,
+          };
+
+          transporter.sendMail(mailOptions, function (error, info) {
+            if (error) {
+              console.error(`Failed to send email to ${userEmail}:`, error);
+            } else {
+              console.log(`Email sent to ${userEmail}`);
+            }
+            return res
+              .status(200)
+              .json({ message: 'New password sent to your email.' });
+          });
+        }
+      );
+    });
+  } catch (error) {
+    console.error('Error in forgotPassword:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+function generatePassword() {
+  const length = 12;
+  const charset =
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+~`|}{[]\\:;?><,./-=';
+  let password = '';
+  for (let i = 0; i < length; ++i) {
+    const randomIndex = Math.floor(Math.random() * charset.length);
+    password += charset[randomIndex];
+  }
+  return password;
+}
+
 module.exports = {
   register: register,
   login: login,
   logout: logout,
+  forgotPassword: forgotPassword,
 };

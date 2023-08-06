@@ -19,6 +19,7 @@ import UserLayout from './layouts/UserLayout';
 import WelcomeHandler from './pages/Users/WelcomePerUser/WelcomeHandler';
 import UpdateUserInformation from './pages/Users/ManageAccount/UpdateUserInformation';
 import ChangePassword from './pages/Users/ManageAccount/ChangePassword';
+import ForgotPassword from './pages/ForgotPassword/ForgotPassword';
 import RequestStatus from './pages/Users/RequestStatus';
 import UpdateRequest from './pages/Users/UpdateRequest';
 import Cancelled from './pages/Users/RequestsPerStatus/Cancelled';
@@ -35,6 +36,7 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/collect" element={<CollectRequest />} />
         <Route path="/contact-us" element={<Contact />} />
+        <Route path="/password-recovery" element={<ForgotPassword />} />
         <Route path="/about" element={<About />} />
         <Route path="/manager-join" element={<RecyclersManagerRegister />} />
         <Route path="/user/*" element={<UserLayout />}>
