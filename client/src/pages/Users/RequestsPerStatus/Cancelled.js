@@ -187,7 +187,7 @@ const Cancelled = () => {
     <div className="text-center">
       <h2 className="text-lg font-bold mb-4">Cancelled Requests:</h2>
       {cancelledRequests.length > 0 ? (
-        <div className="mx-auto w-full max-w-6xl text-center">
+        <div className="mx-auto w-full px-4 md:max-w-3xl lg:max-w-4xl xl:max-w-6xl text-center">
           <DataTable
             columns={columns}
             data={data}
