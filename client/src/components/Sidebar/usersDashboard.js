@@ -70,7 +70,7 @@ const Dashboard = () => {
                     <Link to="/admin/user-management">User Management</Link>
                   </li>
                   <li className="text-sm text-white/50 hover:bg-white/5 transition ease-linear duration-150">
-                    <Link to="/admin/permissions">Permissions</Link>
+                    <Link to="/admin/requests">Recycle Requests</Link>
                   </li>
                   <li className="text-sm text-white/50 hover:bg-white/5 transition ease-linear duration-150">
                     <Link to="/admin/join-requests">Join Requests</Link>

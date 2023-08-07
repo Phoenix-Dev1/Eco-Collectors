@@ -18,6 +18,15 @@ const UserManagement = () => {
   const handleToggleActivation = async (userID, currentStatus) => {
     try {
       const newStatus = currentStatus === 1 ? 0 : 1;
+
+      // Show a confirmation dialog before deactivating
+      if (
+        newStatus === 0 &&
+        !window.confirm('Are you sure you want to deactivate this user?')
+      ) {
+        return;
+      }
+
       await toggleUserActivation(userID, newStatus);
       const updatedUsers = users.map((user) =>
         user.ID === userID ? { ...user, active: newStatus } : user
