@@ -73,9 +73,7 @@ const Dashboard = () => {
                     <Link to="/admin/permissions">Permissions</Link>
                   </li>
                   <li className="text-sm text-white/50 hover:bg-white/5 transition ease-linear duration-150">
-                    <Link to="/admin/requests-management">
-                      Requests Management
-                    </Link>
+                    <Link to="/admin/join-requests">Join Requests</Link>
                   </li>
                 </ul>
               </div>
