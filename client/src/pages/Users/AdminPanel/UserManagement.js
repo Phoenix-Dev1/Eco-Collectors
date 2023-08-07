@@ -1,23 +1,59 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import DataTable from 'react-data-table-component';
-import { fetchAllUsers } from './AdminFunctions';
+import { fetchAllUsers, toggleUserActivation } from './AdminFunctions';
 import { AuthContext } from '../../../context/authContext';
 
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
 
-  // Fetching user request by user id
   useEffect(() => {
     const fetchData = async () => {
       const data = await fetchAllUsers();
-      //console.log(data);
       setUsers(data);
     };
 
     fetchData();
   }, []);
 
+  const handleToggleActivation = async (userID, currentStatus) => {
+    try {
+      const newStatus = currentStatus === 1 ? 0 : 1;
+
+      // Show a confirmation dialog before deactivating
+      if (
+        newStatus === 0 &&
+        !window.confirm('Are you sure you want to deactivate this user?')
+      ) {
+        return;
+      }
+
+      await toggleUserActivation(userID, newStatus);
+      const updatedUsers = users.map((user) =>
+        user.ID === userID ? { ...user, active: newStatus } : user
+      );
+      setUsers(updatedUsers);
+    } catch (error) {
+      console.error('Error toggling user activation:', error);
+    }
+  };
+
   const columns = [
+    {
+      // Conditionally render the activate/deactivate button
+      cell: (row) => (
+        <button
+          onClick={() => handleToggleActivation(row.ID, row.active)}
+          className={`px-2 py-1 rounded ${
+            row.active ? 'bg-red-500 text-white' : 'bg-green-500 text-white'
+          }`}
+        >
+          {row.active ? 'Deactivate' : 'Activate'}
+        </button>
+      ),
+      ignoreRowClick: true,
+      allowOverflow: true,
+      button: true,
+    },
     { name: 'ID', selector: (row) => row.ID, sortable: true, wrap: true },
     {
       name: 'First Name',
@@ -31,12 +67,7 @@ const UserManagement = () => {
       sortable: true,
       wrap: true,
     },
-    {
-      name: 'Email',
-      selector: (row) => row.email,
-      sortable: true,
-      wrap: true,
-    },
+    { name: 'Email', selector: (row) => row.email, sortable: true, wrap: true },
     { name: 'City', selector: (row) => row.city, sortable: true, wrap: true },
     {
       name: 'Address',

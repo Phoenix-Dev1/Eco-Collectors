@@ -26,6 +26,8 @@ import Cancelled from './pages/Users/RequestsPerStatus/Cancelled';
 import Completed from './pages/Users/RequestsPerStatus/completed';
 import Pending from './pages/Users/RequestsPerStatus/Pending';
 import UserManagement from './pages/Users/AdminPanel/UserManagement';
+import JoinRequests from './pages/Users/AdminPanel/JoinRequests';
+import AllRequests from './pages/Users/AdminPanel/AllRequests';
 import './index.css';
 
 export default function App() {
@@ -51,6 +53,8 @@ export default function App() {
         </Route>
         <Route path="/admin/*" element={<UserLayout />}>
           <Route path="user-management" element={<UserManagement />} />
+          <Route path="join-requests" element={<JoinRequests />} />
+          <Route path="requests" element={<AllRequests />} />
         </Route>
         <Route path="/terms" element={<TermsAndConditions />} />
         <Route path="/login" element={<Login />} />
