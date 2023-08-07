@@ -9,3 +9,15 @@ export async function fetchAllUsers() {
     return null;
   }
 }
+
+export const toggleUserActivation = async (userID, newStatus) => {
+  try {
+    const res = await axios.put(`/admin/users/${userID}`, {
+      active: newStatus,
+    });
+    return res.data;
+  } catch (error) {
+    console.error('Error toggling user activation:', error);
+    throw error;
+  }
+};
