@@ -4,37 +4,71 @@ import {
   fetchAllRecycleBins,
   capitalizeFirstLetter,
   deactivateBin,
+  activateBin,
 } from './BinsFunctions';
 import { format } from 'date-fns';
+import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom'; // Import the Link component
 
 const RecycleBins = () => {
   const [recycleBins, setRecycleBins] = useState([]);
   const [selectedTypeFilter, setSelectedTypeFilter] = useState(null);
+  const [dataRefreshTrigger, setDataRefreshTrigger] = useState(false);
+  const navigate = useNavigate();
 
   const filterByType = (type) => {
     setSelectedTypeFilter(type);
+    setDataRefreshTrigger(!dataRefreshTrigger);
   };
 
   const clearTypeFilter = () => {
     setSelectedTypeFilter(null);
-  };
-
-  const fetchData = async () => {
-    const data = await fetchAllRecycleBins(selectedTypeFilter);
-    setRecycleBins(data);
+    setDataRefreshTrigger(!dataRefreshTrigger);
   };
 
   useEffect(() => {
-    fetchData();
-  });
+    const fetchData = async () => {
+      const data = await fetchAllRecycleBins(selectedTypeFilter);
+      setRecycleBins(data);
+    };
 
+    fetchData();
+  }, [selectedTypeFilter, dataRefreshTrigger]);
+
+  // Deactivate bin
   const handleDeactivateBin = async (binId) => {
-    try {
-      await deactivateBin(binId);
-      await fetchData(); // Refresh data after deactivation
-    } catch (error) {
-      console.log(error);
+    const confirmed = window.confirm(
+      'Are you sure you want to deactivate this bin?'
+    );
+    if (confirmed) {
+      try {
+        await deactivateBin(binId);
+        setDataRefreshTrigger(!dataRefreshTrigger); // Refresh data after deactivation
+      } catch (error) {
+        console.log(error);
+      }
     }
+  };
+
+  // Activate bin
+  const handleActivateBin = async (binId) => {
+    const confirmed = window.confirm(
+      'Are you sure you want to activate this bin?'
+    );
+    if (confirmed) {
+      try {
+        await activateBin(binId);
+        setDataRefreshTrigger(!dataRefreshTrigger); // Refresh data after activation
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+
+  // Update Bin
+  const handleUpdateBin = (binId) => {
+    // Navigate to the update page with the selected bin's ID
+    navigate(`/admin/update-bin/${binId}`);
   };
 
   const columns = [
@@ -67,23 +101,41 @@ const RecycleBins = () => {
       sortable: true,
       wrap: true,
     },
+    /*
     {
       name: 'Active',
       selector: (row) => (row.active ? 'Active' : 'Inactive'),
       sortable: true,
       wrap: true,
     },
+    */
     {
       name: 'Actions',
-      cell: (row) =>
-        row.active ? (
+      cell: (row) => (
+        <div>
+          {row.active ? (
+            <button
+              onClick={() => handleDeactivateBin(row.id)}
+              className="px-2 py-1 rounded mt-2 mb-2 bg-red-500 text-white mx-2"
+            >
+              Deactivate
+            </button>
+          ) : (
+            <button
+              onClick={() => handleActivateBin(row.id)}
+              className="px-2 py-1 rounded mt-2 mb-2 bg-green-500 text-white mx-2"
+            >
+              Activate
+            </button>
+          )}
           <button
-            onClick={() => handleDeactivateBin(row.id)}
-            className="px-2 py-1 rounded bg-red-500 text-white mx-2"
+            onClick={() => handleUpdateBin(row.id)} // Call the update function
+            className="px-2 py-1 rounded mt-2 mb-2 bg-blue-500 text-white mx-2"
           >
-            Deactivate
+            Update
           </button>
-        ) : null,
+        </div>
+      ),
       allowOverflow: true,
       button: true,
     },

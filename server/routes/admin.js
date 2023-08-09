@@ -8,6 +8,8 @@ const {
   updateRequestStatus,
   fetchAllRecycleBins,
   deactivateBin,
+  activateBin,
+  getBinById,
 } = require('../controllers/admin');
 const router = express.Router();
 
@@ -20,7 +22,10 @@ router.put('/join-requests/:joinID', updateJoinRequestStatus);
 router.get('/all-requests', fetchAllRequests);
 router.put('/requests/:requestId', updateRequestStatus);
 // Recycle Bins
+router.get('/bins/:binId', getBinById);
+router.get('/activateBin/:binId', activateBin);
 router.get('/recycleBins', fetchAllRecycleBins);
 router.put('/deactivateBin/:binId', deactivateBin);
+router.put('/activateBin/:binId', activateBin);
 
 module.exports = router;

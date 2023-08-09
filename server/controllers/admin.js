@@ -262,6 +262,62 @@ const deactivateBin = (req, res) => {
   });
 };
 
+// Activate Bin
+const activateBin = (req, res) => {
+  const token = req.cookies.access_token;
+  if (!token) return res.status(401).json('Not authenticated');
+
+  jwt.verify(token, 'jwtkey', (err, userInfo) => {
+    if (err) return res.status(403).json('Token is not valid!');
+
+    // Check if the user is an administrator
+    if (userInfo.role !== 1) {
+      return res
+        .status(403)
+        .json('You are not authorized to access this resource');
+    }
+
+    const { binId } = req.params;
+
+    const updateQuery = 'UPDATE markers SET active = 1 WHERE id = ?';
+
+    db.query(updateQuery, [binId], (err, result) => {
+      if (err) return res.status(500).json(err);
+      if (result.affectedRows === 0) {
+        return res.status(404).json('Bin not found');
+      }
+      return res.json('Bin deactivated successfully');
+    });
+  });
+};
+
+// Update Bin
+// Get bin by id
+const getBinById = (req, res) => {
+  const token = req.cookies.access_token;
+  if (!token) return res.status(401).json('Not authenticated');
+
+  jwt.verify(token, 'jwtkey', (err, decoded) => {
+    if (err) return res.status(403).json('Token is not valid');
+
+    const userRole = decoded.role;
+    if (userRole === 1) {
+      const q = 'SELECT * FROM markers WHERE id = ?';
+
+      db.query(q, [req.params.binId], (err, data) => {
+        if (err) return res.status(500).send(err);
+        if (data.length === 0) {
+          return res.status(404).json('Bin not found');
+        }
+
+        return res.status(200).json(data[0]);
+      });
+    } else {
+      return res.status(403).json('Invalid user role');
+    }
+  });
+};
+
 module.exports = {
   getAllUsers: getAllUsers,
   toggleUserActivation: toggleUserActivation,
@@ -271,4 +327,6 @@ module.exports = {
   updateRequestStatus: updateRequestStatus,
   fetchAllRecycleBins: fetchAllRecycleBins,
   deactivateBin: deactivateBin,
+  activateBin: activateBin,
+  getBinById: getBinById,
 };

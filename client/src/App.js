@@ -29,6 +29,7 @@ import UserManagement from './pages/Users/AdminPanel/UserManagement';
 import JoinRequests from './pages/Users/AdminPanel/JoinRequests';
 import AllRequests from './pages/Users/AdminPanel/AllRequests';
 import RecycleBins from './pages/Users/AdminPanel/RecycleBins/RecycleBins';
+import UpdateBin from './pages/Users/AdminPanel/RecycleBins/UpdateBin';
 import './index.css';
 
 export default function App() {
@@ -57,6 +58,7 @@ export default function App() {
           <Route path="join-requests" element={<JoinRequests />} />
           <Route path="requests" element={<AllRequests />} />
           <Route path="bins" element={<RecycleBins />} />
+          <Route path="update-bin/*" element={<UpdateBin />} />
         </Route>
         <Route path="/terms" element={<TermsAndConditions />} />
         <Route path="/login" element={<Login />} />

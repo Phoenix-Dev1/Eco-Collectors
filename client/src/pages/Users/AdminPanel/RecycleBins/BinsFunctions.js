@@ -28,3 +28,13 @@ export async function deactivateBin(binId) {
     throw error;
   }
 }
+
+// Activate bin
+export const activateBin = async (binId) => {
+  try {
+    await axios.put(`/admin/activateBin/${binId}`);
+  } catch (error) {
+    console.error('Error activating bin:', error);
+    throw error;
+  }
+};
