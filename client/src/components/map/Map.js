@@ -12,7 +12,7 @@ import { Link } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import classes from './map.module.css';
 import {
-  fetchMarkers,
+  fetchActiveMarkers,
   showAddress,
   openGoogleMaps,
   formatDate,
@@ -132,7 +132,7 @@ const Map = () => {
   // Bins
   useEffect(() => {
     const fetchMarkersData = async () => {
-      const data = await fetchMarkers(type);
+      const data = await fetchActiveMarkers(type);
       setMarkers(data);
     };
     fetchMarkersData();

@@ -61,7 +61,7 @@ const Dashboard = () => {
                   </div>
                   <div className="ml-2">
                     <span className="text-lg font-bold leading-5 text-white">
-                      Panel
+                      Admin Panel
                     </span>
                   </div>
                 </div>
@@ -74,6 +74,9 @@ const Dashboard = () => {
                   </li>
                   <li className="text-sm text-white/50 hover:bg-white/5 transition ease-linear duration-150">
                     <Link to="/admin/join-requests">Join Requests</Link>
+                  </li>
+                  <li className="text-sm text-white/50 hover:bg-white/5 transition ease-linear duration-150">
+                    <Link to="/admin/bins">Recycle Bins</Link>
                   </li>
                 </ul>
               </div>

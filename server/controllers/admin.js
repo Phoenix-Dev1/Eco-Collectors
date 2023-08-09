@@ -200,6 +200,68 @@ const updateRequestStatus = (req, res) => {
   });
 };
 
+// Recycle Bins
+// All recycle Bins
+const fetchAllRecycleBins = (req, res) => {
+  const token = req.cookies.access_token;
+  if (!token) return res.status(401).json('Not authenticated');
+
+  jwt.verify(token, 'jwtkey', async (err, userInfo) => {
+    if (err) return res.status(403).json('Token is not valid!');
+
+    // Check if the user is an administrator
+    if (userInfo.role !== 1) {
+      return res
+        .status(403)
+        .json('You are not authorized to access this resource');
+    }
+
+    const { type } = req.query;
+
+    let selectQuery = 'SELECT * FROM markers';
+    const queryParams = [];
+
+    if (type) {
+      selectQuery += ' WHERE type = ?';
+      queryParams.push(type);
+    }
+
+    db.query(selectQuery, queryParams, (err, data) => {
+      if (err) return res.status(500).json(err);
+      return res.json(data);
+    });
+  });
+};
+
+// Deactivate Bin
+const deactivateBin = (req, res) => {
+  const token = req.cookies.access_token;
+  if (!token) return res.status(401).json('Not authenticated');
+
+  jwt.verify(token, 'jwtkey', (err, userInfo) => {
+    if (err) return res.status(403).json('Token is not valid!');
+
+    // Check if the user is an administrator
+    if (userInfo.role !== 1) {
+      return res
+        .status(403)
+        .json('You are not authorized to access this resource');
+    }
+
+    const { binId } = req.params;
+
+    const updateQuery = 'UPDATE markers SET active = 0 WHERE id = ?';
+
+    db.query(updateQuery, [binId], (err, result) => {
+      if (err) return res.status(500).json(err);
+      if (result.affectedRows === 0) {
+        return res.status(404).json('Bin not found');
+      }
+      return res.json('Bin deactivated successfully');
+    });
+  });
+};
+
 module.exports = {
   getAllUsers: getAllUsers,
   toggleUserActivation: toggleUserActivation,
@@ -207,4 +269,6 @@ module.exports = {
   updateJoinRequestStatus: updateJoinRequestStatus,
   fetchAllRequests: fetchAllRequests,
   updateRequestStatus: updateRequestStatus,
+  fetchAllRecycleBins: fetchAllRecycleBins,
+  deactivateBin: deactivateBin,
 };

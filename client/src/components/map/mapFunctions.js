@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Fetching Markers from DB
-export async function fetchMarkers(type) {
+export async function fetchActiveMarkers(type) {
   try {
     const res = await axios.get(`/markers${type}`);
     return res.data;

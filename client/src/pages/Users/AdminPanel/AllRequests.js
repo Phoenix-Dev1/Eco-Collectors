@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import DataTable from 'react-data-table-component';
 import { fetchAllRequests, updateRequestStatus } from './AdminFunctions';
-// updateRequestStatus, // Implement this function to update request status
 import { format } from 'date-fns';
 
 const AllRequests = () => {
@@ -27,14 +26,14 @@ const AllRequests = () => {
 
   const handleHoldRequest = async (requestId) => {
     const confirmation = window.confirm(
-      'Are you sure you want to Hold/Cancel this request?'
+      'Are you sure you want to Cancel this request?'
     );
     if (!confirmation) {
       return;
     }
 
     try {
-      // Make an API call to update the request status to 'Hold/Cancel' (status 4)
+      // Make an API call to update the request status to 'Cancel' (status 4)
       await updateRequestStatus(requestId, 4);
 
       // Fetch updated data based on the current status filter
@@ -88,7 +87,7 @@ const AllRequests = () => {
               onClick={() => handleHoldRequest(row.request_id)}
               className="px-2 py-1 rounded bg-yellow-500 text-white mx-2"
             >
-              Hold/Cancel
+              Cancel
             </button>
           ) : null}
         </div>
@@ -99,7 +98,6 @@ const AllRequests = () => {
   // Transform data as needed
   const data = allRequests.map((request) => ({
     ...request,
-    // Add transformations or additional fields here
   }));
   //console.table(data);
 
