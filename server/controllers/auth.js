@@ -182,9 +182,34 @@ function generatePassword() {
   return password;
 }
 
+const checkActivation = async (req, res) => {
+  try {
+    const { email } = req.query;
+
+    // Check if the account with the provided email is active (not deactivated)
+    const selectQuery = 'SELECT active FROM users WHERE email = ?';
+    db.query(selectQuery, [email], (err, result) => {
+      if (err) {
+        return res.status(500).json({ error: err.message });
+      }
+
+      if (result.length === 0) {
+        return res.status(400).json({ error: 'User does not exist.' });
+      }
+
+      const isActive = result[0].active === 1; // Check if 'active' field is 1
+      res.status(200).json({ active: isActive });
+    });
+  } catch (error) {
+    console.error('Error in checkActivation:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
 module.exports = {
   register: register,
   login: login,
   logout: logout,
   forgotPassword: forgotPassword,
+  checkActivation: checkActivation,
 };

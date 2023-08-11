@@ -6,6 +6,7 @@ import smallLogo from '../../img/sm-logo.png';
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
+  const [deactivateMessage, setDeactivateMessage] = useState('');
   const [isResetting, setIsResetting] = useState(false); // State to track reset in progress
   const navigate = useNavigate();
 
@@ -24,8 +25,21 @@ const ForgotPassword = () => {
     try {
       setIsResetting(true); // Set reset in progress
 
-      const response = await axios.post('/auth/forgotPassword', { email });
-      setMessage(response.data.message);
+      // Check if the account is active (not deactivated)
+      const response = await axios.get('/auth/checkActivation', {
+        params: { email },
+      });
+
+      if (!response.data.active) {
+        setDeactivateMessage(
+          'Account is deactivated. Password reset is not allowed.'
+        );
+        return;
+      }
+
+      // Proceed with password reset logic
+      const resetResponse = await axios.post('/auth/forgotPassword', { email });
+      setMessage(resetResponse.data.message);
 
       setTimeout(() => {
         setMessage('');
@@ -89,6 +103,11 @@ const ForgotPassword = () => {
             {message && (
               <p className="flex items-center justify-center text-sm text-green-600 font-semibold">
                 {message}
+              </p>
+            )}
+            {deactivateMessage && (
+              <p className="flex items-center justify-center text-sm text-red-600 font-semibold">
+                {deactivateMessage}
               </p>
             )}
           </div>
