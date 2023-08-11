@@ -4,6 +4,7 @@ const {
   changePassword,
   getUserInfo,
   getUserRole,
+  deactivateAccount,
 } = require('../controllers/user');
 const router = express.Router();
 
@@ -12,5 +13,6 @@ router.put('/update', updateUser);
 router.put('/change-password', changePassword);
 router.get('/info', getUserInfo);
 router.get('/role', getUserRole);
+router.post('/deactivate', deactivateAccount);
 
 module.exports = router;

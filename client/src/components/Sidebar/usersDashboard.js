@@ -21,6 +21,11 @@ const Dashboard = () => {
 
   //console.log(userRole);
 
+  if (!currentUser) {
+    // Handle the case where currentUser is null or not yet loaded
+    return <p>Loading...</p>;
+  }
+
   return (
     <div className="flex bg-slate-100 min-h-screen antialiased text-slate-300">
       <div className="flex">

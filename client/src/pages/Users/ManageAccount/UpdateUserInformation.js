@@ -6,7 +6,7 @@ import { AuthContext } from '../../../context/authContext';
 
 export default function UpdateUserInformation() {
   const form = useRef();
-  const { currentUser } = useContext(AuthContext);
+  const { currentUser, logout } = useContext(AuthContext);
 
   // Initialize the texts state with empty values
   const [texts, setTexts] = useState({
@@ -19,6 +19,7 @@ export default function UpdateUserInformation() {
   });
 
   const [isDataFetched, setDataFetched] = useState(false);
+  const [deactivated, setDeactivated] = useState(false); // State to track account deactivation
   const [err, setError] = useState(null);
   const navigate = useNavigate();
 
@@ -84,12 +85,31 @@ export default function UpdateUserInformation() {
     }
   };
 
+  const handleDeactivateAccount = async () => {
+    const confirmDeactivation = window.confirm(
+      'Are you sure you want to deactivate your account? This action is irreversible.'
+    );
+
+    if (confirmDeactivation) {
+      try {
+        await axios.post('/user/deactivate');
+        setDeactivated(true); // Update local state to reflect deactivation
+        // Log out the user from the system after deactivation
+        await logout();
+        navigate('/');
+      } catch (error) {
+        setError('Error deactivating account');
+        console.log(error);
+      }
+    }
+  };
+
   return (
     <div className="flex items-center justify-center min-h-screen dark:bg-gray-900 text-left">
       <div className="leading-loose bg-gray-50 dark:bg-gray-900 overflow-auto w-96">
         <form
           ref={form}
-          className="m-0 p-8 bg-gray-50 dark:bg-gray-800 rounded shadow-xl"
+          className="m-0 p-8 bg-gray-50 dark:bg-gray-800 rounded shadow-xl w-full"
         >
           <div className="inline-block mt-2 w-1/2 pr-1">
             <label className="block text-sm text-white" htmlFor="first_name">
@@ -193,6 +213,21 @@ export default function UpdateUserInformation() {
             </button>
           </div>
         </form>
+        {deactivated ? (
+          <p className="text-red-600 font-medium mt-3">
+            Your account is deactivated.
+          </p>
+        ) : (
+          <div className="flex justify-center mt-3">
+            <button
+              onClick={handleDeactivateAccount}
+              className="px-4 py-1 text-white font-light tracking-wider bg-red-600 rounded hover:bg-red-700"
+              type="button"
+            >
+              Deactivate Account
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

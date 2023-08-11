@@ -102,7 +102,7 @@ const AddNewBin = () => {
   return (
     <div className="flex flex-col items-center">
       <p className="text-lg font-semibold">Add New Bin</p>
-      <div style={{ height: '400px', width: '100%' }}>
+      <div className="mr-4" style={{ height: '400px', width: '100%' }}>
         <GoogleMap
           mapContainerStyle={{ height: '100%', width: '100%' }}
           center={coordinates}
