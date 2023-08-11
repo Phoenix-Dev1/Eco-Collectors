@@ -318,6 +318,130 @@ const getBinById = (req, res) => {
   });
 };
 
+// Update an existing bin
+const updateBin = (req, res) => {
+  const token = req.cookies.access_token;
+  if (!token) return res.status(401).json('Not authenticated');
+
+  jwt.verify(token, 'jwtkey', (err, userInfo) => {
+    if (err) return res.status(403).json('Token is not valid!');
+
+    // Check if the user is an administrator
+    if (userInfo.role !== 1) {
+      return res
+        .status(403)
+        .json('You are not authorized to access this resource');
+    }
+
+    const { binId } = req.params;
+    const updatedData = req.body; // Updated data sent from frontend
+    console.log('Bin ID:', binId);
+    console.log('Updated Data:', updatedData);
+
+    // Round the lat and lng values to a specific precision (e.g., 6 decimal places)
+    const precision = 6;
+    const roundedLat = Number(updatedData.lat).toFixed(precision);
+    const roundedLng = Number(updatedData.lng).toFixed(precision);
+
+    // Check if a bin with the same Latitude, Longitude, and type already exists
+    const existingBinQuery =
+      'SELECT COUNT(*) AS binCount FROM markers WHERE ROUND(lat, ?) = ? AND ROUND(lng, ?) = ? AND type = ? AND id <> ?';
+    db.query(
+      existingBinQuery,
+      [precision, roundedLat, precision, roundedLng, updatedData.type, binId],
+      (err, existingBinData) => {
+        if (err) return res.status(500).json(err);
+
+        if (existingBinData[0].binCount > 0) {
+          return res
+            .status(400)
+            .json('A bin with this address and type already exists');
+        }
+
+        // If no matching bin found, proceed to update the bin
+        const updateQuery =
+          'UPDATE markers SET address = ?, city = ?, lat = ?, lng = ?, type = ?, last_modified = ? WHERE id = ?';
+
+        const values = [
+          updatedData.address || null,
+          updatedData.city || null,
+          updatedData.lat || null,
+          updatedData.lng || null,
+          updatedData.type || null,
+          new Date(),
+          binId,
+        ];
+
+        db.query(updateQuery, values, (err, result) => {
+          if (err) return res.status(500).json(err);
+          if (result.affectedRows === 0) {
+            return res.status(404).json('Bin not found');
+          }
+          return res.json('Bin updated successfully');
+        });
+      }
+    );
+  });
+};
+
+// Add New Bin
+const addNewBin = (req, res) => {
+  const token = req.cookies.access_token;
+  if (!token) return res.status(401).json('Not authenticated');
+
+  jwt.verify(token, 'jwtkey', (err, userInfo) => {
+    if (err) return res.status(403).json('Token is not valid!');
+
+    // Check if the user is an administrator
+    if (userInfo.role !== 1) {
+      return res
+        .status(403)
+        .json('You are not authorized to access this resource');
+    }
+
+    const { address, city, lat, lng, type } = req.body;
+
+    // Fix precision to a specific number of decimal places (e.g., 6 decimal places)
+    const precision = 6;
+    const latFixed = parseFloat(lat).toFixed(precision);
+    const lngFixed = parseFloat(lng).toFixed(precision);
+
+    // Check if any bins with the same Latitude, Longitude, and type already exist
+    const existingBinQuery =
+      'SELECT COUNT(*) AS binCount FROM markers WHERE lat = ? AND lng = ? AND type = ?';
+    db.query(existingBinQuery, [latFixed, lngFixed, type], (err, result) => {
+      if (err) return res.status(500).json(err);
+
+      const binCount = result[0].binCount;
+
+      if (binCount > 0) {
+        return res
+          .status(400)
+          .json({ error: 'A bin with this address and type already exists' });
+      }
+
+      // If no matching bin found, proceed to insert the new bin
+      const insertQuery =
+        'INSERT INTO markers (address, city, lat, lng, type, active, last_modified) VALUES (?, ?, ?, ?, ?, ?, ?)';
+
+      const values = [
+        address || null,
+        city || null,
+        latFixed || null,
+        lngFixed || null,
+        type || null,
+        1, // Set as active
+        new Date(),
+      ];
+
+      db.query(insertQuery, values, (err, result) => {
+        if (err) return res.status(500).json(err);
+        return res.json('Bin added successfully');
+      });
+    });
+  });
+};
+
 module.exports = {
   getAllUsers: getAllUsers,
   toggleUserActivation: toggleUserActivation,
@@ -329,4 +453,6 @@ module.exports = {
   deactivateBin: deactivateBin,
   activateBin: activateBin,
   getBinById: getBinById,
+  updateBin: updateBin,
+  addNewBin: addNewBin,
 };

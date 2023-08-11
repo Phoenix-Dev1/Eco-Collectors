@@ -10,6 +10,8 @@ const {
   deactivateBin,
   activateBin,
   getBinById,
+  updateBin,
+  addNewBin,
 } = require('../controllers/admin');
 const router = express.Router();
 
@@ -27,5 +29,7 @@ router.get('/activateBin/:binId', activateBin);
 router.get('/recycleBins', fetchAllRecycleBins);
 router.put('/deactivateBin/:binId', deactivateBin);
 router.put('/activateBin/:binId', activateBin);
+router.put('/bins/:binId', updateBin);
+router.post('/bins', addNewBin);
 
 module.exports = router;

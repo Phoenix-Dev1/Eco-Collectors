@@ -8,7 +8,6 @@ import {
 } from './BinsFunctions';
 import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
-import { Link } from 'react-router-dom'; // Import the Link component
 
 const RecycleBins = () => {
   const [recycleBins, setRecycleBins] = useState([]);
@@ -144,6 +143,12 @@ const RecycleBins = () => {
   return (
     <div className="text-center">
       <h2 className="text-lg font-bold mb-4">Recycle Bins:</h2>
+      <button
+        className="px-2 py-1 rounded bg-blue-500 hover:bg-orange-400 text-white mx-2 mb-3 w-1/3"
+        onClick={() => navigate('/admin/add-bin')}
+      >
+        Add New Bin
+      </button>
       <div className="mb-3">
         <button
           onClick={() => filterByType('blue')}
