@@ -186,18 +186,18 @@ const Dashboard = () => {
                   </div>
                   <div className="ml-2">
                     <span className="text-lg font-bold leading-5 text-white">
-                      <Link to="/user/request-status">
-                        Recycler Manager Panel
-                      </Link>
+                      <Link to="/user/request-status">Manager Panel</Link>
                     </span>
                   </div>
                 </div>
                 <ul className="md:flex md:flex-col md:ml-6">
                   <li className="text-sm text-white/50 hover:bg-white/5 transition ease-linear duration-150">
-                    <Link to="/user/pending-requests">Pending</Link>
+                    <Link to="/manager/join-requests">Join Requests</Link>
                   </li>
                   <li className="text-sm text-white/50 hover:bg-white/5 transition ease-linear duration-150">
-                    <Link to="/user/completed-requests">Completed</Link>
+                    <Link to="/manager/recyclers-management">
+                      Recyclers Management
+                    </Link>
                   </li>
                   <li className="text-sm text-white/50 hover:bg-white/5 transition ease-linear duration-150">
                     <Link to="/user/cancelled-requests">Cancelled</Link>

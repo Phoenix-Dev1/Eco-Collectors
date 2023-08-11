@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import DataTable from 'react-data-table-component';
-import { fetchAllUsers, toggleUserActivation } from './AdminFunctions';
+import {
+  fetchAllRecyclers,
+  toggleRecyclerActivation,
+} from './ManagerFunctions';
 
-const UserManagement = () => {
+const RecyclersManagement = () => {
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = await fetchAllUsers();
+      const data = await fetchAllRecyclers();
       setUsers(data);
     };
 
@@ -26,7 +29,7 @@ const UserManagement = () => {
         return;
       }
 
-      await toggleUserActivation(userID, newStatus);
+      await toggleRecyclerActivation(userID, newStatus);
       const updatedUsers = users.map((user) =>
         user.ID === userID ? { ...user, active: newStatus } : user
       );
@@ -110,4 +113,4 @@ const UserManagement = () => {
   );
 };
 
-export default UserManagement;
+export default RecyclersManagement;

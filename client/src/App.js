@@ -31,6 +31,8 @@ import AllRequests from './pages/Users/AdminPanel/AllRequests';
 import RecycleBins from './pages/Users/AdminPanel/RecycleBins/RecycleBins';
 import UpdateBin from './pages/Users/AdminPanel/RecycleBins/UpdateBin';
 import AddNewBin from './pages/Users/AdminPanel/RecycleBins/AddNewBin';
+import RecyclersJoinRequests from './pages/Users/ManagerPanel/RecyclersJoinRequests';
+import RecyclersManagement from './pages/Users/ManagerPanel/RecyclersManagement';
 import './index.css';
 
 export default function App() {
@@ -61,6 +63,13 @@ export default function App() {
           <Route path="bins" element={<RecycleBins />} />
           <Route path="update-bin/*" element={<UpdateBin />} />
           <Route path="add-bin" element={<AddNewBin />} />
+        </Route>
+        <Route path="/manager/*" element={<UserLayout />}>
+          <Route path="join-requests" element={<RecyclersJoinRequests />} />
+          <Route
+            path="recyclers-management"
+            element={<RecyclersManagement />}
+          />
         </Route>
         <Route path="/terms" element={<TermsAndConditions />} />
         <Route path="/login" element={<Login />} />

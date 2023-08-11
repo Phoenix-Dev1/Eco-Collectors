@@ -21,6 +21,7 @@ router.put('/users/:userId', toggleUserActivation);
 // Recyclers Managers Join Requests
 router.get('/join-requests', getAllJoinRequests);
 router.put('/join-requests/:joinID', updateJoinRequestStatus);
+// Recycle Requests
 router.get('/all-requests', fetchAllRequests);
 router.put('/requests/:requestId', updateRequestStatus);
 // Recycle Bins
