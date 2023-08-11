@@ -21,6 +21,11 @@ const Dashboard = () => {
 
   //console.log(userRole);
 
+  if (!currentUser) {
+    // Handle the case where currentUser is null or not yet loaded
+    return <p>Loading...</p>;
+  }
+
   return (
     <div className="flex bg-slate-100 min-h-screen antialiased text-slate-300">
       <div className="flex">
@@ -61,7 +66,7 @@ const Dashboard = () => {
                   </div>
                   <div className="ml-2">
                     <span className="text-lg font-bold leading-5 text-white">
-                      Panel
+                      Admin Panel
                     </span>
                   </div>
                 </div>
@@ -74,6 +79,9 @@ const Dashboard = () => {
                   </li>
                   <li className="text-sm text-white/50 hover:bg-white/5 transition ease-linear duration-150">
                     <Link to="/admin/join-requests">Join Requests</Link>
+                  </li>
+                  <li className="text-sm text-white/50 hover:bg-white/5 transition ease-linear duration-150">
+                    <Link to="/admin/bins">Recycle Bins</Link>
                   </li>
                 </ul>
               </div>
@@ -178,18 +186,18 @@ const Dashboard = () => {
                   </div>
                   <div className="ml-2">
                     <span className="text-lg font-bold leading-5 text-white">
-                      <Link to="/user/request-status">
-                        Recycler Manager Panel
-                      </Link>
+                      <Link to="/user/request-status">Manager Panel</Link>
                     </span>
                   </div>
                 </div>
                 <ul className="md:flex md:flex-col md:ml-6">
                   <li className="text-sm text-white/50 hover:bg-white/5 transition ease-linear duration-150">
-                    <Link to="/user/pending-requests">Pending</Link>
+                    <Link to="/manager/join-requests">Join Requests</Link>
                   </li>
                   <li className="text-sm text-white/50 hover:bg-white/5 transition ease-linear duration-150">
-                    <Link to="/user/completed-requests">Completed</Link>
+                    <Link to="/manager/recyclers-management">
+                      Recyclers Management
+                    </Link>
                   </li>
                   <li className="text-sm text-white/50 hover:bg-white/5 transition ease-linear duration-150">
                     <Link to="/user/cancelled-requests">Cancelled</Link>

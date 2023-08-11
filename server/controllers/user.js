@@ -120,9 +120,32 @@ const getUserRole = (req, res) => {
   }
 };
 
+// Deactivating the user account - by user
+const deactivateAccount = (req, res) => {
+  const token = req.cookies.access_token;
+  if (!token) return res.status(401).json('Not authenticated');
+
+  jwt.verify(token, 'jwtkey', (err, decodedToken) => {
+    if (err) return res.status(403).json('Token is not valid!');
+
+    const userId = decodedToken.id;
+
+    const updateDeactivationQuery = 'UPDATE users SET active = 0 WHERE ID = ?';
+    db.query(updateDeactivationQuery, [userId], (err, result) => {
+      if (err) return res.status(500).json(err);
+      if (result.affectedRows > 0) {
+        // Perform logout logic here if needed
+        return res.json('Account deactivated successfully');
+      }
+      return res.status(500).json('Failed to deactivate account');
+    });
+  });
+};
+
 module.exports = {
   updateUser: updateUser,
   changePassword: changePassword,
   getUserInfo: getUserInfo,
   getUserRole: getUserRole,
+  deactivateAccount: deactivateAccount,
 };

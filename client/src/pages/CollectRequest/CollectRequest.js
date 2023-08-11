@@ -40,7 +40,9 @@ const CollectRequest2 = () => {
 
   // Date & Time Formatting
   if (!request) {
-    return <div className="h-screen">Authentication Failed</div>;
+    return (
+      <div className="h-screen">Authentication Failed/ Request not exists</div>
+    );
   }
   return (
     <div className="flex flex-col min-h-screen">

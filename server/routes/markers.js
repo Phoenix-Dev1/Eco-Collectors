@@ -4,6 +4,6 @@ const bodyParser = require('body-parser');
 
 const router = express.Router();
 
-router.get('/', bodyParser.json(), markersControllers.getMarkers);
+router.get('/', bodyParser.json(), markersControllers.getActiveMarkers);
 
 module.exports = router;
