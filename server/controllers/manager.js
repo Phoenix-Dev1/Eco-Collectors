@@ -78,7 +78,77 @@ const updateRecyclerJoinRequestStatus = (req, res) => {
   });
 };
 
+// Recyclers Management
+
+// All regional recyclers
+const getAllRecyclers = (req, res) => {
+  const token = req.cookies.access_token;
+  if (!token) return res.status(401).json('Not authenticated');
+
+  jwt.verify(token, 'jwtkey', (err, userInfo) => {
+    if (err) return res.status(403).json('Token is not valid!');
+
+    // Check if the user is an administrator
+    if (userInfo.role !== 4) {
+      return res
+        .status(403)
+        .json('You are not authorized to access this resource');
+    }
+
+    const selectQuery =
+      'SELECT ID, role, first_name, last_name, email, city, address, phone, amount, active FROM users WHERE role = 3 OR role = 5'; // Filter by role = 3 / 5(demoted)
+
+    db.query(selectQuery, (err, data) => {
+      if (err) return res.status(500).json(err);
+      return res.json(data);
+    });
+  });
+};
+
+// Deactivate recycler and toggle between role 3 and 5
+const RecyclerDeactivation = (req, res) => {
+  const token = req.cookies.access_token;
+  if (!token) return res.status(401).json('Not authenticated');
+
+  jwt.verify(token, 'jwtkey', (err, userInfo) => {
+    if (err) return res.status(403).json('Token is not valid!');
+
+    // Check if the user is an administrator
+    if (userInfo.role !== 4) {
+      return res
+        .status(403)
+        .json('You are not authorized to access this resource');
+    }
+
+    const { userId } = req.params;
+
+    const getUserRoleQuery = 'SELECT role FROM users WHERE ID = ?';
+
+    db.query(getUserRoleQuery, [userId], (err, result) => {
+      if (err) return res.status(500).json(err);
+      if (result.length === 0) {
+        return res.status(404).json('User not found');
+      }
+
+      const currentRole = result[0].role;
+      const newRole = currentRole === 3 ? 5 : 3; // Toggle between 3 and 5
+
+      const updateQuery = 'UPDATE users SET role = ? WHERE ID = ?';
+
+      db.query(updateQuery, [newRole, userId], (err, updateResult) => {
+        if (err) return res.status(500).json(err);
+        if (updateResult.affectedRows === 0) {
+          return res.status(404).json('User not found');
+        }
+        return res.json('User role updated successfully');
+      });
+    });
+  });
+};
+
 module.exports = {
   fetchRecyclerJoinRequests: fetchRecyclerJoinRequests,
   updateRecyclerJoinRequestStatus: updateRecyclerJoinRequestStatus,
+  getAllRecyclers: getAllRecyclers,
+  RecyclerDeactivation: RecyclerDeactivation,
 };

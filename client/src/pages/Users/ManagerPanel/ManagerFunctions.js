@@ -3,7 +3,7 @@ import axios from 'axios';
 // Recyclers
 export async function fetchAllRecyclers() {
   try {
-    const res = await axios.get(`/manager/users`);
+    const res = await axios.get(`/manager/recyclers`);
     return res.data;
   } catch (err) {
     console.log(err);
@@ -13,7 +13,7 @@ export async function fetchAllRecyclers() {
 
 export const toggleRecyclerActivation = async (userID, newStatus) => {
   try {
-    const res = await axios.put(`/manager/users/${userID}`, {
+    const res = await axios.put(`/manager/recyclers/${userID}`, {
       active: newStatus,
     });
     return res.data;

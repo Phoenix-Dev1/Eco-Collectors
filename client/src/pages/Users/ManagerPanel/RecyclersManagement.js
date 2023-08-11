@@ -15,9 +15,9 @@ const RecyclersManagement = () => {
     };
 
     fetchData();
-  }, []);
+  }, [users]);
 
-  const handleToggleActivation = async (userID, currentStatus) => {
+  const handleToggleActivation = async (userID, currentStatus, role) => {
     try {
       const newStatus = currentStatus === 1 ? 0 : 1;
 
@@ -41,15 +41,16 @@ const RecyclersManagement = () => {
 
   const columns = [
     {
-      // Conditionally render the activate/deactivate button
       cell: (row) => (
         <button
-          onClick={() => handleToggleActivation(row.ID, row.active)}
+          onClick={() => handleToggleActivation(row.ID, row.active, row.role)}
           className={`px-2 py-1 rounded ${
-            row.active ? 'bg-red-500 text-white' : 'bg-green-500 text-white'
+            (row.active && row.role === 3) || (!row.active && row.role === 5)
+              ? 'bg-red-500 text-white'
+              : 'bg-green-500 text-white'
           }`}
         >
-          {row.active ? 'Deactivate' : 'Activate'}
+          {row.active && row.role === 3 ? 'Deactivate' : 'Activate'}
         </button>
       ),
       ignoreRowClick: true,
@@ -86,7 +87,7 @@ const RecyclersManagement = () => {
     },
     {
       name: 'Active',
-      selector: (row) => (row.active ? 'Yes' : 'No'),
+      selector: (row) => (row.role === 3 ? 'Yes' : 'No'),
       sortable: true,
       wrap: true,
     },
@@ -94,7 +95,7 @@ const RecyclersManagement = () => {
 
   return (
     <div className="text-center">
-      <h2 className="text-lg font-bold mb-4">All Users:</h2>
+      <h2 className="text-lg font-bold mb-4">Recyclers:</h2>
       {users.length > 0 ? (
         <div className="mx-auto w-full px-4 md:max-w-3xl lg:max-w-4xl xl:max-w-6xl text-center">
           <DataTable
