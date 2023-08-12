@@ -7,6 +7,7 @@ import {
 } from '@react-google-maps/api';
 import axios from 'axios';
 import { validateInputs } from '../Users/RequestUtils';
+import classes from './UpdateRequest.module.css';
 
 const libraries = [process.env.REACT_APP_GOOGLE_LIB];
 
@@ -124,10 +125,17 @@ const UpdateRequest = () => {
   }, []);
 
   if (!isLoaded) {
-    return <div>Loading...</div>;
+    return (
+      <div className={classes.loaderWrapper}>
+        <div className={classes.container}>
+          <div className={classes.ring}></div>
+          <div className={classes.ring}></div>
+          <div className={classes.ring}></div>
+          <span className={classes.loading}>Recycle</span>
+        </div>
+      </div>
+    );
   }
-
-  //console.log(updatedData);
 
   return (
     <div className="flex flex-col items-center">

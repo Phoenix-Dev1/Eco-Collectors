@@ -44,7 +44,21 @@ const CollectRequest2 = () => {
   }, []);
 
   if (isLoading) {
-    return <div className="h-screen">Loading...</div>;
+    return (
+      <div className={classes.loaderWrapper}>
+        <div className={classes.loader}>
+          <div className={classes.square} id={classes.sq1}></div>
+          <div className={classes.square} id={classes.sq2}></div>
+          <div className={classes.square} id={classes.sq3}></div>
+          <div className={classes.square} id={classes.sq4}></div>
+          <div className={classes.square} id={classes.sq5}></div>
+          <div className={classes.square} id={classes.sq6}></div>
+          <div className={classes.square} id={classes.sq7}></div>
+          <div className={classes.square} id={classes.sq8}></div>
+          <div className={classes.square} id={classes.sq9}></div>
+        </div>
+      </div>
+    );
   }
 
   if (!isAuthenticated) {
