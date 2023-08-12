@@ -17,6 +17,8 @@ const CollectRequest2 = () => {
 
   const navigate = useNavigate();
   const [request, setRequest] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const handleCancel = () => {
     navigate('/map');
@@ -33,17 +35,30 @@ const CollectRequest2 = () => {
       const requestId = window.location.href.split('?')[1].split('=')[1];
       const data = await fetchRequestById(requestId);
       setRequest(data);
+      setIsLoading(false);
+      // Set the authentication status based on your logic here
+      setIsAuthenticated(true); // Change to false if authentication fails
     };
 
     fetchData();
   }, []);
 
-  // Date & Time Formatting
+  if (isLoading) {
+    return <div className="h-screen">Loading...</div>;
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <div className="h-screen">Authentication Failed/ Request not exists</div>
+    );
+  }
+
   if (!request) {
     return (
       <div className="h-screen">Authentication Failed/ Request not exists</div>
     );
   }
+
   return (
     <div className="flex flex-col min-h-screen">
       <main className="text-center">

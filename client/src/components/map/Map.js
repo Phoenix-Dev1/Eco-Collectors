@@ -19,6 +19,8 @@ import {
   fetchRequests,
   formatDateTime,
   formatTime,
+  typeDescriptions,
+  typeColors,
 } from './mapFunctions';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/authContext';
@@ -349,17 +351,26 @@ const Map = () => {
                     onCloseClick={() => setSelectedMarker(null)}
                     disableAutoClose={true}
                   >
-                    <div>
-                      <h1 className="font-bold pt-2 text-right">{address}</h1>
-                      <h2 className="pt-2 text-right">
+                    <div className="p-2">
+                      <h1 className="text-xl font-bold mb-2 text-right">
+                        {address}
+                      </h1>
+                      <p
+                        className={`mb-2 text-right font-semibold ${typeColors[type]}`}
+                      >
+                        {typeDescriptions[type]}
+                      </p>
+                      <h2 className="mb-2 text-right">
                         {formatDate(last_modified)}
                       </h2>
-                      <h2
-                        className="cursor-pointer hover:cursor-pointer hover:underline hover:text-blue-500 pt-2 text-right"
-                        onClick={() => handleOpenGoogleMaps(lat, lng)}
-                      >
-                        Navigate
-                      </h2>
+                      <div className="text-right">
+                        <button
+                          className="text-blue-500 hover:underline"
+                          onClick={() => handleOpenGoogleMaps(lat, lng)}
+                        >
+                          Navigate
+                        </button>
+                      </div>
                     </div>
                   </InfoWindowF>
                 )}
@@ -379,9 +390,13 @@ const Map = () => {
               request_date,
               status,
               type,
+              user_id,
             } = request;
 
             const markerClicked = selectedMarker === req_address;
+
+            const isCurrentUser =
+              currentUser?.ID === user_id || currentUser?.role === 1;
 
             return (
               <MarkerF
@@ -397,36 +412,59 @@ const Map = () => {
                     onCloseClick={() => setSelectedMarker(null)}
                     disableAutoClose={true}
                   >
-                    <div>
-                      <h1 className="font-bold pt-2 text-right">
-                        {req_address}
-                      </h1>
-                      <h2 className="pt-2 text-left">
-                        Bottles: {bottles_number}
-                      </h2>
-                      <h2 className="pt-2 text-left">
-                        Hours: {from_hour} - {to_hour}
-                      </h2>
-                      <h2 className="pt-2 text-left">Phone: {phone_number}</h2>
-                      <h2 className="pt-2 text-left">
-                        Date: {formatDateTime(request_date)}
-                      </h2>
-                      <h2 className="pt-2 text-left">
-                        Hour: {formatTime(request_date)}
-                      </h2>
-                      <h2 className="pt-2 text-left">Status: {status}</h2>
-                      {currentUser?.role !== 2 &&
-                        status !== 2 &&
-                        currentUser && (
-                          <h2 className="pt-2 text-center">
+                    <div className="p-2">
+                      <h1 className="text-xl font-bold mb-2">{req_address}</h1>
+                      <div className="mb-4">
+                        <div className="flex items-center mb-1">
+                          <span className="font-semibold mr-1">Bottles:</span>
+                          <span>{bottles_number}</span>
+                        </div>
+                        <div className="flex items-center mb-1">
+                          <span className="font-semibold mr-1">Hours:</span>
+                          <span>
+                            {from_hour} - {to_hour}
+                          </span>
+                        </div>
+                        <div className="flex items-center mb-1">
+                          <span className="font-semibold mr-1">Phone:</span>
+                          <span>{phone_number}</span>
+                        </div>
+                        <div className="flex items-center mb-1">
+                          <span className="font-semibold mr-1">Date:</span>
+                          <span>{formatDateTime(request_date)}</span>
+                        </div>
+                        <div className="flex items-center mb-1">
+                          <span className="font-semibold mr-1">
+                            Last Updated:
+                          </span>
+                          <span>{formatTime(request_date)}</span>
+                        </div>
+                        <div className="flex items-center">
+                          <span className="font-semibold mr-1">Status:</span>
+                          <span>{status}</span>
+                        </div>
+                      </div>
+                      <div className="flex justify-center">
+                        {isCurrentUser && (
+                          <Link
+                            to={`/user/update-request?Id=${request_id}`}
+                            className="text-blue-500 hover:underline mr-2"
+                          >
+                            Update
+                          </Link>
+                        )}
+                        {currentUser?.role !== 2 &&
+                          currentUser?.role !== 5 &&
+                          status !== 2 &&
+                          currentUser && (
                             <Link
                               to={`/collect?Id=${request_id}`}
-                              className="cursor-pointer hover:cursor-pointer hover:underline hover:text-blue-500 pt-2 text-right"
+                              className="text-blue-500 hover:underline"
                             >
                               Collect
                             </Link>
-                          </h2>
-                        )}
+                          )}
+                      </div>
                     </div>
                   </InfoWindowF>
                 )}

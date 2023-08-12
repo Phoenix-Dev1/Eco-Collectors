@@ -87,7 +87,7 @@ const Dashboard = () => {
               </div>
             )}
 
-            {userRole === 2 && (
+            {(userRole === 2 || userRole === 5) && (
               <div className="py-2 px-4 rounded text-white text-lg hover:bg-white/5 transition ease-linear duration-150 mb-2">
                 <div className="flex items-center">
                   <div>
@@ -209,12 +209,13 @@ const Dashboard = () => {
             {userRole !== 1 &&
               userRole !== 2 &&
               userRole !== 3 &&
-              userRole !== 4 && (
+              userRole !== 4 &&
+              userRole !== 5 && (
                 <div>
                   <p> Role undefined - Contact support </p>
                 </div>
               )}
-            {userRole !== 2 && (
+            {userRole !== 2 && userRole !== 5 && (
               <div className="py-2 px-4 rounded text-white text-lg hover:bg-white/5 transition ease-linear duration-150 mb-2">
                 <div className="flex items-center">
                   <div>
