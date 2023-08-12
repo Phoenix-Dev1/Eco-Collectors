@@ -30,7 +30,7 @@ const Navbar = () => {
   };
 
   return (
-    <div className="flex justify-between items-center h-24 mx-auto px-4 text-white bg-gray-900  whitespace-nowrap z-50">
+    <div className="flex justify-between items-center h-24 mx-auto px-4 text-white bg-gray-900  whitespace-nowrap z-1000">
       <Link to="/">
         <img className="h-16 w-26" src={Logo} alt="Eco Collectors" />
       </Link>

@@ -328,7 +328,14 @@ const Map = () => {
         </div>
       )}
       {!isLoaded ? (
-        <h1>Loading...</h1>
+        <div className={classes.loaderWrapper}>
+          <div className={classes.container}>
+            <div className={classes.ring}></div>
+            <div className={classes.ring}></div>
+            <div className={classes.ring}></div>
+            <span className={classes.loading}>Recycle</span>
+          </div>
+        </div>
       ) : (
         <GoogleMap
           mapContainerClassName={classes.mapContainer}
