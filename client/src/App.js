@@ -16,7 +16,10 @@ import TermsAndConditions from './pages/Conditions/Terms/terms';
 import PrivacyPolicy from './pages/Conditions/Privacy/privacy';
 import NotFound from './pages/404/404';
 import UserLayout from './layouts/UserLayout';
-import WelcomeHandler from './pages/Users/WelcomePerUser/WelcomeHandler';
+import WelcomeAdmin from './pages/Users/WelcomePerUser/WelcomeAdmin';
+import WelcomeUser from './pages/Users/WelcomePerUser/WelcomeUser';
+import WelcomeRecycler from './pages/Users/WelcomePerUser/WelcomeRecycler';
+import WelcomeManager from './pages/Users/WelcomePerUser/WelcomeManager';
 import UpdateUserInformation from './pages/Users/ManageAccount/UpdateUserInformation';
 import ChangePassword from './pages/Users/ManageAccount/ChangePassword';
 import RequestStatus from './pages/Users/RequestStatus';
@@ -37,7 +40,10 @@ export default function App() {
         <Route path="/about" element={<About />} />
         <Route path="/manager-join" element={<RecyclersManagerRegister />} />
         <Route path="/user/*" element={<UserLayout />}>
-          <Route path="welcome" element={<WelcomeHandler />} />
+          <Route path="welcomeAdmin" element={<WelcomeAdmin />} />
+          <Route path="welcomeUser" element={<WelcomeUser />} />
+          <Route path="welcomeRecycler" element={<WelcomeRecycler />} />
+          <Route path="welcomeManager" element={<WelcomeManager />} />
           <Route path="update-user-info" element={<UpdateUserInformation />} />
           <Route path="change-password" element={<ChangePassword />} />
           <Route path="request-status" element={<RequestStatus />} />

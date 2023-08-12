@@ -7,7 +7,7 @@ const WelcomeUser = () => {
   useEffect(() => {
     const fetchTotalRequests = async () => {
       try {
-        const res = await axios.get('/user/welcome');
+        const res = await axios.get('/user/welcomeRecycler');
         setTotalRequests(res.data.totalRequests);
       } catch (error) {
         console.error('Error fetching total requests:', error);

@@ -21,13 +21,28 @@ function SignInForm() {
     setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
+  const handleNavigate = (e) => {
+    switch (login.role) {
+      case 1:
+        navigate('/user/welcomeAdmin');
+      case 2:
+        navigate('/user/welcomeUser');
+      case 3:
+        navigate('/user/welcomeRecycler');
+      case 4:
+        navigate('/user/welcomeManager');
+      default:
+        navigate('/');
+    }
+  };
+
   // Submitting the register from authContext
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       // Calling the login function from AuthContext
       await login(inputs);
-      navigate('/user/welcome');
+      handleNavigate();
     } catch (err) {
       setError(err.response.data);
     }
