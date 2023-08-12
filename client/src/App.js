@@ -22,11 +22,20 @@ import WelcomeRecycler from './pages/Users/WelcomePerUser/WelcomeRecycler';
 import WelcomeManager from './pages/Users/WelcomePerUser/WelcomeManager';
 import UpdateUserInformation from './pages/Users/ManageAccount/UpdateUserInformation';
 import ChangePassword from './pages/Users/ManageAccount/ChangePassword';
+import ForgotPassword from './pages/ForgotPassword/ForgotPassword';
 import RequestStatus from './pages/Users/RequestStatus';
 import UpdateRequest from './pages/Users/UpdateRequest';
 import Cancelled from './pages/Users/RequestsPerStatus/Cancelled';
 import Completed from './pages/Users/RequestsPerStatus/completed';
 import Pending from './pages/Users/RequestsPerStatus/Pending';
+import UserManagement from './pages/Users/AdminPanel/UserManagement';
+import JoinRequests from './pages/Users/AdminPanel/JoinRequests';
+import AllRequests from './pages/Users/AdminPanel/AllRequests';
+import RecycleBins from './pages/Users/AdminPanel/RecycleBins/RecycleBins';
+import UpdateBin from './pages/Users/AdminPanel/RecycleBins/UpdateBin';
+import AddNewBin from './pages/Users/AdminPanel/RecycleBins/AddNewBin';
+import RecyclersJoinRequests from './pages/Users/ManagerPanel/RecyclersJoinRequests';
+import RecyclersManagement from './pages/Users/ManagerPanel/RecyclersManagement';
 import './index.css';
 
 export default function App() {
@@ -37,6 +46,7 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/collect" element={<CollectRequest />} />
         <Route path="/contact-us" element={<Contact />} />
+        <Route path="/password-recovery" element={<ForgotPassword />} />
         <Route path="/about" element={<About />} />
         <Route path="/manager-join" element={<RecyclersManagerRegister />} />
         <Route path="/user/*" element={<UserLayout />}>
@@ -51,6 +61,21 @@ export default function App() {
           <Route path="cancelled-requests" element={<Cancelled />} />
           <Route path="completed-requests" element={<Completed />} />
           <Route path="pending-requests" element={<Pending />} />
+        </Route>
+        <Route path="/admin/*" element={<UserLayout />}>
+          <Route path="user-management" element={<UserManagement />} />
+          <Route path="join-requests" element={<JoinRequests />} />
+          <Route path="requests" element={<AllRequests />} />
+          <Route path="bins" element={<RecycleBins />} />
+          <Route path="update-bin/*" element={<UpdateBin />} />
+          <Route path="add-bin" element={<AddNewBin />} />
+        </Route>
+        <Route path="/manager/*" element={<UserLayout />}>
+          <Route path="join-requests" element={<RecyclersJoinRequests />} />
+          <Route
+            path="recyclers-management"
+            element={<RecyclersManagement />}
+          />
         </Route>
         <Route path="/terms" element={<TermsAndConditions />} />
         <Route path="/login" element={<Login />} />

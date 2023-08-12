@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { validateForm } from './managerFormValidation';
 import axios from 'axios';
 import * as moment from 'moment';
 import { FaFacebookF, FaTwitter, FaInstagram } from 'react-icons/fa';
+import { AuthContext } from '../../context/authContext';
 
 const RecyclersManagerRegister = () => {
   const [err, setError] = useState(null);
   const navigate = useNavigate();
+  const { currentUser } = useContext(AuthContext);
   const [inputs, setInputs] = useState({
     join_date: moment().format('YYYY-MM-DD HH:mm:ss'),
     first_name: '',
@@ -16,6 +18,20 @@ const RecyclersManagerRegister = () => {
     phone: '',
     message: '',
   });
+
+  // Update inputs when currentUser changes (when fetching data from local storage)
+  useEffect(() => {
+    if (currentUser) {
+      // Fill the input fields with user data from local storage
+      setInputs((prev) => ({
+        ...prev,
+        first_name: currentUser.first_name,
+        last_name: currentUser.last_name,
+        email: currentUser.email,
+        phone: currentUser.phone,
+      }));
+    }
+  }, [currentUser]);
 
   // User Credentials
   const handleChange = (e) => {
@@ -26,12 +42,19 @@ const RecyclersManagerRegister = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const isValid = validateForm(inputs, setError, navigate); // Use the validateForm function
+    // Add the user ID to the inputs object
+    const inputsWithUserId = { ...inputs, user_id: currentUser.ID };
+
+    const isValid = validateForm(inputsWithUserId, setError, navigate); // Use the validateForm function
     if (!isValid) {
       return;
     } else {
       try {
-        await axios.post('/recyclersManagers/recyclerManagerRegister', inputs);
+        await axios.post(
+          '/recyclersManagers/recyclerManagerRegister',
+          inputsWithUserId
+        );
+        window.alert('Request sent successfully!');
         navigate('/');
       } catch (err) {
         setError(err.response.data);
@@ -76,6 +99,7 @@ const RecyclersManagerRegister = () => {
                   type="text"
                   name="first_name"
                   id="first_name"
+                  value={inputs.first_name || ''}
                   className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                   placeholder=" "
                   required
@@ -93,6 +117,7 @@ const RecyclersManagerRegister = () => {
                   type="text"
                   name="last_name"
                   id="last_name"
+                  value={inputs.last_name || ''}
                   className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                   placeholder=" "
                   required
@@ -111,6 +136,7 @@ const RecyclersManagerRegister = () => {
                 type="email"
                 name="email"
                 id="email"
+                value={inputs.email || ''}
                 className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                 placeholder=" "
                 required
@@ -128,6 +154,7 @@ const RecyclersManagerRegister = () => {
                 type="tel"
                 name="phone"
                 id="phone"
+                value={inputs.phone || ''}
                 className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                 placeholder=" "
                 required

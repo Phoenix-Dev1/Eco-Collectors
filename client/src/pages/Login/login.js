@@ -44,7 +44,19 @@ function SignInForm() {
       await login(inputs);
       handleNavigate();
     } catch (err) {
-      setError(err.response.data);
+      // Check the error response from the server and display appropriate error message
+      if (err.response?.status === 404) {
+        setError('User not found. Please check your email.');
+      } else if (err.response?.status === 401) {
+        const errorMessage = err.response?.data?.error;
+        if (errorMessage === 'Account is inactive. Login is not permitted.') {
+          setError('Account is inactive. Please contact support.');
+        } else {
+          setError('Invalid email or password. Please try again.');
+        }
+      } else {
+        setError('An error occurred. Please try again later.');
+      }
     }
   };
 
