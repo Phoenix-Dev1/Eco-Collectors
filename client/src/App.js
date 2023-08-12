@@ -9,7 +9,7 @@ import Register from './pages/Register/register';
 import Map from './components/map/Map';
 import RecyclerRegister from './pages/RecyclerRegister/recyclerRegister';
 import RecyclersManagerRegister from './pages/RecyclersManagerRegister/recyclersManagerRegister';
-import Contact from './pages/Contact/contact';
+import ContactUs from './pages/Contact/ContactUs';
 import CollectRequest from './pages/CollectRequest/CollectRequest';
 import About from './pages/About/About';
 import TermsAndConditions from './pages/Conditions/Terms/terms';
@@ -42,7 +42,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/collect" element={<CollectRequest />} />
-        <Route path="/contact-us" element={<Contact />} />
+        <Route path="/contact-us" element={<ContactUs />} />
         <Route path="/password-recovery" element={<ForgotPassword />} />
         <Route path="/about" element={<About />} />
         <Route path="/manager-join" element={<RecyclersManagerRegister />} />
