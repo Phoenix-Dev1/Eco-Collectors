@@ -1,7 +1,6 @@
 const express = require('express');
-const { welcomeUserData } = require('../controllers/welcomeUser');
+const { WelcomeUserData } = require('../controllers/welcomeUser');
 const router = express.Router();
 
-router.get('/user/welcome', welcomeUserData);
-
+router.get('/user/welcomeUser', WelcomeUserData);
 module.exports = router;

@@ -1,21 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const WelcomeUser = () => {
+const WelcomeAdmin = () => {
   const [totalRequests, setTotalRequests] = useState(0);
+  const [totalRecycledBottles, setTotalRecycledBottles] = useState(0);
 
   useEffect(() => {
-    const fetchTotalRequests = async () => {
+    const fetchData = async () => {
       try {
-        const res = await axios.get('/user/welcome');
+        const res = await axios.get('/user/welcomeAdmin');
         setTotalRequests(res.data.totalRequests);
-      } catch (error) {
-        console.error('Error fetching total requests:', error);
-        setTotalRequests(-1);
+        setTotalRecycledBottles(res.data.totalRecycledBottles);
+      } catch (err) {
+        console.log('STILL NOT WORKING!!! (MY "CONSOLE.LOG")');
       }
     };
-    fetchTotalRequests();
+    fetchData();
   }, []);
+
   const renderMetricCards = () => {
     const metricStyles = [
       {
@@ -23,23 +25,26 @@ const WelcomeUser = () => {
         cardStyle:
           'bg-gradient-to-b from-green-200 to-green-100 border-b-4 border-green-600',
         titleStyle: 'text-green-600',
+        value: totalRequests,
       },
       {
         title: "Total Bottle No' Recycled (All Users)",
         cardStyle:
           'bg-gradient-to-b from-indigo-200 to-indigo-100 border-b-4 border-indigo-500',
         titleStyle: 'text-indigo-500',
+        value: totalRecycledBottles,
       },
       {
         title: 'Average Request Closing Time (All Users)',
         cardStyle:
           'bg-gradient-to-b from-red-200 to-red-100 border-b-4 border-red-500',
         titleStyle: 'text-red-500',
+        value: 0, // Placeholder for Average Request Closing Time (Not implemented yet)
       },
     ];
 
     return metricStyles.map((metric, index) => {
-      const { title, cardStyle, titleStyle } = metric;
+      const { title, cardStyle, titleStyle, value } = metric;
 
       return (
         <div
@@ -48,9 +53,7 @@ const WelcomeUser = () => {
         >
           <div className={`border rounded-lg shadow-xl p-5 ${cardStyle}`}>
             <h2 className={`text-lg font-semibold ${titleStyle}`}>{title}</h2>
-            {title === 'Total Requests' && (
-              <p className="text-gray-600 mt-2">{totalRequests}</p>
-            )}
+            <p className="text-gray-600 mt-2">{value}</p>
           </div>
         </div>
       );
@@ -115,4 +118,4 @@ const WelcomeUser = () => {
   );
 };
 
-export default WelcomeUser;
+export default WelcomeAdmin;

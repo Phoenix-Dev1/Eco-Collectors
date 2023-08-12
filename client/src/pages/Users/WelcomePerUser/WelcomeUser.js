@@ -7,7 +7,7 @@ const WelcomeUser = () => {
   useEffect(() => {
     const fetchTotalRequests = async () => {
       try {
-        const res = await axios.get('/user/welcome');
+        const res = await axios.get('/user/welcomeUser');
         setTotalRequests(res.data.totalRequests);
       } catch (error) {
         console.error('Error fetching total requests:', error);
@@ -77,22 +77,11 @@ const WelcomeUser = () => {
   return (
     <div>
       <header>
-        <nav
-          aria-label="menu nav"
-          className="bg-gray-800 pt-2 md:pt-1 pb-1 px-1 sticky top-0 z-20"
-        >
-          {/* ... */}
-          {/* The content of the header goes here */}
-          {/* ... */}
-        </nav>
+        <nav className="bg-gray-800 pt-2 md:pt-1 pb-1 px-1 sticky top-0 z-20"></nav>
       </header>
       <main>
         <div className="flex flex-col md:flex-row">
-          <nav aria-label="alternative nav">
-            {/* ... */}
-            {/* The content of the navigation goes here */}
-            {/* ... */}
-          </nav>
+          <nav aria-label="alternative nav"></nav>
           <section>
             <div
               id="main"
