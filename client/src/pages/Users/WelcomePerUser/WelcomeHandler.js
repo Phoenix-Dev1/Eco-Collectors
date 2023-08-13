@@ -16,6 +16,8 @@ const WelcomeHandler = () => {
       return <WelcomeRecycler />;
     case 4:
       return <WelcomeManager />;
+    case 5:
+      return <WelcomeUser />;
     default:
       return <div>Error: Invalid user role.</div>;
   }
