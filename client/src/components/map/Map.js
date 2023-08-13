@@ -63,9 +63,12 @@ const Map = () => {
   // Request submit handling
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // If fullName is empty, use initialName
+    const submittedFullName = fullName.trim() === '' ? initialName : fullName;
     if (currentUser) {
       const validation = validateInputs({
-        fullName,
+        fullName: submittedFullName, // Use the updated fullName
         reqLat,
         reqLng,
         reqAddress,
@@ -78,7 +81,7 @@ const Map = () => {
       if (validation.isValid) {
         try {
           await axios.post(`/requests/add`, {
-            fullName,
+            fullName: submittedFullName, // Use the updated fullName
             reqLat,
             reqLng,
             reqAddress,
@@ -134,8 +137,12 @@ const Map = () => {
   // Bins
   useEffect(() => {
     const fetchMarkersData = async () => {
-      const data = await fetchActiveMarkers(type);
-      setMarkers(data);
+      try {
+        const data = await fetchActiveMarkers(type);
+        setMarkers(data);
+      } catch (error) {
+        console.log(error);
+      }
     };
     fetchMarkersData();
   }, [type]);
@@ -143,11 +150,15 @@ const Map = () => {
   // Requests
   useEffect(() => {
     const loadRequestsData = async () => {
-      const data = await fetchRequests(type);
-      setRequests(data);
+      try {
+        const data = await fetchRequests(type);
+        setRequests(data);
+      } catch (error) {
+        console.log(error);
+      }
     };
     loadRequestsData();
-  }, [type, requests]); // Add 'requests' as a dependency
+  }, [type, requests]); // MUST Add 'requests' as a dependency
 
   // Center the Map At Haifa Port
   const center = useMemo(() => ({ lat: 32.79413, lng: 34.98828 }), []);
@@ -224,7 +235,7 @@ const Map = () => {
               <input
                 name="full_name"
                 id="full_name"
-                value={fullName}
+                value={fullName || initialName} // Use fullName or initialName as the value
                 onChange={(e) => setFullName(e.target.value)}
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 placeholder={
