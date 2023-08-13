@@ -54,7 +54,7 @@ export async function updateRecyclerJoinRequestStatus(
 }
 
 // Recycle Requests
-export async function fetchAllRecyclerRequests(statusFilter = null) {
+export async function fetchAllRequests(statusFilter = null) {
   try {
     const response = await axios.get('/manager/all-requests', {
       params: { status: statusFilter }, // Pass the status filter to the API

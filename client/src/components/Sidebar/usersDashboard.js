@@ -200,7 +200,9 @@ const Dashboard = () => {
                     </Link>
                   </li>
                   <li className="text-sm text-white/50 hover:bg-white/5 transition ease-linear duration-150">
-                    <Link to="/user/cancelled-requests">Cancelled</Link>
+                    <Link to="/manager/regional-requests">
+                      Regional Requests
+                    </Link>
                   </li>
                 </ul>
               </div>

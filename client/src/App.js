@@ -33,6 +33,7 @@ import UpdateBin from './pages/Users/AdminPanel/RecycleBins/UpdateBin';
 import AddNewBin from './pages/Users/AdminPanel/RecycleBins/AddNewBin';
 import RecyclersJoinRequests from './pages/Users/ManagerPanel/RecyclersJoinRequests';
 import RecyclersManagement from './pages/Users/ManagerPanel/RecyclersManagement';
+import RegionalRequests from './pages/Users/ManagerPanel/RegionalRequests';
 import './index.css';
 
 export default function App() {
@@ -70,6 +71,7 @@ export default function App() {
             path="recyclers-management"
             element={<RecyclersManagement />}
           />
+          <Route path="regional-requests" element={<RegionalRequests />} />
         </Route>
         <Route path="/terms" element={<TermsAndConditions />} />
         <Route path="/login" element={<Login />} />

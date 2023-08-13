@@ -11,5 +11,8 @@ router.put(
 // Recyclers Management
 router.get('/recyclers', managerControllers.getAllRecyclers);
 router.put('/recyclers/:userId', managerControllers.RecyclerDeactivation);
+// Recycle Requests
+router.get('/all-requests', managerControllers.fetchAllRequests);
+router.put('/requests/:requestId', managerControllers.updateRequestStatus);
 
 module.exports = router;
