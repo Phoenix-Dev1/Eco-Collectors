@@ -48,11 +48,11 @@ const Navbar = () => {
           </>
         )}
         <div className="flex justify-between items-center h-24 mx-auto px-4 text-white bg-gray-900 whitespace-nowrap z-1000">
-          <li className="p-4 hover:text-blue-600">
-            <Link to="/">Home</Link>
-          </li>
           {currentUser && (
             <>
+              <li className="p-4 hover:text-blue-600">
+                <Link to="/">Home</Link>
+              </li>
               <li className="p-4 hover:text-blue-600">
                 <Link to="/join">Recycler Registration</Link>
               </li>
@@ -73,11 +73,22 @@ const Navbar = () => {
         </div>
         {!currentUser && (
           <>
+            <li>
+              <Link
+                to="/map"
+                className="bg-indigo-600 w-12 h-12 mr-2 rounded-full flex items-center justify-center font-bold hover:bg-orange-400 border-2 border-white-500 hover:border-white-600"
+              >
+                Map
+              </Link>
+            </li>
             <li className="p-4 hover:text-blue-600">
-              <Link to="/register">Register</Link>
+              <Link to="/">Home</Link>
             </li>
             <li className="p-4 hover:text-blue-600">
               <Link to="/login">Login</Link>
+            </li>
+            <li className="p-4 hover:text-blue-600">
+              <Link to="/register">Register</Link>
             </li>
           </>
         )}

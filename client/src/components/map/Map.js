@@ -25,7 +25,8 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/authContext';
 import { VscFilter } from 'react-icons/vsc';
-import { GiRecycle } from 'react-icons/gi';
+//import { GiRecycle } from 'react-icons/gi';
+import { FaPlus } from 'react-icons/fa'; // Import the plus icon
 import { AiOutlineClose } from 'react-icons/ai';
 import { validateInputs } from './InputValidation';
 
@@ -64,15 +65,19 @@ const Map = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // If fullName is empty, use initialName
+    // If fullName is empty(unchanged), use initialName
     const submittedFullName = fullName.trim() === '' ? initialName : fullName;
+    // If fullName is empty(unchanged), use phone number from currentUser
+    const submittedPhoneNumber =
+      phoneNumber.trim() === '' ? currentUser?.phone : phoneNumber;
+
     if (currentUser) {
       const validation = validateInputs({
         fullName: submittedFullName, // Use the updated fullName
         reqLat,
         reqLng,
         reqAddress,
-        phoneNumber,
+        phoneNumber: submittedPhoneNumber,
         bottlesNumber,
         fromTime,
         toTime,
@@ -85,7 +90,7 @@ const Map = () => {
             reqLat,
             reqLng,
             reqAddress,
-            phoneNumber,
+            phoneNumber: submittedPhoneNumber,
             bottlesNumber,
             fromTime,
             toTime,
@@ -223,7 +228,7 @@ const Map = () => {
         </div>
       )}
       <div className={classes.add} onClick={toggleAddWindow}>
-        <GiRecycle />
+        <FaPlus />
       </div>
       {showAddWindow && ( // Render the filter window only if showFilterWindow is true
         <div className={classes.addForm}>
@@ -288,7 +293,7 @@ const Map = () => {
                 placeholder="Enter your number"
                 id="phoneNumber"
                 name="phoneNumber"
-                value={phoneNumber}
+                value={phoneNumber || currentUser?.phone || ''} // Set initial value
                 type="tel"
                 required
               />
