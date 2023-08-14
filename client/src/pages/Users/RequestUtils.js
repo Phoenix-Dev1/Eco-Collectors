@@ -31,7 +31,7 @@ export function renderButtons(
     case 1:
       return (
         <>
-          <button className="mb-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+          <button className="mb-2 mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
             <Link to={`/user/update-request?Id=${requestId}`}>Update</Link>
           </button>
           <button
