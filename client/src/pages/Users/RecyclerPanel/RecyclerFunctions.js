@@ -13,14 +13,26 @@ export async function fetchAllRequests(statusFilter = null) {
   }
 }
 
+// Function to fetch accepted requests from the server
+export async function fetchAcceptedRequests() {
+  try {
+    const response = await axios.get('/recycler/accepted-requests'); // Replace with your API endpoint
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching accepted requests:', error);
+    return []; // Return an empty array on error
+  }
+}
+
+// Function to update request status
 export async function updateRequestStatus(requestId, newStatus) {
   try {
     const response = await axios.put(`/recycler/requests/${requestId}`, {
       status: newStatus,
     });
     return response.data;
-  } catch (err) {
-    console.error(err);
-    throw err;
+  } catch (error) {
+    console.error('Error updating request status:', error);
+    throw error;
   }
 }

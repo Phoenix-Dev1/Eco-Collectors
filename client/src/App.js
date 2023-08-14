@@ -35,6 +35,7 @@ import RecyclersJoinRequests from './pages/Users/ManagerPanel/RecyclersJoinReque
 import RecyclersManagement from './pages/Users/ManagerPanel/RecyclersManagement';
 import RegionalRequests from './pages/Users/ManagerPanel/RegionalRequests';
 import RegionalRecyclerRequests from './pages/Users/RecyclerPanel/RegionalRequests';
+import AcceptedRequests from './pages/Users/RecyclerPanel/AcceptedRequests';
 import './index.css';
 
 export default function App() {
@@ -79,6 +80,7 @@ export default function App() {
             path="regional-requests"
             element={<RegionalRecyclerRequests />}
           />
+          <Route path="accepted-requests" element={<AcceptedRequests />} />
         </Route>
         <Route path="/terms" element={<TermsAndConditions />} />
         <Route path="/login" element={<Login />} />
