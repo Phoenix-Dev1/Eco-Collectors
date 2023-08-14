@@ -227,9 +227,11 @@ const Map = () => {
           </div>
         </div>
       )}
-      <div className={classes.add} onClick={toggleAddWindow}>
-        <FaPlus />
-      </div>
+      {currentUser /*{ Will only show when a user is logged in }*/ && (
+        <div className={classes.add} onClick={toggleAddWindow}>
+          <FaPlus />
+        </div>
+      )}
       {showAddWindow && ( // Render the filter window only if showFilterWindow is true
         <div className={classes.addForm}>
           <form ref={form} onSubmit={handleSubmit} action="#">

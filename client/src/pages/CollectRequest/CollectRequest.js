@@ -7,19 +7,20 @@ import {
   formatTime,
 } from './RequestFunctions';
 import { useNavigate } from 'react-router-dom';
-import classes from './collection.module.css';
 
 const CollectRequest2 = () => {
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_API_KEY,
   });
-  const center = useMemo(() => ({ lat: 32.79567, lng: 34.98472 }), []);
 
   const navigate = useNavigate();
   const [request, setRequest] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-
+  const center = useMemo(
+    () => ({ lat: request.req_lat, lng: request.req_lng }),
+    [request]
+  );
   const handleCancel = () => {
     navigate('/map');
   };
@@ -45,45 +46,39 @@ const CollectRequest2 = () => {
 
   if (isLoading) {
     return (
-      <div className={classes.loaderWrapper}>
-        <div className={classes.loader}>
-          <div className={classes.square} id={classes.sq1}></div>
-          <div className={classes.square} id={classes.sq2}></div>
-          <div className={classes.square} id={classes.sq3}></div>
-          <div className={classes.square} id={classes.sq4}></div>
-          <div className={classes.square} id={classes.sq5}></div>
-          <div className={classes.square} id={classes.sq6}></div>
-          <div className={classes.square} id={classes.sq7}></div>
-          <div className={classes.square} id={classes.sq8}></div>
-          <div className={classes.square} id={classes.sq9}></div>
-        </div>
+      <div className="h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
       </div>
     );
   }
 
   if (!isAuthenticated) {
     return (
-      <div className="h-screen">Authentication Failed/ Request not exists</div>
+      <div className="h-screen flex items-center justify-center text-red-500">
+        Authentication Failed / Request does not exist
+      </div>
     );
   }
 
   if (!request) {
     return (
-      <div className="h-screen">Authentication Failed/ Request not exists</div>
+      <div className="h-screen flex items-center justify-center text-red-500">
+        Request not found
+      </div>
     );
   }
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="bg-gray-600 flex flex-col min-h-screen">
       <main className="text-center">
-        <div className={classes.app}>
+        <div className="bg-gray-600 p-3 rounded-lg shadow-md mb-2">
           {!isLoaded ? (
-            <h1>Loading...</h1>
+            <h1 className="text-xl font-semibold">Loading...</h1>
           ) : (
             <GoogleMap
-              mapContainerClassName={classes.map}
+              mapContainerClassName="w-full rounded-lg shadow-md h-96"
               center={center}
-              zoom={12}
+              zoom={14}
             >
               <MarkerF
                 position={{ lat: request.req_lat, lng: request.req_lng }}
@@ -94,29 +89,42 @@ const CollectRequest2 = () => {
             </GoogleMap>
           )}
         </div>
-        <p className="mb-2">Request ID: {request.request_id}</p>
-        <p className="mb-2">User ID: {request.user_id}</p>
-        <p className="mb-2">Full Name: {request.full_name}</p>
-        <p className="mb-2">Request Address: {request.req_address}</p>
-        <p className="mb-2">Phone Number: {request.phone_number}</p>
-        <p className="mb-2">Bottles Number: {request.bottles_number}</p>
-        <p className="mb-2">From Hour: {request.from_hour}</p>
-        <p className="mb-2">To Hour: {request.to_hour}</p>
-        <p className="mb-2">Request Date: {formatDate(request.request_date)}</p>
-        <p className="mb-2">Last Updated: {formatTime(request.request_date)}</p>
-        <div className="space-x-4">
-          <button
-            className="bg-black text-white py-2 px-4 rounded"
-            onClick={handleNotify}
-          >
-            Notify Collector
-          </button>
-          <button
-            className="bg-black text-white py-2 px-4 rounded"
-            onClick={handleCancel}
-          >
-            Cancel
-          </button>
+        <div className="bg-gray-700 text-white  p-6 rounded-lg shadow-md">
+          <p className="mb-2">
+            <span className="font-semibold shadow-blue-500/50">
+              Request Address:{' '}
+            </span>
+            {request.req_address}
+          </p>
+          <p className="mb-2">
+            <span className="font-semibold shadow-blue-500/50">
+              Bottles Number:{' '}
+            </span>
+            {request.bottles_number}
+          </p>
+          <p className="mb-2">
+            <span className="font-semibold">Hours: </span>
+            {request.from_hour} - {request.to_hour}
+          </p>
+          <p className="mb-2">
+            <span className="font-semibold">Last Updated: </span>
+            {formatDate(request.request_date)}{' '}
+            {formatTime(request.request_date)}
+          </p>
+          <div className="mt-8 space-x-4">
+            <button
+              className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded font-semibold"
+              onClick={handleNotify}
+            >
+              Notify Collector
+            </button>
+            <button
+              className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded font-semibold"
+              onClick={handleCancel}
+            >
+              Cancel
+            </button>
+          </div>
         </div>
       </main>
     </div>
