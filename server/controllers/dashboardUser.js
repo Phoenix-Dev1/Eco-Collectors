@@ -46,6 +46,8 @@ const updateRequestStatus = (req, res) => {
       }
 
       const { bottles_number, user_id } = result[0];
+      console.log('Bottles: ' + bottles_number);
+      console.log('User_id: ' + user_id);
 
       let recyclerId;
       const q = 'SELECT recycler_id FROM user_requests WHERE request_id = ?';
@@ -66,35 +68,22 @@ const updateRequestStatus = (req, res) => {
             if (err) return res.status(500).send(err);
 
             // Update the user's amount if the status changed to 3
-            //console.log('user_id: ' + user_id);
             if (status === 3) {
               const updateAmountQ =
                 'UPDATE users SET amount = amount + ? WHERE ID = ?';
               db.query(
                 updateAmountQ,
                 [bottles_number, user_id],
-                (err, userData) => {
+                (err, data) => {
                   if (err) return res.status(500).send(err);
 
-                  // Add the bottles_number to the recycler's amount
-                  //console.log('recyclerId: ' + recyclerId);
-                  const updateRecyclerAmountQ =
-                    'UPDATE users SET amount = amount + ? WHERE ID = ?';
-                  db.query(
-                    updateRecyclerAmountQ,
-                    [bottles_number, recyclerId],
-                    (err, recyclerData) => {
-                      if (err) return res.status(500).send(err);
-
-                      // Update the completed_date to the current time
-                      const completedQ =
-                        'UPDATE user_requests SET `completed_date`= NOW() WHERE `request_id` = ?';
-                      db.query(completedQ, [requestId], (err, data) => {
-                        if (err) return res.status(500).send(err);
-                        return res.status(200).json(data);
-                      });
-                    }
-                  );
+                  // Update the completed_date to the current time
+                  const completedQ =
+                    'UPDATE user_requests SET `completed_date`= NOW() WHERE `request_id` = ?';
+                  db.query(completedQ, [requestId], (err, data) => {
+                    if (err) return res.status(500).send(err);
+                    return res.status(200).json(data);
+                  });
                 }
               );
             } else {

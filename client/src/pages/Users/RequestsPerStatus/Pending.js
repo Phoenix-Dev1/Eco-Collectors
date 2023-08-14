@@ -9,11 +9,12 @@ import {
   cancelRequest,
   acceptAndCloseRequest,
 } from '../UserFunctions';
-import { getStatusColor, renderButtons } from '../RequestUtils';
+import { renderButtons } from '../RequestUtils';
 
 const Pending = () => {
   const { currentUser } = useContext(AuthContext);
   const [pendingRequests, setPendingRequests] = useState([]);
+  const [updatedBottlesNumber, setUpdatedBottlesNumber] = useState('');
 
   // Fetching user request by user id
   useEffect(() => {
