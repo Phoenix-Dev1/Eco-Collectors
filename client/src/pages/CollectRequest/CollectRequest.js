@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { GoogleMap, MarkerF, useLoadScript } from '@react-google-maps/api';
 import {
   fetchRequestById,
@@ -8,7 +8,7 @@ import {
 } from './RequestFunctions';
 import { useNavigate } from 'react-router-dom';
 
-const CollectRequest2 = () => {
+const CollectRequest = () => {
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_API_KEY,
   });
@@ -17,10 +17,7 @@ const CollectRequest2 = () => {
   const [request, setRequest] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const center = useMemo(
-    () => ({ lat: request.req_lat, lng: request.req_lng }),
-    [request]
-  );
+  const [center, setCenter] = useState({ lat: 32.79413, lng: 34.98828 });
   const handleCancel = () => {
     navigate('/map');
   };
@@ -36,8 +33,8 @@ const CollectRequest2 = () => {
       const requestId = window.location.href.split('?')[1].split('=')[1];
       const data = await fetchRequestById(requestId);
       setRequest(data);
+      setCenter({ lat: data.req_lat, lng: data.req_lng }); // Update the center with fetched coordinates
       setIsLoading(false);
-      // Set the authentication status based on your logic here
       setIsAuthenticated(true); // Change to false if authentication fails
     };
 
@@ -131,4 +128,4 @@ const CollectRequest2 = () => {
   );
 };
 
-export default CollectRequest2;
+export default CollectRequest;

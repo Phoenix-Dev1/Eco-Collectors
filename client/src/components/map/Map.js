@@ -408,7 +408,6 @@ const Map = () => {
               req_lat,
               req_lng,
               req_address,
-              phone_number,
               bottles_number,
               from_hour,
               to_hour,
@@ -450,10 +449,11 @@ const Map = () => {
                             {from_hour} - {to_hour}
                           </span>
                         </div>
+                        {/* 
                         <div className="flex items-center mb-1">
                           <span className="font-semibold mr-1">Phone:</span>
                           <span>{phone_number}</span>
-                        </div>
+                        </div> */}
                         <div className="flex items-center mb-1">
                           <span className="font-semibold mr-1">Date:</span>
                           <span>{formatDateTime(request_date)}</span>
@@ -464,10 +464,10 @@ const Map = () => {
                           </span>
                           <span>{formatTime(request_date)}</span>
                         </div>
-                        <div className="flex items-center">
+                        {/* <div className="flex items-center">
                           <span className="font-semibold mr-1">Status:</span>
                           <span>{status}</span>
-                        </div>
+                        </div> */}
                       </div>
                       <div className="flex justify-center">
                         {isCurrentUser && (
