@@ -1,4 +1,7 @@
-const welcomeUserData = (req, res) => {
+const { db } = require('../db.js');
+const jwt = require('jsonwebtoken');
+
+const WelcomeUserData = (req, res) => {
   const token = req.cookies.access_token;
   if (!token) return res.status(401).json('Not authenticated');
 
@@ -37,5 +40,5 @@ const welcomeUserData = (req, res) => {
 };
 
 module.exports = {
-  welcomeUserData: welcomeUserData,
+  WelcomeUserData: WelcomeUserData,
 };
