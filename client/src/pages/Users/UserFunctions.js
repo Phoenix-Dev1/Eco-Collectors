@@ -76,7 +76,7 @@ export async function cancelRequest(requestId) {
 }
 
 // Accepting and closing request
-export async function acceptAndCloseRequest(requestId) {
+export async function acceptAndCloseRequest(requestId, newBottlesNumber) {
   const confirmed = window.confirm(
     'Are you sure you want to accept and close this request?'
   );
@@ -87,6 +87,7 @@ export async function acceptAndCloseRequest(requestId) {
   try {
     const res = await axios.put(`/dashboardUser/${requestId}`, {
       status: 3,
+      newBottlesNumber: newBottlesNumber, // Pass the new bottles number
     });
     return res.data;
   } catch (err) {

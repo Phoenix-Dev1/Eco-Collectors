@@ -54,7 +54,7 @@ export async function updateRecyclerJoinRequestStatus(
 }
 
 // Recycle Requests
-export async function fetchAllRecyclerRequests(statusFilter = null) {
+export async function fetchAllRequests(statusFilter = null) {
   try {
     const response = await axios.get('/manager/all-requests', {
       params: { status: statusFilter }, // Pass the status filter to the API
@@ -77,3 +77,11 @@ export async function updateRequestStatus(requestId, newStatus) {
     throw err;
   }
 }
+
+export const statusMap = {
+  1: 'Awaits Recycler',
+  2: 'Awaits User Approval',
+  3: 'Completed',
+  4: 'Canceled',
+  5: 'Awaits Recycler Pickup',
+};

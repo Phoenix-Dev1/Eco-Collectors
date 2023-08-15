@@ -7,6 +7,7 @@ import {
 } from '@react-google-maps/api';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import classes from './bins.module.css';
 
 const libraries = [process.env.REACT_APP_GOOGLE_LIB];
 const UpdateBin = () => {
@@ -111,7 +112,16 @@ const UpdateBin = () => {
   }, []);
 
   if (!isLoaded) {
-    return <div>Loading...</div>;
+    return (
+      <div className={classes.loaderWrapper}>
+        <div className={classes.container}>
+          <div className={classes.ring}></div>
+          <div className={classes.ring}></div>
+          <div className={classes.ring}></div>
+          <span className={classes.loading}>Recycle</span>
+        </div>
+      </div>
+    );
   }
 
   return (

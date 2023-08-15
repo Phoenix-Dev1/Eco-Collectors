@@ -199,7 +199,7 @@ const RecycleBins = () => {
         </div>
       )}
       {recycleBins.length > 0 ? (
-        <div className="mx-auto w-full px-4 md:max-w-3xl lg:max-w-4xl xl:max-w-6xl text-center">
+        <div className="mr-4 ">
           <DataTable
             columns={columns}
             data={recycleBins}

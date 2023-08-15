@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import DataTable from 'react-data-table-component';
-import { fetchAllRequests, updateRequestStatus } from './ManagerFunctions';
+import { fetchAllRequests } from './RecyclerFunctions';
 import { format } from 'date-fns';
 
-const RegionalRequests = () => {
+const RegionalRecyclerRequests = () => {
   const [allRequests, setAllRequests] = useState([]);
-  const [selectedStatusFilter, setSelectedStatusFilter] = useState(null); // Initialize as null to show all requests
+  const [selectedStatusFilter, setSelectedStatusFilter] = useState(1); // Initialize as 1 - Awaits recycler
 
   const filterByStatus = (status) => {
     setSelectedStatusFilter(status);
@@ -24,31 +24,7 @@ const RegionalRequests = () => {
     fetchData();
   }, [selectedStatusFilter]);
 
-  const handleHoldRequest = async (requestId) => {
-    const confirmation = window.confirm(
-      'Are you sure you want to Cancel this request?'
-    );
-    if (!confirmation) {
-      return;
-    }
-
-    try {
-      // Make an API call to update the request status to 'Cancel' (status 4)
-      await updateRequestStatus(requestId, 4);
-
-      // Fetch updated data based on the current status filter
-      const updatedData = await fetchAllRequests(selectedStatusFilter);
-
-      // Update the state with the updated data
-      setAllRequests(updatedData);
-    } catch (error) {
-      console.error('Error holding request:', error);
-    }
-  };
-
   const columns = [
-    { name: 'User ID', selector: (row) => row.user_id, sortable: true },
-    { name: 'Request ID', selector: (row) => row.request_id, sortable: true },
     {
       name: 'Collector Name',
       selector: (row) => row.full_name,
@@ -75,28 +51,14 @@ const RegionalRequests = () => {
       selector: (row) => row.bottles_number,
       sortable: true,
     },
-    /*
     {
-      name: 'Status',
-      selector: (row) => statusMap[row.status], // Use the statusMap to map code to name
+      name: 'Recycler Name',
+      selector: (row) =>
+        row.recycler_first_name && row.recycler_last_name
+          ? `${row.recycler_first_name} ${row.recycler_last_name}`
+          : 'Not Assigned',
       sortable: true,
       wrap: true,
-    }, */
-    // Actions column
-    {
-      name: 'Actions',
-      cell: (row) => (
-        <div className="flex flex-col">
-          {row.status === 1 || row.status === 2 || row.status === 5 ? (
-            <button
-              onClick={() => handleHoldRequest(row.request_id)}
-              className="px-2 py-1 rounded bg-yellow-500 text-white mx-2"
-            >
-              Cancel
-            </button>
-          ) : null}
-        </div>
-      ),
     },
   ];
 
@@ -108,7 +70,7 @@ const RegionalRequests = () => {
 
   return (
     <div className="text-center">
-      <h2 className="text-lg font-bold mb-4">All Requests:</h2>
+      <h2 className="text-lg font-bold mb-4">Regional Requests:</h2>
       <div className="mb-3">
         <button
           onClick={() => filterByStatus(1)}
@@ -165,4 +127,4 @@ const RegionalRequests = () => {
   );
 };
 
-export default RegionalRequests;
+export default RegionalRecyclerRequests;

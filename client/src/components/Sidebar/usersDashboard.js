@@ -87,7 +87,7 @@ const Dashboard = () => {
               </div>
             )}
 
-            {userRole === 2 && (
+            {(userRole === 2 || userRole === 5) && (
               <div className="py-2 px-4 rounded text-white text-lg hover:bg-white/5 transition ease-linear duration-150 mb-2">
                 <div className="flex items-center">
                   <div>
@@ -108,7 +108,7 @@ const Dashboard = () => {
                   </div>
                   <div className="ml-2">
                     <span className="text-lg font-bold leading-5 text-white">
-                      <Link to="/user/request-status">Requests Status</Link>
+                      Requests Status
                     </span>
                   </div>
                 </div>
@@ -147,19 +147,23 @@ const Dashboard = () => {
                   </div>
                   <div className="ml-2">
                     <span className="text-lg font-bold leading-5 text-white">
-                      <Link to="/user/request-status">Recycler Panel</Link>
+                      Recycler Panel
                     </span>
                   </div>
                 </div>
                 <ul className="md:flex md:flex-col md:ml-6">
                   <li className="text-sm text-white/50 hover:bg-white/5 transition ease-linear duration-150">
-                    <Link to="/user/pending-requests">Pending</Link>
+                    <Link to="/recycler/regional-requests">
+                      Regional Requests
+                    </Link>
                   </li>
                   <li className="text-sm text-white/50 hover:bg-white/5 transition ease-linear duration-150">
-                    <Link to="/user/completed-requests">Completed</Link>
+                    <Link to="/recycler/accepted-requests">
+                      Accepted Requests
+                    </Link>
                   </li>
                   <li className="text-sm text-white/50 hover:bg-white/5 transition ease-linear duration-150">
-                    <Link to="/user/cancelled-requests">Cancelled</Link>
+                    <Link to="/manager/TBD">TBD</Link>
                   </li>
                 </ul>
               </div>
@@ -186,7 +190,7 @@ const Dashboard = () => {
                   </div>
                   <div className="ml-2">
                     <span className="text-lg font-bold leading-5 text-white">
-                      <Link to="/user/request-status">Manager Panel</Link>
+                      Manager Panel
                     </span>
                   </div>
                 </div>
@@ -200,7 +204,9 @@ const Dashboard = () => {
                     </Link>
                   </li>
                   <li className="text-sm text-white/50 hover:bg-white/5 transition ease-linear duration-150">
-                    <Link to="/user/cancelled-requests">Cancelled</Link>
+                    <Link to="/manager/regional-requests">
+                      Regional Requests
+                    </Link>
                   </li>
                 </ul>
               </div>
@@ -209,12 +215,14 @@ const Dashboard = () => {
             {userRole !== 1 &&
               userRole !== 2 &&
               userRole !== 3 &&
-              userRole !== 4 && (
+              userRole !== 4 &&
+              userRole !== 5 && (
                 <div>
                   <p> Role undefined - Contact support </p>
                 </div>
               )}
-            {userRole !== 2 && (
+
+            {userRole !== 2 && userRole !== 5 && (
               <div className="py-2 px-4 rounded text-white text-lg hover:bg-white/5 transition ease-linear duration-150 mb-2">
                 <div className="flex items-center">
                   <div>
@@ -233,9 +241,10 @@ const Dashboard = () => {
                       />
                     </svg>
                   </div>
+
                   <div className="ml-2">
                     <span className="text-lg font-bold leading-5 text-white">
-                      <Link to="/user/request-status">Requests Status</Link>
+                      Requests Status
                     </span>
                   </div>
                 </div>

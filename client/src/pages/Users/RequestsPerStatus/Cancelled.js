@@ -1,15 +1,8 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { AuthContext } from '../../../context/authContext';
 import DataTable from 'react-data-table-component';
-import {
-  fetchUserRequests,
-  fetchRecyclerDetails,
-  acceptRequest,
-  declineRequest,
-  cancelRequest,
-  acceptAndCloseRequest,
-} from '../UserFunctions';
-import { getStatusColor, renderButtons } from '../RequestUtils';
+import { fetchUserRequests, fetchRecyclerDetails } from '../UserFunctions';
+import { renderButtons } from '../RequestUtils';
 
 const Cancelled = () => {
   const { currentUser } = useContext(AuthContext);
@@ -52,7 +45,7 @@ const Cancelled = () => {
     if (cancelledRequests.length > 0) {
       fetchRecyclerData();
     }
-  }, [cancelledRequests.length]); // Use cancelledRequests.length as the dependency
+  }, [cancelledRequests, cancelledRequests.length]); // Use cancelledRequests.length as the dependency
 
   // Accepting recycler pickup request
   const handleAccept = async (requestId) => {
