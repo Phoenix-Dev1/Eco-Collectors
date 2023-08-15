@@ -108,7 +108,7 @@ const Dashboard = () => {
                   </div>
                   <div className="ml-2">
                     <span className="text-lg font-bold leading-5 text-white">
-                      <Link to="/user/request-status">Requests Status</Link>
+                      Requests Status
                     </span>
                   </div>
                 </div>
@@ -190,7 +190,7 @@ const Dashboard = () => {
                   </div>
                   <div className="ml-2">
                     <span className="text-lg font-bold leading-5 text-white">
-                      <Link to="/user/request-status">Manager Panel</Link>
+                      Manager Panel
                     </span>
                   </div>
                 </div>
@@ -241,9 +241,10 @@ const Dashboard = () => {
                       />
                     </svg>
                   </div>
+
                   <div className="ml-2">
                     <span className="text-lg font-bold leading-5 text-white">
-                      <Link to="/user/request-status">Requests Status</Link>
+                      Requests Status
                     </span>
                   </div>
                 </div>

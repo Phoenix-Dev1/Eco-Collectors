@@ -20,7 +20,6 @@ import WelcomeHandler from './pages/Users/WelcomePerUser/WelcomeHandler';
 import UpdateUserInformation from './pages/Users/ManageAccount/UpdateUserInformation';
 import ChangePassword from './pages/Users/ManageAccount/ChangePassword';
 import ForgotPassword from './pages/ForgotPassword/ForgotPassword';
-import RequestStatus from './pages/Users/RequestStatus';
 import UpdateRequest from './pages/Users/UpdateRequest';
 import Cancelled from './pages/Users/RequestsPerStatus/Cancelled';
 import Completed from './pages/Users/RequestsPerStatus/completed';
@@ -53,7 +52,6 @@ export default function App() {
           <Route path="welcome" element={<WelcomeHandler />} />
           <Route path="update-user-info" element={<UpdateUserInformation />} />
           <Route path="change-password" element={<ChangePassword />} />
-          <Route path="request-status" element={<RequestStatus />} />
           <Route path="update-request" element={<UpdateRequest />} />
           <Route path="cancelled-requests" element={<Cancelled />} />
           <Route path="completed-requests" element={<Completed />} />

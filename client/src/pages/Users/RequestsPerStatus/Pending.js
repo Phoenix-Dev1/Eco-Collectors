@@ -4,6 +4,7 @@ import DataTable from 'react-data-table-component';
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import { blue, red } from '@mui/material/colors';
 import Typography from '@mui/material/Typography';
 import {
   fetchUserRequests,
@@ -33,6 +34,38 @@ const Pending = () => {
   // Close the modal
   const closeModal = () => setModalOpen(false);
 
+  // Define button styles
+  const buttonStyleAccept = {
+    bgcolor: blue[500],
+    color: 'white', // Text color
+    border: 'none', // Remove border
+    padding: '10px 20px', // Add padding
+    marginRight: '10px', // Add margin between buttons
+    fontWeight: 'bold', // Bold text
+    '&:hover': {
+      bgcolor: blue[700], // Darker background on hover
+    },
+  };
+
+  const buttonStyleCancel = {
+    bgcolor: red[500],
+    color: 'white',
+    border: 'none',
+    padding: '10px 20px',
+    fontWeight: 'bold',
+    '&:hover': {
+      bgcolor: red[700],
+    },
+  };
+
+  const linesStyle = {
+    textAlign: 'center',
+    fontWeight: 'bold',
+    marginBottom: '20px',
+    color: '#333', // Set the text color
+    fontFamily: 'Arial, Roboto, sans-serif',
+  };
+
   // Modal content
   const modalContent = (
     <Box sx={modalStyle}>
@@ -41,6 +74,7 @@ const Pending = () => {
         variant="h6"
         component="h2"
         className="text-center"
+        sx={linesStyle}
       >
         Final bottles number
       </Typography>
@@ -52,8 +86,9 @@ const Pending = () => {
           onChange={(e) => setSelectedBottles(e.target.value)}
         />
       </div>
-      <div className="text-center">
+      <div className="text-center mt-4 ">
         <Button
+          sx={buttonStyleAccept}
           onClick={() =>
             handleAcceptAndCloseWithBottles(
               currentRequest.request_id,
@@ -63,7 +98,9 @@ const Pending = () => {
         >
           Accept & Close
         </Button>
-        <Button onClick={closeModal}>Cancel</Button>
+        <Button onClick={closeModal} sx={buttonStyleCancel}>
+          Cancel
+        </Button>
       </div>
     </Box>
   );
@@ -199,7 +236,7 @@ const Pending = () => {
               handleAccept,
               handleDecline,
               handleCancel,
-              () => openModal(row) // Use openModal instead of handleAcceptAndClose
+              () => openModal(row) // Use openModal
             )}
           </div>
         );

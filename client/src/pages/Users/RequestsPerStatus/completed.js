@@ -44,17 +44,7 @@ const Completed = () => {
     if (completedRequests.length > 0) {
       fetchRecyclerData();
     }
-  }, [completedRequests.length]); // Use completedRequests.length as the dependency
-
-  const formatDate = (dateString) => {
-    const [date, time] = dateString.split(', ');
-    const [day, month, year] = date.split('.');
-    const [hours, minutes, seconds] = time.split(':');
-    const formattedDate = new Date(
-      `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.000Z`
-    );
-    return formattedDate.toLocaleString();
-  };
+  }, [completedRequests, completedRequests.length]); // Use completedRequests.length as the dependency
 
   // Define columns for the data table
   const columns = [

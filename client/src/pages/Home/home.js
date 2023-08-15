@@ -179,7 +179,7 @@ const Home = () => {
             sorted in the other bins.
           </p>
           <a
-            href="#"
+            href="/#"
             className="fixed w-12 h-12 bg-blue-700 bottom-12 right-8 flex items-center justify-center text-black text-lg rounded-full hover:text-white"
           >
             <FontAwesomeIcon icon={faAngleUp} />
