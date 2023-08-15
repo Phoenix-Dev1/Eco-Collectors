@@ -77,3 +77,11 @@ export async function updateRequestStatus(requestId, newStatus) {
     throw err;
   }
 }
+
+export const statusMap = {
+  1: 'Awaits Recycler',
+  2: 'Awaits User Approval',
+  3: 'Completed',
+  4: 'Canceled',
+  5: 'Awaits Recycler Pickup',
+};

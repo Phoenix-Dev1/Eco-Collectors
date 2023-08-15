@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import DataTable from 'react-data-table-component';
-import { fetchAllRequests, updateRequestStatus } from './ManagerFunctions';
+import {
+  fetchAllRequests,
+  updateRequestStatus,
+  statusMap,
+} from './ManagerFunctions';
 import { format } from 'date-fns';
 
 const RegionalRequests = () => {
@@ -75,8 +79,13 @@ const RegionalRequests = () => {
       selector: (row) => row.bottles_number,
       sortable: true,
     },
-
-    { name: 'Status', selector: (row) => row.status, sortable: true },
+    /*
+    {
+      name: 'Status',
+      selector: (row) => statusMap[row.status], // Use the statusMap to map code to name
+      sortable: true,
+      wrap: true,
+    }, */
     // Actions column
     {
       name: 'Actions',
