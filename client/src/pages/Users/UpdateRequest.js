@@ -123,7 +123,7 @@ const UpdateRequest = () => {
     };
 
     fetchRequestData();
-  }, [requestData]);
+  }, []);
 
   if (!isLoaded) {
     return (

@@ -31,7 +31,8 @@ const Navbar = () => {
 
   const handleWelcome = () => {
     if (currentUser.role === 1) return '/user/welcomeAdmin';
-    else if (currentUser.role === 2) return '/user/welcomeUser';
+    else if (currentUser.role === 2 || currentUser.role === 5)
+      return '/user/welcomeUser';
     else if (currentUser.role === 3) return '/user/welcomeRecycler';
     else if (currentUser.role === 4) return '/user/welcomeManager';
     else return '/';
@@ -106,54 +107,6 @@ const Navbar = () => {
       <Link to="/" className="ml-2">
         <img className="h-16 w-26" src={Logo} alt="Eco Collectors" />
       </Link>
-      <ul className={'hidden md:flex'}>
-        <li className="p-4 hover:text-blue-600">
-          <Link to="/">Home</Link>
-        </li>
-        {currentUser && (
-          <li className="p-4 hover:text-blue-600">
-            <Link to="/join">Recycler Registration</Link>
-          </li>
-        )}
-        {currentUser && (
-          <li className="p-4 hover:text-blue-600">
-            <Link to="/manager-join">Manager Registration</Link>
-          </li>
-        )}
-        <li className="p-4 hover:text-blue-600">
-          <Link to="/contact-us">Contact Us</Link>
-        </li>
-        {!currentUser && (
-          <li className="p-4 hover:text-blue-600">
-            <Link to="/register">Register</Link>
-          </li>
-        )}
-        {currentUser ? (
-          <li
-            className="p-4 cursor-pointer hover:text-red-500"
-            onClick={handleLogout}
-          >
-            Logout
-          </li>
-        ) : (
-          <li className="p-4 hover:text-blue-600">
-            <Link to="/login">Login</Link>
-          </li>
-        )}
-        {currentUser && (
-          <li className="p-4 text-orange-500  hover:text-green-600">
-            <Link to={handleWelcome()}>{currentUser.first_name}</Link>
-          </li>
-        )}
-        <li>
-          <Link
-            to="/map"
-            className="bg-indigo-600 w-12 h-12 rounded-full flex items-center justify-center font-bold hover:bg-orange-400 border-2 border-white-500 hover:border-white-600"
-          >
-            Map
-          </Link>
-        </li>
-      </ul>
 
       {/* Mobile menu icon */}
       <div onClick={handleNav} className="block md:hidden">
