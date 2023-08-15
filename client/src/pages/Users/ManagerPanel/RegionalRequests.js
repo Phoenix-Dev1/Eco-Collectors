@@ -1,10 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import DataTable from 'react-data-table-component';
-import {
-  fetchAllRequests,
-  updateRequestStatus,
-  statusMap,
-} from './ManagerFunctions';
+import { fetchAllRequests, updateRequestStatus } from './ManagerFunctions';
 import { format } from 'date-fns';
 
 const RegionalRequests = () => {
