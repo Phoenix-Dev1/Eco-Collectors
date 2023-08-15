@@ -375,22 +375,25 @@ const Map = () => {
                   <InfoWindowF
                     onCloseClick={() => setSelectedMarker(null)}
                     disableAutoClose={true}
+                    style={{ background: 'blue' }}
                   >
-                    <div className="p-2">
+                    <div className="pl-5 text-center">
                       <h1 className="text-xl font-bold mb-2 text-right">
                         {address}
                       </h1>
                       <p
-                        className={`mb-2 text-right font-semibold ${typeColors[type]}`}
+                        className={`mb-2 text-center font-semibold ${typeColors[type]}`}
                       >
                         {typeDescriptions[type]}
                       </p>
-                      <h2 className="mb-2 text-right">
-                        {formatDate(last_modified)}
-                      </h2>
-                      <div className="text-right">
+                      <div className="text-center">
+                        <h2 className="mb-2 text-center">
+                          Last updated: {formatDate(last_modified)}
+                        </h2>
+                      </div>
+                      <div className="text-center">
                         <button
-                          className="text-blue-500 hover:underline"
+                          className="bg-white hover:bg-blue-300 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow items-center"
                           onClick={() => handleOpenGoogleMaps(lat, lng)}
                         >
                           Navigate
@@ -436,7 +439,7 @@ const Map = () => {
                     onCloseClick={() => setSelectedMarker(null)}
                     disableAutoClose={true}
                   >
-                    <div className="p-2">
+                    <div className="pl-5">
                       <h1 className="text-xl font-bold mb-2">{req_address}</h1>
                       <div className="mb-4">
                         <div className="flex items-center mb-1">
@@ -473,7 +476,7 @@ const Map = () => {
                         {isCurrentUser && (
                           <Link
                             to={`/user/update-request?Id=${request_id}`}
-                            className="text-blue-500 hover:underline mr-2"
+                            className="bg-white hover:bg-yellow-300 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow items-center"
                           >
                             Update
                           </Link>
@@ -484,10 +487,23 @@ const Map = () => {
                           currentUser && (
                             <Link
                               to={`/collect?Id=${request_id}`}
-                              className="text-blue-500 hover:underline"
+                              className="bg-white ml-2 hover:bg-green-300 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow items-center"
                             >
                               Collect
                             </Link>
+                          )}
+                        {currentUser?.role !== 2 &&
+                          currentUser?.role !== 5 &&
+                          status !== 2 &&
+                          currentUser && (
+                            <button
+                              className="bg-white ml-2 hover:bg-blue-300 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow items-center"
+                              onClick={() =>
+                                handleOpenGoogleMaps(req_lat, req_lng)
+                              }
+                            >
+                              Navigate
+                            </button>
                           )}
                       </div>
                     </div>
