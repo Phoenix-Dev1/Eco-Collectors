@@ -1,6 +1,10 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { AuthContext } from '../../../context/authContext';
 import DataTable from 'react-data-table-component';
+import Modal from '@mui/material/Modal';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
 import {
   fetchUserRequests,
   fetchRecyclerDetails,
@@ -9,11 +13,76 @@ import {
   cancelRequest,
   acceptAndCloseRequest,
 } from '../UserFunctions';
-import { renderButtons } from '../RequestUtils';
+import { renderButtons, modalStyle } from '../RequestUtils';
 
 const Pending = () => {
+  // State for the React Modal
   const { currentUser } = useContext(AuthContext);
   const [pendingRequests, setPendingRequests] = useState([]);
+  const [selectedBottles, setSelectedBottles] = useState('');
+  const [modalOpen, setModalOpen] = useState(false);
+  const [currentRequest, setCurrentRequest] = useState(null); // Add this state
+
+  // Open the modal
+  const openModal = (request) => {
+    setCurrentRequest(request);
+    setSelectedBottles(request.bottles_number); // Set selectedBottles
+    setModalOpen(true);
+  };
+
+  // Close the modal
+  const closeModal = () => setModalOpen(false);
+
+  // Modal content
+  const modalContent = (
+    <Box sx={modalStyle}>
+      <Typography
+        id="modal-modal-title"
+        variant="h6"
+        component="h2"
+        className="text-center"
+      >
+        Final bottles number
+      </Typography>
+      <div className="text-center">
+        <input
+          className="border border-black text-center"
+          type="number"
+          value={selectedBottles}
+          onChange={(e) => setSelectedBottles(e.target.value)}
+        />
+      </div>
+      <div className="text-center">
+        <Button
+          onClick={() =>
+            handleAcceptAndCloseWithBottles(
+              currentRequest.request_id,
+              selectedBottles
+            )
+          }
+        >
+          Accept & Close
+        </Button>
+        <Button onClick={closeModal}>Cancel</Button>
+      </div>
+    </Box>
+  );
+
+  // Handle the "Accept & Close" action with selected bottles
+  const handleAcceptAndCloseWithBottles = async (
+    requestId,
+    newBottlesNumber
+  ) => {
+    try {
+      const response = await acceptAndCloseRequest(requestId, newBottlesNumber);
+      if (response) {
+        closeModal(); // Close the modal
+        window.location.reload(); // Reload the page
+      }
+    } catch (error) {
+      console.log('Error accepting and closing request:', error);
+    }
+  };
 
   // Fetching user request by user id
   useEffect(() => {
@@ -52,7 +121,7 @@ const Pending = () => {
     if (pendingRequests.length > 0) {
       fetchRecyclerData();
     }
-  }, [pendingRequests.length]); // Use pendingRequests.length as the dependency
+  }, [pendingRequests]); // Use pendingRequests as the dependency
 
   // Accepting recycler pickup request
   const handleAccept = async (requestId) => {
@@ -93,18 +162,6 @@ const Pending = () => {
     }
   };
 
-  // Accept & Close the request
-  const handleAcceptAndClose = async (requestId) => {
-    try {
-      const response = await acceptAndCloseRequest(requestId);
-      if (response) {
-        window.location.reload(); // Reload the page
-      }
-    } catch (error) {
-      console.log('Error accepting and closing request:', error);
-    }
-  };
-
   // Define columns for the data table
   const columns = [
     {
@@ -142,7 +199,7 @@ const Pending = () => {
               handleAccept,
               handleDecline,
               handleCancel,
-              handleAcceptAndClose
+              () => openModal(row) // Use openModal instead of handleAcceptAndClose
             )}
           </div>
         );
@@ -217,6 +274,14 @@ const Pending = () => {
   return (
     <div className="text-center">
       <h2 className="text-lg font-bold mb-4">Pending Requests:</h2>
+      <Modal
+        open={modalOpen}
+        onClose={closeModal}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        {modalContent}
+      </Modal>
       {pendingRequests.length > 0 ? (
         <div className="mx-auto w-full px-4 md:max-w-3xl lg:max-w-4xl xl:max-w-6xl text-center">
           <DataTable
