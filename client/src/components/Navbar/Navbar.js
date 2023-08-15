@@ -106,8 +106,6 @@ const Navbar = () => {
       <Link to="/" className="ml-2">
         <img className="h-16 w-26" src={Logo} alt="Eco Collectors" />
       </Link>
-<<<<<<< HEAD
-=======
       <ul className={'hidden md:flex'}>
         <li className="p-4 hover:text-blue-600">
           <Link to="/">Home</Link>
@@ -144,7 +142,7 @@ const Navbar = () => {
         )}
         {currentUser && (
           <li className="p-4 text-orange-500  hover:text-green-600">
-            <Link to= {handleWelcome()} >{currentUser.first_name}</Link>
+            <Link to={handleWelcome()}>{currentUser.first_name}</Link>
           </li>
         )}
         <li>
@@ -156,7 +154,6 @@ const Navbar = () => {
           </Link>
         </li>
       </ul>
->>>>>>> 437d7c52a6fa09527be5ed3ed33d3db21eb5e34a
 
       {/* Mobile menu icon */}
       <div onClick={handleNav} className="block md:hidden">
