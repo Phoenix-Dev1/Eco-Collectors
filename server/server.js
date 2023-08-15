@@ -12,10 +12,13 @@ const recyclersManagers = require('./routes/recyclersManagerRegister.js');
 const user = require('./routes/user.js');
 const dashboardUser = require('./routes/dashboardUser.js');
 const dashboardRecycler = require('./routes/dashboardRecycler.js');
-const welcomeUser = require('./routes/welcomeUser.js');
 const adminRoutes = require('./routes/admin.js');
 const managerRoutes = require('./routes/manager.js');
 const recyclerRoutes = require('./routes/recycler.js');
+const welcomeAdmin = require('./routes/welcomeAdmin.js');
+const welcomeUser = require('./routes/welcomeUser.js');
+const welcomeRecycler = require('./routes/welcomeRecycler.js');
+const welcomeManager = require('./routes/welcomeManager.js');
 
 const port = process.env.PORT || 8800;
 
@@ -38,10 +41,13 @@ app.use('/api/recyclersManagers', recyclersManagers);
 app.use('/api/user', user);
 app.use('/api/dashboardUser', dashboardUser);
 app.use('/api/dashboardRecycler', dashboardRecycler);
-app.use('/api/user/welcome', welcomeUser);
 app.use('/api/admin', adminRoutes);
 app.use('/api/manager', managerRoutes);
 app.use('/api/recycler', recyclerRoutes);
+app.use('/api/user/welcome', welcomeUser);
+app.use('/api/user/welcomeRecycler', welcomeRecycler);
+app.use('/api/user/welcomeManager', welcomeManager);
+app.use('/api/user/welcomeAdmin', welcomeAdmin);
 
 app.listen(port, () => {
   console.log(`Server started on port ${port}`);

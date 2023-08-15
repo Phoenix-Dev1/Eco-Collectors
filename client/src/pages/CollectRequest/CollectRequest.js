@@ -113,7 +113,7 @@ const CollectRequest = () => {
               className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded font-semibold"
               onClick={handleNotify}
             >
-              Notify Collector
+              Notify Recycler
             </button>
             <button
               className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded font-semibold"
