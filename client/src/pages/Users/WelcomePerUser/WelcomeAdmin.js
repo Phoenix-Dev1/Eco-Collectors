@@ -4,6 +4,7 @@ import axios from 'axios';
 const WelcomeAdmin = () => {
   const [totalRequests, setTotalRequests] = useState(0);
   const [totalRecycledBottles, setTotalRecycledBottles] = useState(0);
+  const [avgClosingTime, setAvgClosingTime] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -11,8 +12,9 @@ const WelcomeAdmin = () => {
         const res = await axios.get('/user/welcomeAdmin');
         setTotalRequests(res.data.totalRequests);
         setTotalRecycledBottles(res.data.totalRecycledBottles);
+        setAvgClosingTime(res.data.avgClosingTime);
       } catch (err) {
-        console.log('STILL NOT WORKING!!! (MY "CONSOLE.LOG")');
+        console.log('Error fetching data');
       }
     };
     fetchData();
@@ -39,7 +41,7 @@ const WelcomeAdmin = () => {
         cardStyle:
           'bg-gradient-to-b from-red-200 to-red-100 border-b-4 border-red-500',
         titleStyle: 'text-red-500',
-        value: 0, // Placeholder for Average Request Closing Time (Not implemented yet)
+        value: `${avgClosingTime} minutes`, // Display average closing time in minutes
       },
     ];
 
@@ -106,7 +108,9 @@ const WelcomeAdmin = () => {
                 {/* The content of the title section goes here */}
                 {/* ... */}
               </div>
-              <div className="flex flex-wrap ">{renderMetricCards()}</div>
+              <div className="flex flex-wrap font-bold text-2xl">
+                {renderMetricCards()}
+              </div>
               <div className="flex flex-row flex-wrap flex-grow mt-2">
                 {renderGraphCards()}
               </div>

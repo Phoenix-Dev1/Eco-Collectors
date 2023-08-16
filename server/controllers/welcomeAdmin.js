@@ -23,41 +23,64 @@ const getWelcomeAdminData = (req, res) => {
       FROM user_requests
     `;
 
-    // Execute both queries in parallel
-    Promise.all([
-      new Promise((resolve, reject) => {
-        db.query(getTotalRequestsQuery, (err, result1) => {
+    // Query 3: Calculate the average closing time for all users' requests
+    const getAvgClosingTimeQuery = `
+      SELECT AVG(TIMESTAMPDIFF(SECOND, request_date, completed_date)) AS avgClosingTime
+      FROM user_requests
+      WHERE completed_date IS NOT NULL
+    `;
+
+    // Execute Query 1: Total Requests
+    db.query(getTotalRequestsQuery, (err, result1) => {
+      if (err) {
+        console.error('Error executing the total requests query:', err);
+        return res.status(500).json('Internal server error');
+      }
+      const totalRequests = result1[0].totalRequests;
+
+      // Execute Query 2: Total Recycled Bottles
+      db.query(getTotalRecycledBottlesQuery, (err, result2) => {
+        if (err) {
+          console.error(
+            'Error executing the total recycled bottles query:',
+            err
+          );
+          return res.status(500).json('Internal server error');
+        }
+        const totalRecycledBottles = result2[0].totalRecycledBottles;
+
+        // Execute Query 3: Average Closing Time
+        db.query(getAvgClosingTimeQuery, (err, result3) => {
           if (err) {
-            console.error('Error executing the total requests query:', err);
-            reject(err);
+            console.error('Error executing the avg closing time query:', err);
+            return res.status(500).json('Internal server error');
           }
-          const totalRequests = result1[0].totalRequests;
-          resolve(totalRequests);
+
+          const avgClosingTimeInSeconds = result3[0].avgClosingTime;
+          const avgClosingTimeInMinutes = Math.floor(
+            avgClosingTimeInSeconds / 60
+          );
+
+          // Convert to days, hours, and minutes
+          const days = Math.floor(avgClosingTimeInMinutes / 1440);
+          const hours = Math.floor((avgClosingTimeInMinutes % 1440) / 60);
+          const minutes = avgClosingTimeInMinutes % 60;
+
+          console.log('Total Requests:', totalRequests);
+          console.log('Total Recycled Bottles:', totalRecycledBottles);
+          console.log(
+            'Average Closing Time:',
+            `${days} days ${hours} hours ${minutes} minutes`
+          );
+
+          res.json({
+            totalRequests,
+            totalRecycledBottles,
+            avgClosingTime: `${days} days ${hours} hours ${minutes}`,
+          });
         });
-      }),
-      new Promise((resolve, reject) => {
-        db.query(getTotalRecycledBottlesQuery, (err, result2) => {
-          if (err) {
-            console.error(
-              'Error executing the total recycled bottles query:',
-              err
-            );
-            reject(err);
-          }
-          const totalRecycledBottles = result2[0].totalRecycledBottles;
-          resolve(totalRecycledBottles);
-        });
-      }),
-    ])
-      .then(([totalRequests, totalRecycledBottles]) => {
-        console.log('Total Requests:', totalRequests);
-        console.log('Total Recycled Bottles:', totalRecycledBottles);
-        res.json({ totalRequests, totalRecycledBottles });
-      })
-      .catch((error) => {
-        console.error('Error in queries:', error);
-        res.status(500).json('Internal server error');
       });
+    });
   });
 };
 

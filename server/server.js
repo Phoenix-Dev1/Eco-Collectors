@@ -46,11 +46,6 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/manager', managerRoutes);
 app.use('/api/recycler', recyclerRoutes);
 // Welcome pages routes
-// app.use('/api/user/welcome', welcomeUser);
-// app.use('/api/user/welcomeRecycler', welcomeRecycler);
-// app.use('/api/user/welcomeManager', welcomeManager);
-// app.use('/api/user/welcomeAdmin', welcomeAdmin);
-
 app.use('/api/user/welcomeAdmin', welcomeAdmin);
 app.use('/api/user/welcomeUser', welcomeUser);
 app.use('/api/user/welcomeRecycler', welcomeRecycler);
