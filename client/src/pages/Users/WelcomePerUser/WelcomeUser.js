@@ -3,19 +3,26 @@ import axios from 'axios';
 
 const WelcomeUser = () => {
   const [totalRequests, setTotalRequests] = useState(0);
+  const [totalRecycledBottles, setTotalRecycledBottles] = useState(0);
+  const [avgClosingTime, setAvgClosingTime] = useState(0);
 
   useEffect(() => {
-    const fetchTotalRequests = async () => {
+    const fetchUserData = async () => {
       try {
         const res = await axios.get('/user/welcomeUser');
         setTotalRequests(res.data.totalRequests);
+        setTotalRecycledBottles(res.data.totalRecycledBottles);
+        setAvgClosingTime(res.data.avgClosingTime);
       } catch (error) {
-        console.error('Error fetching total requests:', error);
+        console.error('Error fetching user data:', error);
         setTotalRequests(-1);
+        setTotalRecycledBottles(-1);
+        setAvgClosingTime(-1);
       }
     };
-    fetchTotalRequests();
+    fetchUserData();
   }, []);
+
   const renderMetricCards = () => {
     const metricStyles = [
       {
@@ -23,23 +30,26 @@ const WelcomeUser = () => {
         cardStyle:
           'bg-gradient-to-b from-green-200 to-green-100 border-b-4 border-green-600',
         titleStyle: 'text-green-600',
+        value: totalRequests,
       },
       {
         title: "Total Bottle No' Recycled",
         cardStyle:
           'bg-gradient-to-b from-indigo-200 to-indigo-100 border-b-4 border-indigo-500',
         titleStyle: 'text-indigo-500',
+        value: totalRecycledBottles,
       },
       {
         title: 'Average Request Closing Time',
         cardStyle:
           'bg-gradient-to-b from-red-200 to-red-100 border-b-4 border-red-500',
         titleStyle: 'text-red-500',
+        value: `${avgClosingTime.days} days ${avgClosingTime.hours} hours ${avgClosingTime.minutes} minutes`,
       },
     ];
 
     return metricStyles.map((metric, index) => {
-      const { title, cardStyle, titleStyle } = metric;
+      const { title, cardStyle, titleStyle, value } = metric;
 
       return (
         <div
@@ -48,9 +58,7 @@ const WelcomeUser = () => {
         >
           <div className={`border rounded-lg shadow-xl p-5 ${cardStyle}`}>
             <h2 className={`text-lg font-semibold ${titleStyle}`}>{title}</h2>
-            {title === 'Total Requests' && (
-              <p className="text-gray-600 mt-2">{totalRequests}</p>
-            )}
+            <p className="text-gray-600 mt-2">{value}</p>
           </div>
         </div>
       );
@@ -92,7 +100,9 @@ const WelcomeUser = () => {
                 {/* The content of the title section goes here */}
                 {/* ... */}
               </div>
-              <div className="flex flex-wrap ">{renderMetricCards()}</div>
+              <div className="flex flex-wrap font-bold text-2xl">
+                {renderMetricCards()}
+              </div>
               <div className="flex flex-row flex-wrap flex-grow mt-2">
                 {renderGraphCards()}
               </div>
