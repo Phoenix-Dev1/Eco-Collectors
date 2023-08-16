@@ -31,7 +31,8 @@ const Navbar = () => {
 
   const handleWelcome = () => {
     if (currentUser.role === 1) return '/user/welcomeAdmin';
-    else if (currentUser.role === 2) return '/user/welcomeUser';
+    else if (currentUser.role === 2 || currentUser.role === 5)
+      return '/user/welcomeUser';
     else if (currentUser.role === 3) return '/user/welcomeRecycler';
     else if (currentUser.role === 4) return '/user/welcomeManager';
     else return '/';
@@ -78,7 +79,7 @@ const Navbar = () => {
         )}
         {currentUser && (
           <li className="p-4 text-orange-500  hover:text-green-600">
-            <Link to= {handleWelcome()} >{currentUser.first_name}</Link>
+            <Link to={handleWelcome()}>{currentUser.first_name}</Link>
           </li>
         )}
         <li>
@@ -114,7 +115,7 @@ const Navbar = () => {
           </li>
           {currentUser && (
             <li className="p-4 border-b border-gray-600 text-orange-500  hover:text-green-600">
-              <Link to="/user">{currentUser.first_name}</Link>
+              <Link to={handleWelcome()}>{currentUser.first_name}</Link>
             </li>
           )}
           <li className="p-4 hover:text-purple-600">

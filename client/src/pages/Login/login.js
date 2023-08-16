@@ -15,25 +15,20 @@ function SignInForm() {
 
   // For displaying the current user name on screen - localStorage
   const { login } = useContext(AuthContext);
+  const { currentUser } = useContext(AuthContext);
+  const userRole = currentUser?.role;
 
   // User Credentials
   const handleChange = (e) => {
     setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleNavigate = (e) => {
-    switch (login.role) {
-      case 1:
-        navigate('/user/welcomeAdmin');
-      case 2:
-        navigate('/user/welcomeUser');
-      case 3:
-        navigate('/user/welcomeRecycler');
-      case 4:
-        navigate('/user/welcomeManager');
-      default:
-        navigate('/');
-    }
+  const handleWelcome = () => {
+    if (userRole === 1) navigate('/user/welcomeAdmin');
+    else if (userRole === 2 || userRole === 5) navigate('/user/welcomeUser');
+    else if (userRole === 3) navigate('/user/welcomeRecycler');
+    else if (userRole === 4) navigate('/user/welcomeManager');
+    else navigate('/user/request-status');
   };
 
   // Submitting the register from authContext
@@ -42,7 +37,8 @@ function SignInForm() {
     try {
       // Calling the login function from AuthContext
       await login(inputs);
-      handleNavigate();
+      handleWelcome();
+      console.log(userRole);
     } catch (err) {
       // Check the error response from the server and display appropriate error message
       if (err.response?.status === 404) {
