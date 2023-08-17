@@ -95,8 +95,39 @@ const updateRequestStatus = (req, res) => {
   });
 };
 
+// fetch recycler completed requests
+const fetchCompletedRequests = (req, res) => {
+  const token = req.cookies.access_token;
+  if (!token) return res.status(401).json('Not authenticated');
+
+  jwt.verify(token, 'jwtkey', async (err, userInfo) => {
+    if (err) return res.status(403).json('Token is not valid!');
+
+    // Check if the user is a recycler
+    if (userInfo.role !== 3) {
+      return res
+        .status(403)
+        .json('You are not authorized to access this resource');
+    }
+
+    const selectQuery = `
+      SELECT ur.*, CONCAT(u.first_name, ' ', u.last_name) AS recycler_name
+      FROM user_requests ur
+      LEFT JOIN users u ON ur.recycler_id = u.ID
+      WHERE ur.recycler_id = ? AND ur.status = 3
+    `;
+    const queryParams = [userInfo.id];
+
+    db.query(selectQuery, queryParams, (err, data) => {
+      if (err) return res.status(500).json(err);
+      return res.json(data);
+    });
+  });
+};
+
 module.exports = {
   fetchAllRequests: fetchAllRequests,
   fetchAcceptedRequests: fetchAcceptedRequests,
   updateRequestStatus: updateRequestStatus,
+  fetchCompletedRequests: fetchCompletedRequests,
 };

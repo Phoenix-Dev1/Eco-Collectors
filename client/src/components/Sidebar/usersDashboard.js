@@ -163,7 +163,9 @@ const Dashboard = () => {
                     </Link>
                   </li>
                   <li className="text-sm text-white/50 hover:bg-white/5 transition ease-linear duration-150">
-                    <Link to="/manager/TBD">TBD</Link>
+                    <Link to="/recycler/completed-requests">
+                      Completed Requests
+                    </Link>
                   </li>
                 </ul>
               </div>
