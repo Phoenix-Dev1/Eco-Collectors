@@ -77,7 +77,7 @@ const UserManagement = () => {
     { name: 'Phone', selector: (row) => row.phone, sortable: true, wrap: true },
     {
       name: 'Amount',
-      selector: (row) => row.amount || '-',
+      selector: (row) => row.amount || '0',
       sortable: true,
       wrap: true,
     },
