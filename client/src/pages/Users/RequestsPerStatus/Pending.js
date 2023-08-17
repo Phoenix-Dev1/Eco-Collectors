@@ -81,13 +81,16 @@ const Pending = () => {
       </Typography>
       <div className="text-center">
         <input
-          className="border border-black text-center"
+          className="border border-black text-center mb-4"
           type="number"
           value={selectedBottles}
           onChange={(e) => setSelectedBottles(e.target.value)}
         />
-      </div>
-      <div className="text-center mt-4 ">
+        {selectedBottles <= 0 && (
+          <p className="text-red-500 mb-4">
+            Bottles number cannot be less than 0
+          </p>
+        )}
         <Button
           sx={buttonStyleAccept}
           onClick={() =>
@@ -96,6 +99,7 @@ const Pending = () => {
               selectedBottles
             )
           }
+          disabled={selectedBottles <= 0} // Disable the button when the bottle number is 0
         >
           Accept & Close
         </Button>
@@ -111,14 +115,25 @@ const Pending = () => {
     requestId,
     newBottlesNumber
   ) => {
-    try {
-      const response = await acceptAndCloseRequest(requestId, newBottlesNumber);
-      if (response) {
-        closeModal(); // Close the modal
-        window.location.reload(); // Reload the page
+    if (newBottlesNumber > 0) {
+      // Check for a positive bottle number
+      try {
+        const response = await acceptAndCloseRequest(
+          requestId,
+          newBottlesNumber
+        );
+        if (response) {
+          closeModal(); // Close the modal
+          window.location.reload(); // Reload the page
+        }
+      } catch (error) {
+        console.log('Error accepting and closing request:', error);
       }
-    } catch (error) {
-      console.log('Error accepting and closing request:', error);
+    } else {
+      // Show an alert or a message indicating the invalid input
+      alert(
+        'Invalid bottle number input. Please enter a valid number greater than 0.'
+      );
     }
   };
 
