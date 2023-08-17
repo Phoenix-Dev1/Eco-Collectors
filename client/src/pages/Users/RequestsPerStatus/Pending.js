@@ -4,7 +4,7 @@ import DataTable from 'react-data-table-component';
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import { blue, red } from '@mui/material/colors';
+import { red, green } from '@mui/material/colors';
 import Typography from '@mui/material/Typography';
 import {
   fetchUserRequests,
@@ -15,6 +15,7 @@ import {
   acceptAndCloseRequest,
 } from '../UserFunctions';
 import { renderButtons, modalStyle } from '../RequestUtils';
+import { format } from 'date-fns';
 
 const Pending = () => {
   // State for the React Modal
@@ -36,14 +37,14 @@ const Pending = () => {
 
   // Define button styles
   const buttonStyleAccept = {
-    bgcolor: blue[500],
+    bgcolor: green[500],
     color: 'white', // Text color
     border: 'none', // Remove border
     padding: '10px 20px', // Add padding
     marginRight: '10px', // Add margin between buttons
     fontWeight: 'bold', // Bold text
     '&:hover': {
-      bgcolor: blue[700], // Darker background on hover
+      bgcolor: green[700], // Darker background on hover
     },
   };
 
@@ -202,6 +203,14 @@ const Pending = () => {
   // Define columns for the data table
   const columns = [
     {
+      name: 'Request Date',
+      selector: (row) =>
+        format(new Date(row.request_date), 'dd/MM/yyyy - HH:mm'),
+      sortable: true,
+      center: true,
+      wrap: true,
+    },
+    {
       name: 'Address',
       selector: (row) => row.req_address,
       sortable: true,
@@ -226,24 +235,6 @@ const Pending = () => {
       center: true,
     },
     {
-      name: 'Actions',
-      cell: (row) => {
-        return (
-          <div className="flex flex-col">
-            {renderButtons(
-              row.status,
-              row.request_id,
-              handleAccept,
-              handleDecline,
-              handleCancel,
-              () => openModal(row) // Use openModal
-            )}
-          </div>
-        );
-      },
-      center: true,
-    },
-    {
       name: 'Status',
       selector: (row) => row.status,
       sortable: true,
@@ -264,6 +255,24 @@ const Pending = () => {
             return 'Unknown Status';
         }
       },
+    },
+    {
+      name: 'Actions',
+      cell: (row) => {
+        return (
+          <div className="flex flex-col">
+            {renderButtons(
+              row.status,
+              row.request_id,
+              handleAccept,
+              handleDecline,
+              handleCancel,
+              () => openModal(row) // Use openModal
+            )}
+          </div>
+        );
+      },
+      center: true,
     },
   ];
 
