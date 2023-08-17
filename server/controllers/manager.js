@@ -180,6 +180,38 @@ const fetchAllRequests = (req, res) => {
   });
 };
 
+// Search requests by user_id
+const searchRequests = (req, res) => {
+  const token = req.cookies.access_token;
+  if (!token) return res.status(401).json('Not authenticated');
+
+  jwt.verify(token, 'jwtkey', async (err, userInfo) => {
+    if (err) return res.status(403).json('Token is not valid!');
+
+    // Check if the user is an administrator
+    if (userInfo.role !== 4) {
+      return res
+        .status(403)
+        .json('You are not authorized to access this resource');
+    }
+
+    const { searchTerm } = req.query;
+
+    let selectQuery = 'SELECT * FROM user_requests';
+    const queryParams = [];
+
+    if (searchTerm) {
+      selectQuery += ' WHERE user_id = ? ';
+      queryParams.push(searchTerm, searchTerm);
+    }
+
+    db.query(selectQuery, queryParams, (err, data) => {
+      if (err) return res.status(500).json(err);
+      return res.json(data);
+    });
+  });
+};
+
 // Update the request status to 'hold'
 const updateRequestStatus = (req, res) => {
   const token = req.cookies.access_token;
@@ -220,5 +252,6 @@ module.exports = {
   getAllRecyclers: getAllRecyclers,
   RecyclerDeactivation: RecyclerDeactivation,
   fetchAllRequests: fetchAllRequests,
+  searchRequests: searchRequests,
   updateRequestStatus: updateRequestStatus,
 };

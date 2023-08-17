@@ -78,10 +78,31 @@ export async function updateRequestStatus(requestId, newStatus) {
   }
 }
 
-export const statusMap = {
+// Search requests By UserId
+export async function searchRequestsByUserId(searchTerm) {
+  try {
+    const response = await axios.get('/manager/search-requests', {
+      params: {
+        searchTerm,
+      },
+    });
+
+    // Check if results are empty and return an empty array
+    if (response.data.length === 0) {
+      return [];
+    }
+
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+export const statusMeanings = {
   1: 'Awaits Recycler',
-  2: 'Awaits User Approval',
+  2: 'Awaits Approval',
   3: 'Completed',
   4: 'Canceled',
-  5: 'Awaits Recycler Pickup',
+  5: 'Awaits Pickup',
 };

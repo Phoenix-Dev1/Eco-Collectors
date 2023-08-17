@@ -4,7 +4,7 @@ import { format } from 'date-fns';
 import {
   fetchAllRequests,
   updateRequestStatus,
-  searchRequestsByUserIdOrRequestId,
+  searchRequestsByUserId,
   statusMeanings,
 } from './AdminFunctions';
 
@@ -26,7 +26,7 @@ const AllRequests = () => {
 
   const handleSearch = async () => {
     try {
-      const results = await searchRequestsByUserIdOrRequestId(searchInput);
+      const results = await searchRequestsByUserId(searchInput);
 
       if (results.length === 0) {
         setSearchResults([]);
@@ -40,11 +40,17 @@ const AllRequests = () => {
   };
 
   const handleCancelRequest = async (requestId) => {
-    try {
-      await updateRequestStatus(requestId, 4);
-      await handleSearch('user_id');
-    } catch (error) {
-      console.error('Error canceling request:', error);
+    const confirmed = window.confirm(
+      'Are you sure you want to cancel this request?'
+    );
+
+    if (confirmed) {
+      try {
+        await updateRequestStatus(requestId, 4);
+        await handleSearch('user_id');
+      } catch (error) {
+        console.error('Error canceling request:', error);
+      }
     }
   };
 

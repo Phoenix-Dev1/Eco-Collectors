@@ -74,7 +74,8 @@ export async function updateRequestStatus(requestId, newStatus) {
   }
 }
 
-export async function searchRequestsByUserIdOrRequestId(searchTerm) {
+// Search requests By UserId
+export async function searchRequestsByUserId(searchTerm) {
   try {
     const response = await axios.get('/admin/search-requests', {
       params: {
@@ -97,8 +98,8 @@ export async function searchRequestsByUserIdOrRequestId(searchTerm) {
 // Define a mapping of status numbers to their meanings
 export const statusMeanings = {
   1: 'Awaits Recycler',
-  2: 'Awaits User Approval',
+  2: 'Awaits Approval',
   3: 'Completed',
   4: 'Canceled',
-  5: 'Awaits Recycler Pickup',
+  5: 'Awaits Pickup',
 };

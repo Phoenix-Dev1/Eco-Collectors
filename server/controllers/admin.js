@@ -167,7 +167,7 @@ const fetchAllRequests = (req, res) => {
   });
 };
 
-// Search requests by user_id or request_id
+// Search requests by user_id
 const searchRequests = (req, res) => {
   const token = req.cookies.access_token;
   if (!token) return res.status(401).json('Not authenticated');
