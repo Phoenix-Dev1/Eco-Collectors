@@ -163,7 +163,9 @@ const Dashboard = () => {
                     </Link>
                   </li>
                   <li className="text-sm text-white/50 hover:bg-white/5 transition ease-linear duration-150">
-                    <Link to="/manager/TBD">TBD</Link>
+                    <Link to="/recycler/completed-requests">
+                      Completed Requests
+                    </Link>
                   </li>
                 </ul>
               </div>
@@ -295,61 +297,7 @@ const Dashboard = () => {
                 </li>
               </ul>
             </div>
-
-            <div className=" py-2 px-4 rounded text-white text-lg hover:bg-white/5 transition ease-linear duration-150 flex items-center mb-4">
-              <div>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth="1.5"
-                  stroke="currentColor"
-                  className="w-6 h-6 text-white"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M3 3v1.5M3 21v-6m0 0l2.77-.693a9 9 0 016.208.682l.108.054a9 9 0 006.086.71l3.114-.732a48.524 48.524 0 01-.005-10.499l-3.11.732a9 9 0 01-6.085-.711l-.108-.054a9 9 0 00-6.208-.682L3 4.5M3 15V4.5"
-                  />
-                </svg>
-              </div>
-              <div className="ml-2">
-                <span className="text-lg font-bold leading-5 text-white">
-                  Reports
-                </span>
-                <span className="text-sm text-white/50 hidden md:block">
-                  Manage Your Reports
-                </span>
-              </div>
-            </div>
-            <div className=" py-2 px-4 rounded text-white text-lg hover:bg-white/5 transition ease-linear duration-150 flex items-center">
-              <div>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth="1.5"
-                  stroke="currentColor"
-                  className="w-6 h-6 text-white"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M4.5 12a7.5 7.5 0 0015 0m-15 0a7.5 7.5 0 1115 0m-15 0H3m16.5 0H21m-1.5 0H12m-8.457 3.077l1.41-.513m14.095-5.13l1.41-.513M5.106 17.785l1.15-.964m11.49-9.642l1.149-.964M7.501 19.795l.75-1.3m7.5-12.99l.75-1.3m-6.063 16.658l.26-1.477m2.605-14.772l.26-1.477m0 17.726l-.26-1.477M10.698 4.614l-.26-1.477M16.5 19.794l-.75-1.299M7.5 4.205L12 12m6.894 5.785l-1.149-.964M6.256 7.178l-1.15-.964m15.352 8.864l-1.41-.513M4.954 9.435l-1.41-.514M12.002 12l-3.75 6.495"
-                  />
-                </svg>
-              </div>
-              <div className="ml-2">
-                <span className="text-lg font-bold leading-5 text-white">
-                  Settings
-                </span>
-                <span className="text-sm text-white/50 hidden md:block">
-                  Edit App Settings
-                </span>
-              </div>
-            </div>
           </nav>
-
           <footer className="mt-auto ml-auto mr-auto"></footer>
         </aside>
       </div>

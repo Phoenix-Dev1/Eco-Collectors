@@ -36,3 +36,14 @@ export async function updateRequestStatus(requestId, newStatus) {
     throw error;
   }
 }
+
+// Function to fetch completed requests from the server
+export async function fetchCompletedRequests() {
+  try {
+    const response = await axios.get('/recycler/completed-requests');
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}

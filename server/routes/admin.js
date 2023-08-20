@@ -5,6 +5,7 @@ const {
   getAllJoinRequests,
   updateJoinRequestStatus,
   fetchAllRequests,
+  searchRequests,
   updateRequestStatus,
   fetchAllRecycleBins,
   deactivateBin,
@@ -24,6 +25,7 @@ router.put('/join-requests/:joinID', updateJoinRequestStatus);
 // Recycle Requests
 router.get('/all-requests', fetchAllRequests);
 router.put('/requests/:requestId', updateRequestStatus);
+router.get('/search-requests', searchRequests);
 // Recycle Bins
 router.get('/bins/:binId', getBinById);
 router.get('/activateBin/:binId', activateBin);

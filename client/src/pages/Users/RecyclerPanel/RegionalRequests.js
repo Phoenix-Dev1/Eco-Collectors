@@ -25,6 +25,7 @@ const RegionalRecyclerRequests = () => {
   }, [selectedStatusFilter]);
 
   const columns = [
+    { name: 'Request ID', selector: (row) => row.request_id, sortable: true },
     {
       name: 'Collector Name',
       selector: (row) => row.full_name,

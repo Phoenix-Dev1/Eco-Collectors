@@ -55,10 +55,13 @@ export default function ChangePassword() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen dark:bg-gray-900 text-left">
-      <div className="leading-loose bg-gray-50 dark:bg-gray-900 overflow-auto w-96">
+    <div className="flex items-center justify-center min-h-screen bg-gray-900 text-left">
+      <div className="leading-loose bg-gray-900 overflow-auto w-96">
+        <h1 className="flex items-center justify-center text-lg font-bold mb-4">
+          Change your password
+        </h1>
         <form
-          className="m-0 p-8 bg-gray-50 dark:bg-gray-800 rounded shadow-xl"
+          className="m-0 p-8 bg-gray-800 rounded shadow-xl"
           onSubmit={handleSubmit}
         >
           <div className="mt-2">

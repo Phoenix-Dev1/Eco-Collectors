@@ -2,6 +2,7 @@ import React, { useState, useContext, useEffect } from 'react';
 import { AuthContext } from '../../../context/authContext';
 import DataTable from 'react-data-table-component';
 import { fetchUserRequests, fetchRecyclerDetails } from '../UserFunctions';
+import { format } from 'date-fns';
 
 const Completed = () => {
   const { currentUser } = useContext(AuthContext);
@@ -73,24 +74,19 @@ const Completed = () => {
       center: true,
     },
     {
-      name: 'Status',
-      selector: (row) => row.status, // Use a selector function
+      name: 'Request Date',
+      selector: (row) => row.request_date, // Use a selector function
       sortable: true,
       center: true,
       cell: (row) => {
-        switch (row.status) {
-          case 1:
-            return 'Awaits Recycler';
-          case 2:
-            return 'Awaits Approval';
-          case 3:
-            return 'Completed';
-          case 4:
-            return 'Cancelled';
-          case 5:
-            return 'Awaits Pickup';
-          default:
-            return 'Unknown Status';
+        if (row.request_date && row.request_date !== '0000-00-00 00:00:00') {
+          const formattedDate = format(
+            new Date(row.request_date),
+            'dd/MM/yyyy, HH:mm'
+          );
+          return formattedDate;
+        } else {
+          return 'N/A';
         }
       },
     },
