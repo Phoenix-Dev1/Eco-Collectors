@@ -1,6 +1,7 @@
 const { db } = require('../db.js');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const transporter = require('../nodeMailer.js');
 
 const updateUser = (req, res) => {
   const token = req.cookies.access_token;
@@ -142,10 +143,46 @@ const deactivateAccount = (req, res) => {
   });
 };
 
+// Contact Us
+const sendEmail = async (req, res) => {
+  try {
+    const { email, subject, message } = req.body;
+
+    const mailOptions = {
+      from: 'Eco Collectors <your-email@example.com>',
+      to: process.env.CONTACT_US_MAIL, // Send all emails to this address
+      subject: subject,
+      html: `
+        <div style="font-family: Arial, sans-serif;">
+          <h2>New Contact Form Submission</h2>
+          <p><strong>Sender's Email:</strong> ${email}</p>
+          <p><strong>Subject:</strong> ${subject}</p>
+          <p><strong>Message:</strong></p>
+          <p>${message}</p>
+        </div>
+      `,
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error('Failed to send email:', error);
+        return res.status(500).json({ message: 'Failed to send email.' });
+      } else {
+        console.log('Email sent:', info.response);
+        return res.status(200).json({ message: 'Email sent successfully.' });
+      }
+    });
+  } catch (error) {
+    console.error('Error in sendEmail:', error);
+    return res.status(500).json({ message: 'Internal Server Error.' });
+  }
+};
+
 module.exports = {
   updateUser: updateUser,
   changePassword: changePassword,
   getUserInfo: getUserInfo,
   getUserRole: getUserRole,
   deactivateAccount: deactivateAccount,
+  sendEmail: sendEmail,
 };

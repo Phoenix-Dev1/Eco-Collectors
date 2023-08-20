@@ -5,6 +5,10 @@ const WelcomeAdmin = () => {
   const [totalRequests, setTotalRequests] = useState(0);
   const [totalRecycledBottles, setTotalRecycledBottles] = useState(0);
   const [avgClosingTime, setAvgClosingTime] = useState(0);
+  const [activeBinsCount, setActiveBinsCount] = useState(0);
+  const [totalCompletedRequests, setTotalCompletedRequests] = useState(0);
+  const [currentMonthCollectedBottles, setCurrentMonthCollectedBottles] =
+    useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -13,6 +17,9 @@ const WelcomeAdmin = () => {
         setTotalRequests(res.data.totalRequests);
         setTotalRecycledBottles(res.data.totalRecycledBottles);
         setAvgClosingTime(res.data.avgClosingTime);
+        setActiveBinsCount(res.data.activeBinsCount);
+        setTotalCompletedRequests(res.data.totalCompletedRequests);
+        setCurrentMonthCollectedBottles(res.data.currentMonthCollectedBottles);
       } catch (err) {
         console.log('Error fetching data');
       }
@@ -21,6 +28,10 @@ const WelcomeAdmin = () => {
   }, []);
 
   const renderMetricCards = () => {
+    const currentDate = new Date();
+    const currentMonth = new Intl.DateTimeFormat('en', {
+      month: 'long',
+    }).format(currentDate);
     const metricStyles = [
       {
         title: 'Total Requests Uploaded (All Users)',
@@ -30,11 +41,32 @@ const WelcomeAdmin = () => {
         value: totalRequests,
       },
       {
-        title: "Total Bottle No' Recycled (All Users)",
+        title: 'Total Number Of Bottles Recycled (All Users)',
         cardStyle:
           'bg-gradient-to-b from-indigo-200 to-indigo-100 border-b-4 border-indigo-500',
         titleStyle: 'text-indigo-500',
         value: totalRecycledBottles,
+      },
+      {
+        title: 'Number Of All Active Bins (In System)',
+        cardStyle:
+          'bg-gradient-to-b from-yellow-200 to-yellow-100 border-b-4 border-indigo-yellow',
+        titleStyle: 'text-yellow-500',
+        value: activeBinsCount,
+      },
+      {
+        title: 'Total Completed Requests (All Users)',
+        cardStyle:
+          'bg-gradient-to-b from-purple-300 to-purple-200 border-b-4 border-purple-500',
+        titleStyle: 'text-purple-500',
+        value: totalCompletedRequests,
+      },
+      {
+        title: `Bottles Collected This Month (${currentMonth})`,
+        cardStyle:
+          'bg-gradient-to-b from-pink-200 to-pink-100 border-b-4 border-pink-500',
+        titleStyle: 'text-pink-500',
+        value: currentMonthCollectedBottles,
       },
       {
         title: 'Average Request Closing Time (All Users)',
@@ -60,23 +92,6 @@ const WelcomeAdmin = () => {
         </div>
       );
     });
-  };
-
-  const renderGraphCards = () => {
-    const graphTitles = [
-      'Quarterly Months Collected Review (All Users)',
-      'TBA',
-      'Half Yearly Completed Requests Numbers (All Users)',
-    ];
-
-    return graphTitles.map((title, index) => (
-      <div className="w-full md:w-1/2 xl:w-1/3 p-6" key={`graph-card-${index}`}>
-        <div className="bg-white border rounded-lg shadow p-4">
-          <h2 className="text-lg font-semibold mb-2 text-gray-600">{title}</h2>
-          <p className="text-gray-600">Graph Card Content goes here.</p>
-        </div>
-      </div>
-    ));
   };
 
   return (
@@ -110,9 +125,6 @@ const WelcomeAdmin = () => {
               </div>
               <div className="flex flex-wrap font-bold text-2xl">
                 {renderMetricCards()}
-              </div>
-              <div className="flex flex-row flex-wrap flex-grow mt-2">
-                {renderGraphCards()}
               </div>
             </div>
           </section>

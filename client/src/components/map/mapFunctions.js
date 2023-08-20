@@ -96,3 +96,22 @@ export function formatTime(datetime) {
 
   return formattedTime;
 }
+
+// Recycle Bins Render properties
+export const typeDescriptions = {
+  blue: 'Newspapers, magazines, cardboard',
+  carton: 'Cartons packaging',
+  'electronic-waste': 'Batteries, phones, electronic devices',
+  orange: 'Plastic packaging, plastic bags',
+  purple: 'Glass bottles, jars, glass containers',
+  textile: 'Clothes, shirts, pants, fabrics',
+};
+
+export const typeColors = {
+  blue: 'text-blue-500',
+  carton: 'text-yellow-800',
+  'electronic-waste': 'text-red-500',
+  orange: 'text-orange-500',
+  purple: 'text-purple-500',
+  textile: 'text-lime-600',
+};

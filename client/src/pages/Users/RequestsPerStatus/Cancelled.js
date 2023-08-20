@@ -1,15 +1,8 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { AuthContext } from '../../../context/authContext';
 import DataTable from 'react-data-table-component';
-import {
-  fetchUserRequests,
-  fetchRecyclerDetails,
-  acceptRequest,
-  declineRequest,
-  cancelRequest,
-  acceptAndCloseRequest,
-} from '../UserFunctions';
-import { getStatusColor, renderButtons } from '../RequestUtils';
+import { fetchUserRequests, fetchRecyclerDetails } from '../UserFunctions';
+import { format } from 'date-fns';
 
 const Cancelled = () => {
   const { currentUser } = useContext(AuthContext);
@@ -52,30 +45,18 @@ const Cancelled = () => {
     if (cancelledRequests.length > 0) {
       fetchRecyclerData();
     }
-  }, [cancelledRequests.length]); // Use cancelledRequests.length as the dependency
-
-  // Accepting recycler pickup request
-  const handleAccept = async (requestId) => {
-    // Implementation for accepting request
-  };
-
-  // Declining recycler pickup request
-  const handleDecline = async (requestId) => {
-    // Implementation for declining request
-  };
-
-  // Canceling request by request id
-  const handleCancel = async (requestId) => {
-    // Implementation for canceling request
-  };
-
-  // Accept & Close the request
-  const handleAcceptAndClose = async (requestId) => {
-    // Implementation for accepting and closing request
-  };
+  }, [cancelledRequests, cancelledRequests.length]); // Use cancelledRequests.length as the dependency
 
   // Define columns for the data table
   const columns = [
+    {
+      name: 'Request Date',
+      selector: (row) =>
+        format(new Date(row.request_date), 'dd/MM/yyyy - HH:mm'),
+      sortable: true,
+      center: true,
+      wrap: true,
+    },
     {
       name: 'Address',
       selector: (row) => row.req_address,
@@ -100,46 +81,6 @@ const Cancelled = () => {
       sortable: true,
       center: true,
     },
-    {
-      name: 'Actions',
-      cell: (row) => {
-        return (
-          <div className="flex flex-col">
-            {renderButtons(
-              row.status,
-              row.request_id,
-              handleAccept,
-              handleDecline,
-              handleCancel,
-              handleAcceptAndClose
-            )}
-          </div>
-        );
-      },
-      center: true,
-    },
-    {
-      name: 'Status',
-      selector: (row) => row.status,
-      sortable: true,
-      center: true,
-      cell: (row) => {
-        switch (row.status) {
-          case 1:
-            return 'Awaits Recycler';
-          case 2:
-            return 'Awaits Approval';
-          case 3:
-            return 'Completed';
-          case 4:
-            return 'Cancelled';
-          case 5:
-            return 'Awaits Pickup';
-          default:
-            return 'Unknown Status';
-        }
-      },
-    },
   ];
 
   // Transform cancelledRequests data to include 'recyclerFullName' and 'recyclerPhone'
@@ -147,11 +88,11 @@ const Cancelled = () => {
     ...request,
     recyclerFullName:
       request.status === 4
-        ? 'Canceled'
+        ? 'None'
         : request.recycler
         ? `${request.recycler.first_name} ${request.recycler.last_name}`
         : 'Awaits Recycler',
-    recyclerPhone: request.recycler ? request.recycler.phone : '',
+    recyclerPhone: request.recycler ? request.recycler.phone : 'None',
   }));
 
   // Custom styles for the table

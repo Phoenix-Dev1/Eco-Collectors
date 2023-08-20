@@ -20,6 +20,7 @@ const getRequests = (req, res) => {
   });
 };
 
+// Not for recycle requests purposes - update
 const getRequest = (req, res) => {
   const token = req.cookies.access_token;
   if (!token) return res.status(401).json('Not authenticated');
@@ -27,9 +28,41 @@ const getRequest = (req, res) => {
   jwt.verify(token, 'jwtkey', (err, decoded) => {
     if (err) return res.status(403).json('Token is not valid');
     const userRole = decoded.role;
-    if (userRole === 1 || userRole === 3) {
+    if (
+      userRole === 1 ||
+      userRole === 2 ||
+      userRole === 3 ||
+      userRole === 4 ||
+      userRole === 5
+    ) {
       const q =
-        'SELECT `request_id`,`user_id`,`full_name`,`req_lat`, `req_lng`, `req_address`,`phone_number`,`bottles_number`,`from_hour`,`to_hour`,`request_date`,`completed_date`,`type` FROM user_requests WHERE request_id = ?';
+        'SELECT `request_id`,`user_id`,`full_name`,`req_lat`, `req_lng`, `req_address`,`phone_number`,`bottles_number`,`from_hour`,`to_hour`,`request_date`,`completed_date`,`status`,`type` FROM user_requests WHERE request_id = ?';
+      db.query(q, [req.params.id], (err, data) => {
+        if (err) return res.status(500).send(err);
+        console.log(data[0]);
+        return res.status(200).json(data[0]);
+      });
+    } else {
+      return res.status(403).json('Invalid user role');
+    }
+  });
+};
+
+// for recycle requests purposes - Collect request
+const getRequestForRecycle = (req, res) => {
+  const token = req.cookies.access_token;
+  if (!token) return res.status(401).json('Not authenticated');
+
+  jwt.verify(token, 'jwtkey', (err, decoded) => {
+    if (err) return res.status(403).json('Token is not valid');
+    const userRole = decoded.role;
+    if (
+      userRole === 1 || // Administrator
+      userRole === 3 || // Recycler
+      userRole === 4 // Manager
+    ) {
+      const q =
+        'SELECT `request_id`,`user_id`,`full_name`,`req_lat`, `req_lng`, `req_address`,`phone_number`,`bottles_number`,`from_hour`,`to_hour`,`request_date`,`completed_date`,`status`,`type` FROM user_requests WHERE request_id = ?';
       db.query(q, [req.params.id], (err, data) => {
         if (err) return res.status(500).send(err);
         console.log(data[0]);
@@ -117,10 +150,79 @@ const updateRequestType = (req, res) => {
   });
 };
 
+const updateRequestByUser = (req, res) => {
+  //console.log('In updateRequestByUser');
+  const token = req.cookies.access_token;
+
+  if (!token) return res.status(401).json('Not authenticated!');
+
+  jwt.verify(token, 'jwtkey', async (err, userInfo) => {
+    if (err) return res.status(403).json('Token is not valid!');
+
+    const requestId = req.params.id; // Request ID
+    const updatedData = req.body; // Updated data sent from frontend
+
+    console.log('Updated Data:', updatedData);
+
+    // Retrieve the request to check user_id
+    const getRequestQuery =
+      'SELECT user_id FROM user_requests WHERE request_id = ?';
+
+    db.query(getRequestQuery, [requestId], (err, requestResult) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).json(err);
+      }
+
+      const userId = userInfo.id;
+      const userRole = userInfo.role;
+      const requestUserId = requestResult[0].user_id;
+
+      //console.log('User ID:', userId);
+      //console.log('User Role:', userRole);
+      //console.log('Request User ID:', requestUserId);
+
+      // Check if the user is authorized to update this request
+      if (userRole === 1 || requestUserId === userId) {
+        let updateQuery = 'UPDATE user_requests SET ';
+        const values = [];
+
+        for (const key in updatedData) {
+          if (key !== 'request_id') {
+            // Exclude updating request_id
+            updateQuery += `${key}=?, `;
+            values.push(updatedData[key]);
+          }
+        }
+
+        updateQuery += '`request_date`=NOW() WHERE `request_id` = ?';
+        values.push(requestId);
+
+        //console.log('Update Query:', updateQuery);
+        console.log('Update Values:', values);
+
+        db.query(updateQuery, values, (err, data) => {
+          if (err) {
+            console.error(err);
+            return res.status(500).json(err);
+          }
+          return res.json('Request has been updated by user.');
+        });
+      } else {
+        return res
+          .status(403)
+          .json('You are not authorized to update this request.');
+      }
+    });
+  });
+};
+
 module.exports = {
   getRequests: getRequests,
+  getRequestForRecycle: getRequestForRecycle,
   getRequest: getRequest,
   addRequest: addRequest,
   deleteRequest: deleteRequest,
   updateRequestType: updateRequestType,
+  updateRequestByUser: updateRequestByUser,
 };

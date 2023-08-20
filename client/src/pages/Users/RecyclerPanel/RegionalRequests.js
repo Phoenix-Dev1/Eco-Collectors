@@ -1,18 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import DataTable from 'react-data-table-component';
+import { fetchAllRequests } from './RecyclerFunctions';
 import { format } from 'date-fns';
-import {
-  fetchAllRequests,
-  updateRequestStatus,
-  searchRequestsByUserId,
-  statusMeanings,
-} from './AdminFunctions';
 
-const AllRequests = () => {
+const RegionalRecyclerRequests = () => {
   const [allRequests, setAllRequests] = useState([]);
-  const [selectedStatusFilter, setSelectedStatusFilter] = useState(null);
-  const [searchInput, setSearchInput] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
+  const [selectedStatusFilter, setSelectedStatusFilter] = useState(1); // Initialize as 1 - Awaits recycler
 
   const filterByStatus = (status) => {
     setSelectedStatusFilter(status);
@@ -20,38 +13,6 @@ const AllRequests = () => {
 
   const clearStatusFilter = () => {
     setSelectedStatusFilter(null);
-    setSearchResults([]);
-    setSearchInput('');
-  };
-
-  const handleSearch = async () => {
-    try {
-      const results = await searchRequestsByUserId(searchInput);
-
-      if (results.length === 0) {
-        setSearchResults([]);
-        setAllRequests([]);
-      } else {
-        setSearchResults(results);
-      }
-    } catch (error) {
-      console.error('Error searching requests:', error);
-    }
-  };
-
-  const handleCancelRequest = async (requestId) => {
-    const confirmed = window.confirm(
-      'Are you sure you want to cancel this request?'
-    );
-
-    if (confirmed) {
-      try {
-        await updateRequestStatus(requestId, 4);
-        await handleSearch('user_id');
-      } catch (error) {
-        console.error('Error canceling request:', error);
-      }
-    }
   };
 
   useEffect(() => {
@@ -64,7 +25,6 @@ const AllRequests = () => {
   }, [selectedStatusFilter]);
 
   const columns = [
-    { name: 'User ID', selector: (row) => row.user_id, sortable: true },
     { name: 'Request ID', selector: (row) => row.request_id, sortable: true },
     {
       name: 'Collector Name',
@@ -76,7 +36,7 @@ const AllRequests = () => {
     {
       name: 'Request Date',
       selector: (row) =>
-        format(new Date(row.request_date), 'dd/MM/yyyy - HH:MM'),
+        format(new Date(row.request_date), 'dd/MM/yyyy - HH:MM'), // Format the date
       sortable: true,
       center: true,
       wrap: true,
@@ -93,36 +53,25 @@ const AllRequests = () => {
       sortable: true,
     },
     {
-      name: 'Status',
-      selector: (row) => statusMeanings[row.status],
+      name: 'Recycler Name',
+      selector: (row) =>
+        row.recycler_first_name && row.recycler_last_name
+          ? `${row.recycler_first_name} ${row.recycler_last_name}`
+          : 'Not Assigned',
       sortable: true,
       wrap: true,
     },
-    {
-      name: 'Actions',
-      cell: (row) => (
-        <div className="flex flex-col">
-          {row.status === 1 || row.status === 2 || row.status === 5 ? (
-            <button
-              onClick={() => handleCancelRequest(row.request_id)}
-              className="px-2 py-1 rounded bg-yellow-500 text-white mx-2"
-            >
-              Cancel
-            </button>
-          ) : null}
-        </div>
-      ),
-    },
   ];
 
-  const data =
-    searchResults.length > 0
-      ? searchResults
-      : allRequests.map((request) => ({ ...request }));
+  // Transform data as needed
+  const data = allRequests.map((request) => ({
+    ...request,
+  }));
+  //console.table(data);
 
   return (
     <div className="text-center">
-      <h2 className="text-lg font-bold mb-4">All Requests</h2>
+      <h2 className="text-lg font-bold mb-4">Regional Requests:</h2>
       <div className="mb-3">
         <button
           onClick={() => filterByStatus(1)}
@@ -161,26 +110,7 @@ const AllRequests = () => {
           Clear Filter
         </button>
       </div>
-      <div className="flex justify-center">
-        <div className="flex">
-          <div className="mb-3">
-            <input
-              type="text"
-              placeholder="Enter user id "
-              value={searchInput}
-              onChange={(e) => setSearchInput(e.target.value)}
-              className="px-2 py-1 rounded border text-black"
-            />
-            <button
-              onClick={() => handleSearch('user_id')}
-              className="px-2 py-1 rounded bg-blue-500 text-white ml-2"
-            >
-              Search by User ID
-            </button>
-          </div>
-        </div>
-      </div>
-      {data.length > 0 ? (
+      {allRequests.length > 0 ? (
         <div className="mx-auto w-full px-4 md:max-w-3xl lg:max-w-4xl xl:max-w-6xl text-center">
           <DataTable
             columns={columns}
@@ -192,12 +122,10 @@ const AllRequests = () => {
           />
         </div>
       ) : (
-        <p>
-          {searchResults.length > 0 ? 'No requests found' : 'No results found'}
-        </p>
+        <p>No requests found</p>
       )}
     </div>
   );
 };
 
-export default AllRequests;
+export default RegionalRecyclerRequests;

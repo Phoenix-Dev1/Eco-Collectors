@@ -19,11 +19,14 @@ import {
   fetchRequests,
   formatDateTime,
   formatTime,
+  typeDescriptions,
+  typeColors,
 } from './mapFunctions';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/authContext';
 import { VscFilter } from 'react-icons/vsc';
-import { GiRecycle } from 'react-icons/gi';
+//import { GiRecycle } from 'react-icons/gi';
+import { FaPlus } from 'react-icons/fa'; // Import the plus icon
 import { AiOutlineClose } from 'react-icons/ai';
 import { validateInputs } from './InputValidation';
 
@@ -61,13 +64,20 @@ const Map = () => {
   // Request submit handling
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // If fullName is empty(unchanged), use initialName
+    const submittedFullName = fullName.trim() === '' ? initialName : fullName;
+    // If fullName is empty(unchanged), use phone number from currentUser
+    const submittedPhoneNumber =
+      phoneNumber.trim() === '' ? currentUser?.phone : phoneNumber;
+
     if (currentUser) {
       const validation = validateInputs({
-        fullName,
+        fullName: submittedFullName, // Use the updated fullName
         reqLat,
         reqLng,
         reqAddress,
-        phoneNumber,
+        phoneNumber: submittedPhoneNumber,
         bottlesNumber,
         fromTime,
         toTime,
@@ -76,11 +86,11 @@ const Map = () => {
       if (validation.isValid) {
         try {
           await axios.post(`/requests/add`, {
-            fullName,
+            fullName: submittedFullName, // Use the updated fullName
             reqLat,
             reqLng,
             reqAddress,
-            phoneNumber,
+            phoneNumber: submittedPhoneNumber,
             bottlesNumber,
             fromTime,
             toTime,
@@ -132,8 +142,12 @@ const Map = () => {
   // Bins
   useEffect(() => {
     const fetchMarkersData = async () => {
-      const data = await fetchActiveMarkers(type);
-      setMarkers(data);
+      try {
+        const data = await fetchActiveMarkers(type);
+        setMarkers(data);
+      } catch (error) {
+        console.log(error);
+      }
     };
     fetchMarkersData();
   }, [type]);
@@ -141,11 +155,15 @@ const Map = () => {
   // Requests
   useEffect(() => {
     const loadRequestsData = async () => {
-      const data = await fetchRequests(type);
-      setRequests(data);
+      try {
+        const data = await fetchRequests(type);
+        setRequests(data);
+      } catch (error) {
+        console.log(error);
+      }
     };
     loadRequestsData();
-  }, [type, requests]); // Add 'requests' as a dependency
+  }, [type, requests]); // MUST Add 'requests' as a dependency
 
   // Center the Map At Haifa Port
   const center = useMemo(() => ({ lat: 32.79413, lng: 34.98828 }), []);
@@ -209,9 +227,11 @@ const Map = () => {
           </div>
         </div>
       )}
-      <div className={classes.add} onClick={toggleAddWindow}>
-        <GiRecycle />
-      </div>
+      {currentUser /*{ Will only show when a user is logged in }*/ && (
+        <div className={classes.add} onClick={toggleAddWindow}>
+          <FaPlus />
+        </div>
+      )}
       {showAddWindow && ( // Render the filter window only if showFilterWindow is true
         <div className={classes.addForm}>
           <form ref={form} onSubmit={handleSubmit} action="#">
@@ -222,7 +242,7 @@ const Map = () => {
               <input
                 name="full_name"
                 id="full_name"
-                value={fullName}
+                value={fullName || initialName} // Use fullName or initialName as the value
                 onChange={(e) => setFullName(e.target.value)}
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 placeholder={
@@ -275,7 +295,7 @@ const Map = () => {
                 placeholder="Enter your number"
                 id="phoneNumber"
                 name="phoneNumber"
-                value={phoneNumber}
+                value={phoneNumber || currentUser?.phone || ''} // Set initial value
                 type="tel"
                 required
               />
@@ -326,7 +346,14 @@ const Map = () => {
         </div>
       )}
       {!isLoaded ? (
-        <h1>Loading...</h1>
+        <div className={classes.loaderWrapper}>
+          <div className={classes.container}>
+            <div className={classes.ring}></div>
+            <div className={classes.ring}></div>
+            <div className={classes.ring}></div>
+            <span className={classes.loading}>Recycle</span>
+          </div>
+        </div>
       ) : (
         <GoogleMap
           mapContainerClassName={classes.mapContainer}
@@ -348,18 +375,30 @@ const Map = () => {
                   <InfoWindowF
                     onCloseClick={() => setSelectedMarker(null)}
                     disableAutoClose={true}
+                    style={{ background: 'blue' }}
                   >
-                    <div>
-                      <h1 className="font-bold pt-2 text-right">{address}</h1>
-                      <h2 className="pt-2 text-right">
-                        {formatDate(last_modified)}
-                      </h2>
-                      <h2
-                        className="cursor-pointer hover:cursor-pointer hover:underline hover:text-blue-500 pt-2 text-right"
-                        onClick={() => handleOpenGoogleMaps(lat, lng)}
+                    <div className="pl-5 text-center">
+                      <h1 className="text-xl font-bold mb-2 text-right">
+                        {address}
+                      </h1>
+                      <p
+                        className={`mb-2 text-center font-semibold ${typeColors[type]}`}
                       >
-                        Navigate
-                      </h2>
+                        {typeDescriptions[type]}
+                      </p>
+                      <div className="text-center">
+                        <h2 className="mb-2 text-center">
+                          Last updated: {formatDate(last_modified)}
+                        </h2>
+                      </div>
+                      <div className="text-center">
+                        <button
+                          className="bg-white hover:bg-blue-300 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow items-center"
+                          onClick={() => handleOpenGoogleMaps(lat, lng)}
+                        >
+                          Navigate
+                        </button>
+                      </div>
                     </div>
                   </InfoWindowF>
                 )}
@@ -372,16 +411,19 @@ const Map = () => {
               req_lat,
               req_lng,
               req_address,
-              phone_number,
               bottles_number,
               from_hour,
               to_hour,
               request_date,
               status,
               type,
+              user_id,
             } = request;
 
             const markerClicked = selectedMarker === req_address;
+
+            const isCurrentUser =
+              currentUser?.ID === user_id || currentUser?.role === 1;
 
             return (
               <MarkerF
@@ -397,36 +439,73 @@ const Map = () => {
                     onCloseClick={() => setSelectedMarker(null)}
                     disableAutoClose={true}
                   >
-                    <div>
-                      <h1 className="font-bold pt-2 text-right">
-                        {req_address}
-                      </h1>
-                      <h2 className="pt-2 text-left">
-                        Bottles: {bottles_number}
-                      </h2>
-                      <h2 className="pt-2 text-left">
-                        Hours: {from_hour} - {to_hour}
-                      </h2>
-                      <h2 className="pt-2 text-left">Phone: {phone_number}</h2>
-                      <h2 className="pt-2 text-left">
-                        Date: {formatDateTime(request_date)}
-                      </h2>
-                      <h2 className="pt-2 text-left">
-                        Hour: {formatTime(request_date)}
-                      </h2>
-                      <h2 className="pt-2 text-left">Status: {status}</h2>
-                      {currentUser?.role !== 2 &&
-                        status !== 2 &&
-                        currentUser && (
-                          <h2 className="pt-2 text-center">
+                    <div className="pl-5">
+                      <h1 className="text-xl font-bold mb-2">{req_address}</h1>
+                      <div className="mb-4">
+                        <div className="flex items-center mb-1">
+                          <span className="font-semibold mr-1">Bottles:</span>
+                          <span>{bottles_number}</span>
+                        </div>
+                        <div className="flex items-center mb-1">
+                          <span className="font-semibold mr-1">Hours:</span>
+                          <span>
+                            {from_hour} - {to_hour}
+                          </span>
+                        </div>
+                        {/* 
+                        <div className="flex items-center mb-1">
+                          <span className="font-semibold mr-1">Phone:</span>
+                          <span>{phone_number}</span>
+                        </div> */}
+                        <div className="flex items-center mb-1">
+                          <span className="font-semibold mr-1">Date:</span>
+                          <span>{formatDateTime(request_date)}</span>
+                        </div>
+                        <div className="flex items-center mb-1">
+                          <span className="font-semibold mr-1">
+                            Last Updated:
+                          </span>
+                          <span>{formatTime(request_date)}</span>
+                        </div>
+                        {/* <div className="flex items-center">
+                          <span className="font-semibold mr-1">Status:</span>
+                          <span>{status}</span>
+                        </div> */}
+                      </div>
+                      <div className="flex justify-center">
+                        {isCurrentUser && (
+                          <Link
+                            to={`/user/update-request?Id=${request_id}`}
+                            className="bg-white hover:bg-yellow-300 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow items-center"
+                          >
+                            Update
+                          </Link>
+                        )}
+                        {currentUser?.role !== 2 &&
+                          currentUser?.role !== 5 &&
+                          status !== 2 &&
+                          currentUser && (
                             <Link
                               to={`/collect?Id=${request_id}`}
-                              className="cursor-pointer hover:cursor-pointer hover:underline hover:text-blue-500 pt-2 text-right"
+                              className="bg-white ml-2 hover:bg-green-300 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow items-center"
                             >
                               Collect
                             </Link>
-                          </h2>
-                        )}
+                          )}
+                        {currentUser?.role !== 2 &&
+                          currentUser?.role !== 5 &&
+                          status !== 2 &&
+                          currentUser && (
+                            <button
+                              className="bg-white ml-2 hover:bg-blue-300 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow items-center"
+                              onClick={() =>
+                                handleOpenGoogleMaps(req_lat, req_lng)
+                              }
+                            >
+                              Navigate
+                            </button>
+                          )}
+                      </div>
                     </div>
                   </InfoWindowF>
                 )}

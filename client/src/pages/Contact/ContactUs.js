@@ -1,12 +1,15 @@
-import React, { useRef, useContext, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import emailjs from '@emailjs/browser';
+import axios from 'axios';
 import { AuthContext } from '../../context/authContext';
 
-function Contact() {
+const ContactUs = () => {
   const form = useRef();
   const navigate = useNavigate();
   const { currentUser } = useContext(AuthContext);
+
+  const [message, setMessage] = useState('');
+  const [isSending, setIsSending] = useState(false); // State to track email sending
 
   useEffect(() => {
     if (currentUser) {
@@ -14,27 +17,37 @@ function Contact() {
     }
   }, [currentUser]);
 
-  const sendEmail = (e) => {
+  const handleSendEmail = async (e) => {
     e.preventDefault();
 
-    emailjs
-      .sendForm(
-        'service_un31h6f',
-        'template_a8g01eo',
-        form.current,
-        'Zl4bYGG8_QWdoO0Pg'
-      )
-      .then(
-        (result) => {
-          console.log(result.text);
-        },
-        (error) => {
-          console.log(error.text);
-        }
-      );
+    if (isSending) {
+      return;
+    }
 
-    e.target.reset();
-    navigate('/');
+    try {
+      setIsSending(true);
+
+      const emailResponse = await axios.post('/user/sendEmail', {
+        email: form.current.email.value,
+        subject: form.current.subject.value,
+        message: form.current.message.value,
+      });
+
+      setMessage(emailResponse.data.message);
+      console.log(message);
+
+      setTimeout(() => {
+        window.alert('Message sent successfully!'); // Display confirmation alert
+        if (form.current) {
+          form.current.reset();
+        }
+        navigate('/');
+      }, 1000);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsSending(false);
+    }
   };
 
   return (
@@ -47,7 +60,12 @@ function Contact() {
           Got a technical issue? Want to send feedback about a beta feature?
           Need details about our Business plan? Let us know.
         </p>
-        <form ref={form} onSubmit={sendEmail} action="#" className="space-y-8">
+        <form
+          ref={form}
+          onSubmit={handleSendEmail}
+          action="#"
+          className="space-y-8"
+        >
           <div>
             <label
               htmlFor="email"
@@ -99,14 +117,15 @@ function Contact() {
           </div>
           <button
             type="submit"
-            className="text-sm font-medium leading-6 text-gray-900 rounded-lg shadow-md focus:outline-none w-full h-12 transition-colors duration-150 ease-in-out bg-white hover:bg-gray-100 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700 dark:hover:text-primary-500"
+            disabled={isSending}
+            className="text-sm font-medium leading-6 text-gray-900 rounded-lg shadow-md focus:outline-none w-full h-12 transition-colors duration-150 ease-in-out bg-gray-700  dark:text-white hover:bg-gray-600 hover:text-primary-500"
           >
-            Send Message
+            {isSending ? 'Sending...' : 'Send Message'}
           </button>
         </form>
       </div>
     </section>
   );
-}
+};
 
-export default Contact;
+export default ContactUs;

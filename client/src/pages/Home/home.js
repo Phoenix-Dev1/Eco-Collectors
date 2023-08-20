@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const Home = () => {
   return (
-    <div className="font-sans bg-white dark:bg-gray-800 text-white">
+    <div className="font-sans bg-gray-800 dark:bg-gray-800 text-white">
       <main className="container mx-auto flex flex-col py-8">
         <div className="max-w-2xl mx-auto">
           <h2 className="text-3xl font-semibold mb-4">
@@ -179,7 +179,7 @@ const Home = () => {
             sorted in the other bins.
           </p>
           <a
-            href="#"
+            href="/#"
             className="fixed w-12 h-12 bg-blue-700 bottom-12 right-8 flex items-center justify-center text-black text-lg rounded-full hover:text-white"
           >
             <FontAwesomeIcon icon={faAngleUp} />

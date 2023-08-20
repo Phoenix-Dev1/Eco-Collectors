@@ -105,11 +105,14 @@ export default function UpdateUserInformation() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen dark:bg-gray-900 text-left">
-      <div className="leading-loose bg-gray-50 dark:bg-gray-900 overflow-auto w-96">
+    <div className="flex items-center justify-center min-h-screen bg-gray-900 text-left">
+      <div className="leading-loose bg-gray-900 overflow-auto w-96">
+        <h1 className="flex items-center justify-center text-lg font-bold mb-4">
+          Change your information
+        </h1>
         <form
           ref={form}
-          className="m-0 p-8 bg-gray-50 dark:bg-gray-800 rounded shadow-xl w-full"
+          className="m-0 p-8 bg-gray-800 rounded shadow-xl w-full"
         >
           <div className="inline-block mt-2 w-1/2 pr-1">
             <label className="block text-sm text-white" htmlFor="first_name">
