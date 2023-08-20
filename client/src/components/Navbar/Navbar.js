@@ -52,7 +52,7 @@ const Navbar = () => {
               </Link>
             </li>
             <li className="p-4 mr-4 text-orange-500 hover:text-green-600">
-              <Link to="/user/welcome">
+              <Link to={handleWelcome()}>
                 {currentUser.first_name} {currentUser.last_name}
               </Link>
             </li>
@@ -134,7 +134,7 @@ const Navbar = () => {
           </li>
           {currentUser && (
             <li className="p-4 border-b border-gray-600 text-orange-500 hover:text-green-600">
-              <Link to="/user">
+              <Link to={handleWelcome()}>
                 {currentUser.first_name} {currentUser.last_name}
               </Link>
             </li>
