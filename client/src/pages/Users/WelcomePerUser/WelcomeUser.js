@@ -1,156 +1,138 @@
-const { db } = require('../db.js');
-const jwt = require('jsonwebtoken');
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
-const WelcomeUserData = (req, res) => {
-  const token = req.cookies.access_token;
-  if (!token) return res.status(401).json('Not authenticated');
+const WelcomeUser = () => {
+  const [totalRequests, setTotalRequests] = useState(0);
+  const [totalRecycledBottles, setTotalRecycledBottles] = useState(0);
+  const [avgClosingTime, setAvgClosingTime] = useState(0);
+  const [totalCompletedRequests, setTotalCompletedRequests] = useState(0);
+  const [last3RecyclersNames, setLast3RecyclersNames] = useState(0);
+  const [currentMonthRecycledBottles, setCurrentMonthRecycledBottles] =
+    useState(0);
 
-  jwt.verify(token, 'jwtkey', (err, decodedToken) => {
-    if (err) {
-      console.error('Error verifying token:', err);
-      return res.status(403).json('Token is not valid!');
-    }
-
-    const userId = decodedToken.id;
-
-    // Query 1: Count the total requests for the current user
-    const getTotalRequestsQuery = `
-      SELECT COUNT(*) AS totalRequests
-      FROM user_requests
-      WHERE user_id = ${userId}
-    `;
-
-    // Query 2: Sum the total recycled bottles for the current user
-    const getTotalRecycledBottlesQuery = `
-      SELECT SUM(bottles_number) AS totalRecycledBottles
-      FROM user_requests
-      WHERE user_id = ${userId}
-    `;
-
-    // Query 3: Calculate the average closing time for the current user's requests
-    const getAvgClosingTimeQuery = `
-      SELECT AVG(TIMESTAMPDIFF(SECOND, request_date, completed_date)) AS avgClosingTime
-      FROM user_requests
-      WHERE user_id = ${userId}
-      AND completed_date IS NOT NULL
-    `;
-
-    // Query 4: Count the total requests completed of the current user
-    const getTotalCompletedRequestsQuery = `
-      SELECT COUNT(*) AS totalCompletedRequests
-      FROM user_requests
-      WHERE status = 3 AND user_id = ${userId}
-    `;
-
-    // Query 5: Lists the names of the last 3 recyclers that have collected from current user
-    const getLast3RecyclersNamesQuery = `
-      SELECT full_name
-      FROM user_requests
-      WHERE completed_date IS NOT NULL
-      AND user_id = ${userId}
-      ORDER BY completed_date DESC
-      LIMIT 3
-    `;
-
-    // Query 6: Calculate the number of bottles recycled this current month by the current user
-    const getCurrentMonthRecycledBottlesQuery = `
-      SELECT SUM(bottles_number) AS currentMonthRecycledBottles
-      FROM user_requests
-      WHERE recycler_id IS NOT NULL
-      AND completed_date IS NOT NULL
-      AND user_id = ${userId}
-      AND YEAR(completed_date) = YEAR(NOW()) 
-      AND MONTH(completed_date) = MONTH(NOW())
-    `;
-
-    // Execute Query 1: Get total requests uploaded by current user
-    db.query(getTotalRequestsQuery, (err, result) => {
-      if (err) {
-        console.error('Error executing the query:', err);
-        return res.status(500).json('Internal server error');
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const res = await axios.get('/user/welcomeUser');
+        setTotalRequests(res.data.totalRequests);
+        setTotalRecycledBottles(res.data.totalRecycledBottles);
+        setAvgClosingTime(res.data.avgClosingTime);
+        setTotalCompletedRequests(res.data.totalCompletedRequests);
+        setLast3RecyclersNames(res.data.last3RecyclersNames);
+        setCurrentMonthRecycledBottles(res.data.currentMonthRecycledBottles);
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+        setTotalRequests(-1);
+        setTotalRecycledBottles(-1);
+        setAvgClosingTime(-1);
       }
+    };
+    fetchUserData();
+  }, []);
 
-      const totalRequests = result[0].totalRequests;
+  const renderMetricCards = () => {
+    const currentDate = new Date();
+    const currentMonth = new Intl.DateTimeFormat('en', {
+      month: 'long',
+    }).format(currentDate);
+    const metricStyles = [
+      {
+        title: 'Total Requests',
+        cardStyle:
+          'bg-gradient-to-b from-green-200 to-green-100 border-b-4 border-green-600',
+        titleStyle: 'text-green-600',
+        value: totalRequests,
+      },
+      {
+        title: 'Total Number Of Bottles Recycled',
+        cardStyle:
+          'bg-gradient-to-b from-indigo-200 to-indigo-100 border-b-4 border-indigo-500',
+        titleStyle: 'text-indigo-500',
+        value: totalRecycledBottles,
+      },
+      {
+        title: 'Total Completed Requests',
+        cardStyle:
+          'bg-gradient-to-b from-yellow-200 to-yellow-100 border-b-4 border-indigo-yellow',
+        titleStyle: 'text-yellow-500',
+        value: totalCompletedRequests,
+      },
+      {
+        title: 'Last 3 Recycler Names Who Collected',
+        cardStyle:
+          'bg-gradient-to-b from-purple-300 to-purple-200 border-b-4 border-purple-500',
+        titleStyle: 'text-purple-500',
+        value:
+          last3RecyclersNames.length > 0 ? (
+            last3RecyclersNames.map((request, index) => (
+              <div key={`last-request-${index}`}>
+                Recycler: {request.full_name}
+              </div>
+            ))
+          ) : (
+            <div>No Completed Requests</div> // Display a message when no completed requests
+          ),
+      },
+      {
+        title: `Bottles Recycled This Month (${currentMonth})`,
+        cardStyle:
+          'bg-gradient-to-b from-pink-200 to-pink-100 border-b-4 border-pink-500',
+        titleStyle: 'text-pink-500',
+        value: currentMonthRecycledBottles,
+      },
+      {
+        title: 'Average Request Closing Time',
+        cardStyle:
+          'bg-gradient-to-b from-red-200 to-red-100 border-b-4 border-red-500',
+        titleStyle: 'text-red-500',
+        value: `${avgClosingTime.days} days ${avgClosingTime.hours} hours ${avgClosingTime.minutes} minutes`,
+      },
+    ];
 
-      // Execute Query 2: Get total recycled bottles number of current user
-      db.query(getTotalRecycledBottlesQuery, (err, result) => {
-        if (err) {
-          console.error('Error executing the query:', err);
-          return res.status(500).json('Internal server error');
-        }
+    return metricStyles.map((metric, index) => {
+      const { title, cardStyle, titleStyle, value } = metric;
 
-        const totalRecycledBottles = result[0].totalRecycledBottles;
-
-        // Execute Query 3: Get the average closing time of requests uploaded by current user
-        db.query(getAvgClosingTimeQuery, (err, result3) => {
-          if (err) {
-            console.error('Error executing the avg closing time query:', err);
-            return res.status(500).json('Internal server error');
-          }
-
-          // Extract the average closing time in seconds from the query result
-          const avgClosingTimeInSeconds = result3[0].avgClosingTime;
-
-          // Calculate the average closing time in days, hours, and minutes
-          const avgClosingTimeInDays = Math.floor(
-            avgClosingTimeInSeconds / (3600 * 24)
-          );
-          const avgClosingTimeInHours = Math.floor(
-            (avgClosingTimeInSeconds % (3600 * 24)) / 3600
-          );
-          const avgClosingTimeInMinutes = Math.floor(
-            (avgClosingTimeInSeconds % 3600) / 60
-          );
-
-          // Execute Query 4: Get total recycled bottles number of current user
-          db.query(getTotalCompletedRequestsQuery, (err, result4) => {
-            if (err) {
-              console.error('Error executing the query:', err);
-              return res.status(500).json('Internal server error');
-            }
-
-            const totalCompletedRequests = result4[0].totalCompletedRequests;
-
-            // Execute Query 5: Get the names of 3 last recyclers that collected from current user
-            db.query(getLast3RecyclersNamesQuery, (err, result5) => {
-              if (err) {
-                console.error('Error executing the query:', err);
-                return res.status(500).json('Internal server error');
-              }
-
-              const last3RecyclersNames = result5;
-
-              // Execute Query 6: Get the current month's recycled bottles by current user
-              db.query(getCurrentMonthRecycledBottlesQuery, (err, result6) => {
-                if (err) {
-                  console.error('Error executing the query:', err);
-                  return res.status(500).json('Internal server error');
-                }
-
-                const currentMonthRecycledBottles =
-                  result6[0].currentMonthRecycledBottles;
-
-                return res.json({
-                  totalRequests,
-                  totalRecycledBottles,
-                  avgClosingTime: {
-                    days: avgClosingTimeInDays,
-                    hours: avgClosingTimeInHours,
-                    minutes: avgClosingTimeInMinutes,
-                  },
-                  totalCompletedRequests,
-                  last3RecyclersNames,
-                  currentMonthRecycledBottles,
-                });
-              });
-            });
-          });
-        });
-      });
+      return (
+        <div
+          className="w-full md:w-1/2 xl:w-1/3 p-6"
+          key={`metric-card-${index}`}
+        >
+          <div className={`border rounded-lg shadow-xl p-5 ${cardStyle}`}>
+            <h2 className={`text-lg font-semibold ${titleStyle}`}>{title}</h2>
+            <p className="text-gray-600 mt-2">{value}</p>
+          </div>
+        </div>
+      );
     });
-  });
+  };
+
+  return (
+    <div>
+      <header>
+        <nav className="bg-gray-800 pt-2 md:pt-1 pb-1 px-1 sticky top-0 z-20"></nav>
+      </header>
+      <main>
+        <div className="flex flex-col md:flex-row">
+          <nav aria-label="alternative nav"></nav>
+          <section>
+            <div
+              id="main"
+              className="main-content flex-1 bg-gray-700 mt-12 md:mt-2 pb-24 md:pb-5"
+            >
+              <div className="bg-gray-800 pt-3">
+                {/* ... */}
+                {/* The content of the title section goes here */}
+                {/* ... */}
+              </div>
+              <div className="flex flex-wrap font-bold text-2xl">
+                {renderMetricCards()}
+              </div>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+  );
 };
 
-module.exports = {
-  WelcomeUserData: WelcomeUserData,
-};
+export default WelcomeUser;

@@ -1,149 +1,137 @@
-const { db } = require('../db.js');
-const jwt = require('jsonwebtoken');
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
-const getWelcomeAdminData = (req, res) => {
-  const token = req.cookies.access_token;
-  if (!token) return res.status(401).json('Not authenticated');
+const WelcomeAdmin = () => {
+  const [totalRequests, setTotalRequests] = useState(0);
+  const [totalRecycledBottles, setTotalRecycledBottles] = useState(0);
+  const [avgClosingTime, setAvgClosingTime] = useState(0);
+  const [activeBinsCount, setActiveBinsCount] = useState(0);
+  const [totalCompletedRequests, setTotalCompletedRequests] = useState(0);
+  const [currentMonthCollectedBottles, setCurrentMonthCollectedBottles] =
+    useState(0);
 
-  jwt.verify(token, 'jwtkey', (err) => {
-    if (err) {
-      console.error('Error verifying token:', err);
-      return res.status(403).json('Token is not valid!');
-    }
-
-    // Query 1: Count the total requests from all users
-    const getTotalRequestsQuery = `
-      SELECT COUNT(*) AS totalRequests
-      FROM user_requests
-    `;
-
-    // Query 2: Calculate the total recycled bottles by all users
-    const getTotalRecycledBottlesQuery = `
-      SELECT SUM(bottles_number) AS totalRecycledBottles
-      FROM user_requests
-    `;
-
-    // Query 3: Calculate the average closing time for all users' requests
-    const getAvgClosingTimeQuery = `
-      SELECT AVG(TIMESTAMPDIFF(SECOND, request_date, completed_date)) AS avgClosingTime
-      FROM user_requests
-      WHERE completed_date IS NOT NULL
-    `;
-
-    // Query 4: Count the number of active bins in the 'markers' table
-    const getActiveBinsCountQuery = `
-      SELECT COUNT(*) AS activeBinsCount
-      FROM markers
-      WHERE active = 1
-    `;
-
-    // Query 5: Count the number of completed requests by all users
-    const getTotalCompletedRequests = `
-      SELECT COUNT(*) AS totalCompletedRequests
-      FROM user_requests
-      WHERE status = 3
-    `;
-
-    // Query 6: Calculate the number of bottles collected this current month
-    const getCurrentMonthCollectedBottlesQuery = `
-      SELECT SUM(bottles_number) AS currentMonthCollectedBottles
-      FROM user_requests
-      WHERE recycler_id IS NOT NULL
-      AND completed_date IS NOT NULL
-      AND YEAR(completed_date) = YEAR(NOW()) 
-      AND MONTH(completed_date) = MONTH(NOW())
-    `;
-
-    // Execute Query 1: Total Requests
-    db.query(getTotalRequestsQuery, (err, result1) => {
-      if (err) {
-        console.error('Error executing the total requests query:', err);
-        return res.status(500).json('Internal server error');
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await axios.get('/user/welcomeAdmin');
+        setTotalRequests(res.data.totalRequests);
+        setTotalRecycledBottles(res.data.totalRecycledBottles);
+        setAvgClosingTime(res.data.avgClosingTime);
+        setActiveBinsCount(res.data.activeBinsCount);
+        setTotalCompletedRequests(res.data.totalCompletedRequests);
+        setCurrentMonthCollectedBottles(res.data.currentMonthCollectedBottles);
+      } catch (err) {
+        console.log('Error fetching data');
       }
-      const totalRequests = result1[0].totalRequests;
+    };
+    fetchData();
+  }, []);
 
-      // Execute Query 2: Total Recycled Bottles
-      db.query(getTotalRecycledBottlesQuery, (err, result2) => {
-        if (err) {
-          console.error(
-            'Error executing the total recycled bottles query:',
-            err
-          );
-          return res.status(500).json('Internal server error');
-        }
-        const totalRecycledBottles = result2[0].totalRecycledBottles;
+  const renderMetricCards = () => {
+    const currentDate = new Date();
+    const currentMonth = new Intl.DateTimeFormat('en', {
+      month: 'long',
+    }).format(currentDate);
+    const metricStyles = [
+      {
+        title: 'Total Requests Uploaded (All Users)',
+        cardStyle:
+          'bg-gradient-to-b from-green-200 to-green-100 border-b-4 border-green-600',
+        titleStyle: 'text-green-600',
+        value: totalRequests,
+      },
+      {
+        title: 'Total Number Of Bottles Recycled (All Users)',
+        cardStyle:
+          'bg-gradient-to-b from-indigo-200 to-indigo-100 border-b-4 border-indigo-500',
+        titleStyle: 'text-indigo-500',
+        value: totalRecycledBottles,
+      },
+      {
+        title: 'Number Of All Active Bins (In System)',
+        cardStyle:
+          'bg-gradient-to-b from-yellow-200 to-yellow-100 border-b-4 border-indigo-yellow',
+        titleStyle: 'text-yellow-500',
+        value: activeBinsCount,
+      },
+      {
+        title: 'Total Completed Requests (All Users)',
+        cardStyle:
+          'bg-gradient-to-b from-purple-300 to-purple-200 border-b-4 border-purple-500',
+        titleStyle: 'text-purple-500',
+        value: totalCompletedRequests,
+      },
+      {
+        title: `Bottles Collected This Month (${currentMonth})`,
+        cardStyle:
+          'bg-gradient-to-b from-pink-200 to-pink-100 border-b-4 border-pink-500',
+        titleStyle: 'text-pink-500',
+        value: currentMonthCollectedBottles,
+      },
+      {
+        title: 'Average Request Closing Time (All Users)',
+        cardStyle:
+          'bg-gradient-to-b from-red-200 to-red-100 border-b-4 border-red-500',
+        titleStyle: 'text-red-500',
+        value: `${avgClosingTime} minutes`, // Display average closing time in minutes
+      },
+    ];
 
-        // Execute Query 3: Average Closing Time
-        db.query(getAvgClosingTimeQuery, (err, result3) => {
-          if (err) {
-            console.error('Error executing the avg closing time query:', err);
-            return res.status(500).json('Internal server error');
-          }
+    return metricStyles.map((metric, index) => {
+      const { title, cardStyle, titleStyle, value } = metric;
 
-          const avgClosingTimeInSeconds = result3[0].avgClosingTime;
-          const avgClosingTimeInMinutes = Math.floor(
-            avgClosingTimeInSeconds / 60
-          );
-
-          // Convert to days, hours, and minutes
-          const days = Math.floor(avgClosingTimeInMinutes / 1440);
-          const hours = Math.floor((avgClosingTimeInMinutes % 1440) / 60);
-          const minutes = avgClosingTimeInMinutes % 60;
-
-          // Execute Query 4: Active bins number
-          db.query(getActiveBinsCountQuery, (err, result4) => {
-            if (err) {
-              console.error(
-                'Error executing the active bins count query:',
-                err
-              );
-              return res.status(500).json('Internal server error');
-            }
-
-            const activeBinsCount = result4[0].activeBinsCount;
-
-            // Execute Query 5: Total completed requests
-            db.query(getTotalCompletedRequests, (err, result5) => {
-              if (err) {
-                console.error(
-                  'Error executing the Total completed requests query:',
-                  err
-                );
-                return res.status(500).json('Internal server error');
-              }
-
-              const totalCompletedRequests = result5[0].totalCompletedRequests;
-
-              // Execute Query 6: Current month collected bottles
-              db.query(getCurrentMonthCollectedBottlesQuery, (err, result6) => {
-                if (err) {
-                  console.error(
-                    'Error executing the current month collected bottles query:',
-                    err
-                  );
-                  return res.status(500).json('Internal server error');
-                }
-
-                const currentMonthCollectedBottles =
-                  result6[0].currentMonthCollectedBottles;
-
-                res.json({
-                  totalRequests,
-                  totalRecycledBottles,
-                  avgClosingTime: `${days} days ${hours} hours ${minutes}`,
-                  activeBinsCount,
-                  totalCompletedRequests,
-                  currentMonthCollectedBottles,
-                });
-              });
-            });
-          });
-        });
-      });
+      return (
+        <div
+          className="w-full md:w-1/2 xl:w-1/3 p-6"
+          key={`metric-card-${index}`}
+        >
+          <div className={`border rounded-lg shadow-xl p-5 ${cardStyle}`}>
+            <h2 className={`text-lg font-semibold ${titleStyle}`}>{title}</h2>
+            <p className="text-gray-600 mt-2">{value}</p>
+          </div>
+        </div>
+      );
     });
-  });
+  };
+
+  return (
+    <div>
+      <header>
+        <nav
+          aria-label="menu nav"
+          className="bg-gray-800 pt-2 md:pt-1 pb-1 px-1 sticky top-0 z-20"
+        >
+          {/* ... */}
+          {/* The content of the header goes here */}
+          {/* ... */}
+        </nav>
+      </header>
+      <main>
+        <div className="flex flex-col md:flex-row">
+          <nav aria-label="alternative nav">
+            {/* ... */}
+            {/* The content of the navigation goes here */}
+            {/* ... */}
+          </nav>
+          <section>
+            <div
+              id="main"
+              className="main-content flex-1 bg-gray-700 mt-12 md:mt-2 pb-24 md:pb-5"
+            >
+              <div className="bg-gray-800 pt-3">
+                {/* ... */}
+                {/* The content of the title section goes here */}
+                {/* ... */}
+              </div>
+              <div className="flex flex-wrap font-bold text-2xl">
+                {renderMetricCards()}
+              </div>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+  );
 };
 
-module.exports = {
-  getWelcomeAdminData: getWelcomeAdminData,
-};
+export default WelcomeAdmin;
