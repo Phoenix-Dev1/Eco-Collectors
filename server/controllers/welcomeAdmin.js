@@ -30,6 +30,30 @@ const getWelcomeAdminData = (req, res) => {
       WHERE completed_date IS NOT NULL
     `;
 
+    // Query 4: Count the number of active bins in the 'markers' table
+    const getActiveBinsCountQuery = `
+      SELECT COUNT(*) AS activeBinsCount
+      FROM markers
+      WHERE active = 1
+    `;
+
+    // Query 5: Count the number of completed requests by all users
+    const getTotalCompletedRequests = `
+      SELECT COUNT(*) AS totalCompletedRequests
+      FROM user_requests
+      WHERE status = 3
+    `;
+
+    // Query 6: Calculate the number of bottles collected this current month
+    const getCurrentMonthCollectedBottlesQuery = `
+      SELECT SUM(bottles_number) AS currentMonthCollectedBottles
+      FROM user_requests
+      WHERE recycler_id IS NOT NULL
+      AND completed_date IS NOT NULL
+      AND YEAR(completed_date) = YEAR(NOW()) 
+      AND MONTH(completed_date) = MONTH(NOW())
+    `;
+
     // Execute Query 1: Total Requests
     db.query(getTotalRequestsQuery, (err, result1) => {
       if (err) {
@@ -66,17 +90,53 @@ const getWelcomeAdminData = (req, res) => {
           const hours = Math.floor((avgClosingTimeInMinutes % 1440) / 60);
           const minutes = avgClosingTimeInMinutes % 60;
 
-          console.log('Total Requests:', totalRequests);
-          console.log('Total Recycled Bottles:', totalRecycledBottles);
-          console.log(
-            'Average Closing Time:',
-            `${days} days ${hours} hours ${minutes} minutes`
-          );
+          // Execute Query 4: Active bins number
+          db.query(getActiveBinsCountQuery, (err, result4) => {
+            if (err) {
+              console.error(
+                'Error executing the active bins count query:',
+                err
+              );
+              return res.status(500).json('Internal server error');
+            }
 
-          res.json({
-            totalRequests,
-            totalRecycledBottles,
-            avgClosingTime: `${days} days ${hours} hours ${minutes}`,
+            const activeBinsCount = result4[0].activeBinsCount;
+
+            // Execute Query 5: Total completed requests
+            db.query(getTotalCompletedRequests, (err, result5) => {
+              if (err) {
+                console.error(
+                  'Error executing the Total completed requests query:',
+                  err
+                );
+                return res.status(500).json('Internal server error');
+              }
+
+              const totalCompletedRequests = result5[0].totalCompletedRequests;
+
+              // Execute Query 6: Current month collected bottles
+              db.query(getCurrentMonthCollectedBottlesQuery, (err, result6) => {
+                if (err) {
+                  console.error(
+                    'Error executing the current month collected bottles query:',
+                    err
+                  );
+                  return res.status(500).json('Internal server error');
+                }
+
+                const currentMonthCollectedBottles =
+                  result6[0].currentMonthCollectedBottles;
+
+                res.json({
+                  totalRequests,
+                  totalRecycledBottles,
+                  avgClosingTime: `${days} days ${hours} hours ${minutes}`,
+                  activeBinsCount,
+                  totalCompletedRequests,
+                  currentMonthCollectedBottles,
+                });
+              });
+            });
           });
         });
       });

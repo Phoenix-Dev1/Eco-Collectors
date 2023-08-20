@@ -1,132 +1,149 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+const { db } = require('../db.js');
+const jwt = require('jsonwebtoken');
 
-const WelcomeRecycler = () => {
-  const [totalRequestsPickedUp, setTotalRequestsPickedUp] = useState(0);
-  const [totalRecycledBottles, setTotalRecycledBottles] = useState(0);
-  const [avgClosingTime, setAvgClosingTime] = useState('');
+const WelcomeRecyclerData = (req, res) => {
+  const token = req.cookies.access_token;
+  if (!token) return res.status(401).json('Not authenticated');
 
-  useEffect(() => {
-    const fetchRecyclerData = async () => {
-      try {
-        const res = await axios.get('/user/welcomeRecycler');
-        setTotalRequestsPickedUp(res.data.totalRequestsPickedUp);
-        setTotalRecycledBottles(res.data.totalRecycledBottles);
-        setAvgClosingTime(res.data.avgClosingTime);
-      } catch (error) {
-        console.error('Error fetching recycler data:', error);
-        setTotalRequestsPickedUp(-1);
+  jwt.verify(token, 'jwtkey', (err, decodedToken) => {
+    if (err) {
+      console.error('Error verifying token:', err);
+      return res.status(403).json('Token is not valid!');
+    }
+
+    const userId = decodedToken.id;
+
+    // Query 1: Count the total requests picked up by the current recycler
+    const getTotalRequestsPickedUpQuery = `
+      SELECT COUNT(*) AS totalRequestsPickedUp
+      FROM user_requests
+      WHERE recycler_id = ${userId}
+    `;
+
+    // Query 2: Calculate the total recycled bottles by the current recycler
+    const getTotalRecycledBottlesQuery = `
+      SELECT SUM(bottles_number) AS totalRecycledBottles
+      FROM user_requests
+      WHERE recycler_id = ${userId}
+    `;
+
+    // Query 3: Calculate the average closing time for the current recycler's requests picked up
+    const getAvgClosingTimeQuery = `
+      SELECT AVG(TIMESTAMPDIFF(SECOND, request_date, completed_date)) AS avgClosingTime
+      FROM user_requests
+      WHERE recycler_id = ${userId} AND completed_date IS NOT NULL
+    `;
+
+    // Query 4: Calculate the number of bottles picked up this current month by the current recycler
+    const getCurrentMonthRecycledBottlesQuery = `
+      SELECT SUM(bottles_number) AS currentMonthRecycledBottles
+      FROM user_requests
+      WHERE recycler_id IS NOT NULL
+      AND completed_date IS NOT NULL
+      AND recycler_id = ${userId}
+      AND YEAR(completed_date) = YEAR(NOW()) 
+      AND MONTH(completed_date) = MONTH(NOW())
+    `;
+
+    // Query 5: Lists the names of the last 3 users that the current recycler have collected from
+    const getLast3UsersNamesQuery = `
+      SELECT full_name
+      FROM user_requests
+      WHERE completed_date IS NOT NULL
+      AND recycler_id = ${userId}
+      ORDER BY completed_date DESC
+      LIMIT 3
+    `;
+
+    // Query 6: Count the open requests for the current recycler to pick up
+    const getOpenRequestsQuery = `
+      SELECT COUNT(*) AS openRequests
+      FROM user_requests
+      WHERE status = 1
+    `;
+
+    // Execute Query 1: Get total requests uploaded by current recycler
+    db.query(getTotalRequestsPickedUpQuery, (err1, result1) => {
+      if (err1) {
+        console.error(
+          'Error executing the total requests picked up query:',
+          err1
+        );
+        return res.status(500).json('Internal server error');
       }
-    };
-    fetchRecyclerData();
-  }, []);
+      const totalRequestsPickedUp = result1[0].totalRequestsPickedUp;
 
-  const renderMetricCards = () => {
-    const metricStyles = [
-      {
-        title: 'Total Requests Picked Up',
-        cardStyle:
-          'bg-gradient-to-b from-green-200 to-green-100 border-b-4 border-green-600',
-        titleStyle: 'text-green-600',
-        value: totalRequestsPickedUp,
-      },
-      {
-        title: "Total Bottle No' Recycled",
-        cardStyle:
-          'bg-gradient-to-b from-indigo-200 to-indigo-100 border-b-4 border-indigo-500',
-        titleStyle: 'text-indigo-500',
-        value: totalRecycledBottles,
-      },
-      {
-        title: 'Average Request Closing Time',
-        cardStyle:
-          'bg-gradient-to-b from-red-200 to-red-100 border-b-4 border-red-500',
-        titleStyle: 'text-red-500',
-        value: avgClosingTime,
-      },
-    ];
+      // Execute Query 2: Get total recycled bottles number of current recycler
+      db.query(getTotalRecycledBottlesQuery, (err2, result2) => {
+        if (err2) {
+          console.error(
+            'Error executing the total recycled bottles query:',
+            err2
+          );
+          return res.status(500).json('Internal server error');
+        }
+        const totalRecycledBottles = result2[0].totalRecycledBottles;
 
-    return metricStyles.map((metric, index) => {
-      const { title, cardStyle, titleStyle, value } = metric;
+        // Execute Query 3: Get the average closing time of requests uploaded by current recycler
+        db.query(getAvgClosingTimeQuery, (err3, result3) => {
+          if (err3) {
+            console.error('Error executing the avg closing time query:', err3);
+            return res.status(500).json('Internal server error');
+          }
+          const avgClosingTimeInSeconds = result3[0].avgClosingTime;
+          const avgClosingTimeInMinutes = Math.floor(
+            avgClosingTimeInSeconds / 60
+          );
+          const days = Math.floor(avgClosingTimeInMinutes / 1440);
+          const hours = Math.floor((avgClosingTimeInMinutes % 1440) / 60);
+          const minutes = avgClosingTimeInMinutes % 60;
+          const avgClosingTime = `${days} days ${hours} hours ${minutes} minutes`;
 
-      return (
-        <div
-          className="w-full md:w-1/2 xl:w-1/3 p-6"
-          key={`metric-card-${index}`}
-        >
-          <div className={`border rounded-lg shadow-xl p-5 ${cardStyle}`}>
-            <h2 className={`text-lg font-semibold ${titleStyle}`}>{title}</h2>
-            {title === 'Total Requests Picked Up' && (
-              <p className="text-gray-600 mt-2">{value}</p>
-            )}
-            {title === "Total Bottle No' Recycled" && (
-              <p className="text-gray-600 mt-2">{value}</p>
-            )}
-            {title === 'Average Request Closing Time' && (
-              <p className="text-gray-600 mt-2">{value}</p>
-            )}
-          </div>
-        </div>
-      );
+          // Execute Query 4: Get the current month's recycled bottles by current recycler
+          db.query(getCurrentMonthRecycledBottlesQuery, (err, result4) => {
+            if (err) {
+              console.error('Error executing the query:', err);
+              return res.status(500).json('Internal server error');
+            }
+
+            const currentMonthRecycledBottles =
+              result4[0].currentMonthRecycledBottles;
+
+            // Execute Query 5: Get the names of the last 3 users that the current recycler have collected from
+            db.query(getLast3UsersNamesQuery, (err, result5) => {
+              if (err) {
+                console.error('Error executing the query:', err);
+                return res.status(500).json('Internal server error');
+              }
+
+              const last3UsersNames = result5;
+
+              // Execute Query 6: Get the open requests for the current recycler to pick up
+              db.query(getOpenRequestsQuery, (err, result6) => {
+                if (err) {
+                  console.error('Error executing the query:', err);
+                  return res.status(500).json('Internal server error');
+                }
+
+                const openRequests = result6[0].openRequests;
+
+                res.json({
+                  totalRequestsPickedUp,
+                  totalRecycledBottles,
+                  avgClosingTime,
+                  currentMonthRecycledBottles,
+                  last3UsersNames,
+                  openRequests,
+                });
+              });
+            });
+          });
+        });
+      });
     });
-  };
-
-  const renderGraphCards = () => {
-    const graphTitles = [
-      'Quarterly Months Picked Up Review',
-      'List Of Users Collected From',
-      'Half Yearly Completed Requests Numbers',
-    ];
-
-    return graphTitles.map((title, index) => (
-      <div className="w-full md:w-1/2 xl:w-1/3 p-6" key={`graph-card-${index}`}>
-        <div className="bg-white border rounded-lg shadow p-4">
-          <h2 className="text-lg font-semibold mb-2 text-gray-600">{title}</h2>
-          <p className="text-gray-600">Graph Card Content goes here.</p>
-        </div>
-      </div>
-    ));
-  };
-
-  return (
-    <div>
-      <header>
-        <nav
-          aria-label="menu nav"
-          className="bg-gray-800 pt-2 md:pt-1 pb-1 px-1 sticky top-0 z-20"
-        >
-          {/* ... */}
-          {/* The content of the header goes here */}
-          {/* ... */}
-        </nav>
-      </header>
-      <main>
-        <div className="flex flex-col md:flex-row">
-          <nav aria-label="alternative nav">
-            {/* ... */}
-            {/* The content of the navigation goes here */}
-            {/* ... */}
-          </nav>
-          <section>
-            <div
-              id="main"
-              className="main-content flex-1 bg-gray-700 mt-12 md:mt-2 pb-24 md:pb-5"
-            >
-              <div className="bg-gray-800 pt-3">
-                {/* ... */}
-                {/* The content of the title section goes here */}
-                {/* ... */}
-              </div>
-              <div className="flex flex-wrap ">{renderMetricCards()}</div>
-              <div className="flex flex-row flex-wrap flex-grow mt-2">
-                {renderGraphCards()}
-              </div>
-            </div>
-          </section>
-        </div>
-      </main>
-    </div>
-  );
+  });
 };
 
-export default WelcomeRecycler;
+module.exports = {
+  WelcomeRecyclerData: WelcomeRecyclerData,
+};

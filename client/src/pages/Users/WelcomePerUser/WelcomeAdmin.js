@@ -1,125 +1,149 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+const { db } = require('../db.js');
+const jwt = require('jsonwebtoken');
 
-const WelcomeAdmin = () => {
-  const [totalRequests, setTotalRequests] = useState(0);
-  const [totalRecycledBottles, setTotalRecycledBottles] = useState(0);
-  const [avgClosingTime, setAvgClosingTime] = useState(0);
+const getWelcomeAdminData = (req, res) => {
+  const token = req.cookies.access_token;
+  if (!token) return res.status(401).json('Not authenticated');
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await axios.get('/user/welcomeAdmin');
-        setTotalRequests(res.data.totalRequests);
-        setTotalRecycledBottles(res.data.totalRecycledBottles);
-        setAvgClosingTime(res.data.avgClosingTime);
-      } catch (err) {
-        console.log('Error fetching data');
+  jwt.verify(token, 'jwtkey', (err) => {
+    if (err) {
+      console.error('Error verifying token:', err);
+      return res.status(403).json('Token is not valid!');
+    }
+
+    // Query 1: Count the total requests from all users
+    const getTotalRequestsQuery = `
+      SELECT COUNT(*) AS totalRequests
+      FROM user_requests
+    `;
+
+    // Query 2: Calculate the total recycled bottles by all users
+    const getTotalRecycledBottlesQuery = `
+      SELECT SUM(bottles_number) AS totalRecycledBottles
+      FROM user_requests
+    `;
+
+    // Query 3: Calculate the average closing time for all users' requests
+    const getAvgClosingTimeQuery = `
+      SELECT AVG(TIMESTAMPDIFF(SECOND, request_date, completed_date)) AS avgClosingTime
+      FROM user_requests
+      WHERE completed_date IS NOT NULL
+    `;
+
+    // Query 4: Count the number of active bins in the 'markers' table
+    const getActiveBinsCountQuery = `
+      SELECT COUNT(*) AS activeBinsCount
+      FROM markers
+      WHERE active = 1
+    `;
+
+    // Query 5: Count the number of completed requests by all users
+    const getTotalCompletedRequests = `
+      SELECT COUNT(*) AS totalCompletedRequests
+      FROM user_requests
+      WHERE status = 3
+    `;
+
+    // Query 6: Calculate the number of bottles collected this current month
+    const getCurrentMonthCollectedBottlesQuery = `
+      SELECT SUM(bottles_number) AS currentMonthCollectedBottles
+      FROM user_requests
+      WHERE recycler_id IS NOT NULL
+      AND completed_date IS NOT NULL
+      AND YEAR(completed_date) = YEAR(NOW()) 
+      AND MONTH(completed_date) = MONTH(NOW())
+    `;
+
+    // Execute Query 1: Total Requests
+    db.query(getTotalRequestsQuery, (err, result1) => {
+      if (err) {
+        console.error('Error executing the total requests query:', err);
+        return res.status(500).json('Internal server error');
       }
-    };
-    fetchData();
-  }, []);
+      const totalRequests = result1[0].totalRequests;
 
-  const renderMetricCards = () => {
-    const metricStyles = [
-      {
-        title: 'Total Requests Uploaded (All Users)',
-        cardStyle:
-          'bg-gradient-to-b from-green-200 to-green-100 border-b-4 border-green-600',
-        titleStyle: 'text-green-600',
-        value: totalRequests,
-      },
-      {
-        title: "Total Bottle No' Recycled (All Users)",
-        cardStyle:
-          'bg-gradient-to-b from-indigo-200 to-indigo-100 border-b-4 border-indigo-500',
-        titleStyle: 'text-indigo-500',
-        value: totalRecycledBottles,
-      },
-      {
-        title: 'Average Request Closing Time (All Users)',
-        cardStyle:
-          'bg-gradient-to-b from-red-200 to-red-100 border-b-4 border-red-500',
-        titleStyle: 'text-red-500',
-        value: `${avgClosingTime} minutes`, // Display average closing time in minutes
-      },
-    ];
+      // Execute Query 2: Total Recycled Bottles
+      db.query(getTotalRecycledBottlesQuery, (err, result2) => {
+        if (err) {
+          console.error(
+            'Error executing the total recycled bottles query:',
+            err
+          );
+          return res.status(500).json('Internal server error');
+        }
+        const totalRecycledBottles = result2[0].totalRecycledBottles;
 
-    return metricStyles.map((metric, index) => {
-      const { title, cardStyle, titleStyle, value } = metric;
+        // Execute Query 3: Average Closing Time
+        db.query(getAvgClosingTimeQuery, (err, result3) => {
+          if (err) {
+            console.error('Error executing the avg closing time query:', err);
+            return res.status(500).json('Internal server error');
+          }
 
-      return (
-        <div
-          className="w-full md:w-1/2 xl:w-1/3 p-6"
-          key={`metric-card-${index}`}
-        >
-          <div className={`border rounded-lg shadow-xl p-5 ${cardStyle}`}>
-            <h2 className={`text-lg font-semibold ${titleStyle}`}>{title}</h2>
-            <p className="text-gray-600 mt-2">{value}</p>
-          </div>
-        </div>
-      );
+          const avgClosingTimeInSeconds = result3[0].avgClosingTime;
+          const avgClosingTimeInMinutes = Math.floor(
+            avgClosingTimeInSeconds / 60
+          );
+
+          // Convert to days, hours, and minutes
+          const days = Math.floor(avgClosingTimeInMinutes / 1440);
+          const hours = Math.floor((avgClosingTimeInMinutes % 1440) / 60);
+          const minutes = avgClosingTimeInMinutes % 60;
+
+          // Execute Query 4: Active bins number
+          db.query(getActiveBinsCountQuery, (err, result4) => {
+            if (err) {
+              console.error(
+                'Error executing the active bins count query:',
+                err
+              );
+              return res.status(500).json('Internal server error');
+            }
+
+            const activeBinsCount = result4[0].activeBinsCount;
+
+            // Execute Query 5: Total completed requests
+            db.query(getTotalCompletedRequests, (err, result5) => {
+              if (err) {
+                console.error(
+                  'Error executing the Total completed requests query:',
+                  err
+                );
+                return res.status(500).json('Internal server error');
+              }
+
+              const totalCompletedRequests = result5[0].totalCompletedRequests;
+
+              // Execute Query 6: Current month collected bottles
+              db.query(getCurrentMonthCollectedBottlesQuery, (err, result6) => {
+                if (err) {
+                  console.error(
+                    'Error executing the current month collected bottles query:',
+                    err
+                  );
+                  return res.status(500).json('Internal server error');
+                }
+
+                const currentMonthCollectedBottles =
+                  result6[0].currentMonthCollectedBottles;
+
+                res.json({
+                  totalRequests,
+                  totalRecycledBottles,
+                  avgClosingTime: `${days} days ${hours} hours ${minutes}`,
+                  activeBinsCount,
+                  totalCompletedRequests,
+                  currentMonthCollectedBottles,
+                });
+              });
+            });
+          });
+        });
+      });
     });
-  };
-
-  const renderGraphCards = () => {
-    const graphTitles = [
-      'Quarterly Months Collected Review (All Users)',
-      'TBA',
-      'Half Yearly Completed Requests Numbers (All Users)',
-    ];
-
-    return graphTitles.map((title, index) => (
-      <div className="w-full md:w-1/2 xl:w-1/3 p-6" key={`graph-card-${index}`}>
-        <div className="bg-white border rounded-lg shadow p-4">
-          <h2 className="text-lg font-semibold mb-2 text-gray-600">{title}</h2>
-          <p className="text-gray-600">Graph Card Content goes here.</p>
-        </div>
-      </div>
-    ));
-  };
-
-  return (
-    <div>
-      <header>
-        <nav
-          aria-label="menu nav"
-          className="bg-gray-800 pt-2 md:pt-1 pb-1 px-1 sticky top-0 z-20"
-        >
-          {/* ... */}
-          {/* The content of the header goes here */}
-          {/* ... */}
-        </nav>
-      </header>
-      <main>
-        <div className="flex flex-col md:flex-row">
-          <nav aria-label="alternative nav">
-            {/* ... */}
-            {/* The content of the navigation goes here */}
-            {/* ... */}
-          </nav>
-          <section>
-            <div
-              id="main"
-              className="main-content flex-1 bg-gray-700 mt-12 md:mt-2 pb-24 md:pb-5"
-            >
-              <div className="bg-gray-800 pt-3">
-                {/* ... */}
-                {/* The content of the title section goes here */}
-                {/* ... */}
-              </div>
-              <div className="flex flex-wrap font-bold text-2xl">
-                {renderMetricCards()}
-              </div>
-              <div className="flex flex-row flex-wrap flex-grow mt-2">
-                {renderGraphCards()}
-              </div>
-            </div>
-          </section>
-        </div>
-      </main>
-    </div>
-  );
+  });
 };
 
-export default WelcomeAdmin;
+module.exports = {
+  getWelcomeAdminData: getWelcomeAdminData,
+};
