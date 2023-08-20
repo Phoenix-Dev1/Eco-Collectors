@@ -186,6 +186,23 @@ const Map = () => {
     setShowFilterWindow(false);
   };
 
+  // Search bins
+  const searchReference = useRef();
+  const [searchLat, setSearchLat] = useState('');
+  const [searchLng, setSearchLng] = useState('');
+  const [searchAddress, setSearchAddress] = useState('');
+
+  const handleSearchCoordinates = () => {
+    const [place] = searchReference.current.getPlaces();
+    if (place) {
+      setSearchAddress(place.formatted_address);
+      setSearchLat(place.geometry.location.lat());
+      setSearchLng(place.geometry.location.lng());
+      console.log('searchLat: ' + place.geometry.location.lat());
+      console.log('searchLng: ' + place.geometry.location.lng());
+    }
+  };
+
   return (
     <div className={classes.Map}>
       <div className={classes.filters} onClick={toggleFilterWindow}>
@@ -360,6 +377,23 @@ const Map = () => {
           center={center}
           zoom={12}
         >
+          {/* Search Bins */}
+          <div className={classes.search}>
+            <StandaloneSearchBox
+              onLoad={(ref) => (searchReference.current = ref)}
+              onPlacesChanged={handleSearchCoordinates}
+            >
+              <input
+                type="text"
+                className=""
+                placeholder="Search Recycle Bins"
+                inputref={searchReference}
+                onChange={(e) => setSearchAddress(e.target.value)}
+                required
+              />
+            </StandaloneSearchBox>
+          </div>
+          {/*  End Search Bins */}
           {markers.map(({ id, lat, lng, type, address, last_modified }) => {
             const markerClicked = selectedMarker === address;
             return (
@@ -452,11 +486,6 @@ const Map = () => {
                             {from_hour} - {to_hour}
                           </span>
                         </div>
-                        {/* 
-                        <div className="flex items-center mb-1">
-                          <span className="font-semibold mr-1">Phone:</span>
-                          <span>{phone_number}</span>
-                        </div> */}
                         <div className="flex items-center mb-1">
                           <span className="font-semibold mr-1">Date:</span>
                           <span>{formatDateTime(request_date)}</span>
@@ -467,10 +496,6 @@ const Map = () => {
                           </span>
                           <span>{formatTime(request_date)}</span>
                         </div>
-                        {/* <div className="flex items-center">
-                          <span className="font-semibold mr-1">Status:</span>
-                          <span>{status}</span>
-                        </div> */}
                       </div>
                       <div className="flex justify-center">
                         {isCurrentUser && (

@@ -26,12 +26,21 @@ const Dashboard = () => {
     return <p>Loading...</p>;
   }
 
+  const handleWelcome = () => {
+    if (currentUser.role === 1) return '/user/welcomeAdmin';
+    else if (currentUser.role === 2 || currentUser.role === 5)
+      return '/user/welcomeUser';
+    else if (currentUser.role === 3) return '/user/welcomeRecycler';
+    else if (currentUser.role === 4) return '/user/welcomeManager';
+    else return '/';
+  };
+
   return (
     <div className="flex bg-slate-100 min-h-screen antialiased text-slate-300">
       <div className="flex">
         <aside className="bg-gray-900 w-64 p-6  flex flex-col justify-between">
           <h1 className="text-3xl font-semibold text-white">
-            <Link to="/user/welcome">
+            <Link to={handleWelcome()}>
               Eco-<span className="text-blue-500">Dashboard</span>{' '}
             </Link>
           </h1>

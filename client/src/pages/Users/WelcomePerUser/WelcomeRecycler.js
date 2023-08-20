@@ -63,9 +63,7 @@ const WelcomeRecycler = () => {
         value:
           last3UsersNames.length > 0 ? (
             last3UsersNames.map((request, index) => (
-              <div key={`last-request-${index}`}>
-                User's Name: {request.full_name}
-              </div>
+              <div key={`last-request-${index}`}>{request.full_name}</div>
             ))
           ) : (
             <div>No Completed Requests</div> // Display a message when no completed requests
