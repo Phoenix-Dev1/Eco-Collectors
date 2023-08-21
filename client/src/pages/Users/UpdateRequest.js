@@ -118,12 +118,13 @@ const UpdateRequest = () => {
         setRequestStatus(response.data.status);
       } catch (error) {
         console.log(error);
-        console.log(requestData);
       }
     };
 
     fetchRequestData();
   }, []);
+
+  console.log(requestData);
 
   if (!isLoaded) {
     return (
