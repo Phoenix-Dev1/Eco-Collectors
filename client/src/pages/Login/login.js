@@ -46,7 +46,6 @@ function SignInForm() {
     e.preventDefault();
     try {
       const userRole = await login(inputs);
-      console.log('Returned user role:', userRole);
       handleWelcome(userRole);
     } catch (error) {
       handleLoginErrors(error);

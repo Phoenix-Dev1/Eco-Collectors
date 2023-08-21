@@ -19,7 +19,14 @@ const Dashboard = () => {
       });
   }, []);
 
-  //console.log(userRole);
+  const handleWelcome = () => {
+    if (currentUser.role === 1) return '/user/welcomeAdmin';
+    else if (currentUser.role === 2 || currentUser.role === 5)
+      return '/user/welcomeUser';
+    else if (currentUser.role === 3) return '/user/welcomeRecycler';
+    else if (currentUser.role === 4) return '/user/welcomeManager';
+    else return '/';
+  };
 
   if (!currentUser) {
     // Handle the case where currentUser is null or not yet loaded
