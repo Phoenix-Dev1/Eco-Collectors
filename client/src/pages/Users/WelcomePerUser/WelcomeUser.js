@@ -64,13 +64,13 @@ const WelcomeUser = () => {
         titleStyle: 'text-purple-500',
         value:
           last3RecyclersNames.length > 0 ? (
-            last3RecyclersNames.map((request, index) => (
-              <div key={`last-request-${index}`}>
-                Recycler: {request.full_name}
-              </div>
-            ))
+            <div>
+              {last3RecyclersNames.map((request, index) => (
+                <div key={`last-request-${index}`}>{request.full_name}</div>
+              ))}
+            </div>
           ) : (
-            <div>No Completed Requests</div> // Display a message when no completed requests
+            <div>No Completed Requests</div>
           ),
       },
       {

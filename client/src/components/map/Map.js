@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect, useRef, useContext } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import {
   GoogleMap,
   MarkerF,
@@ -29,6 +29,7 @@ import { VscFilter } from 'react-icons/vsc';
 import { FaPlus } from 'react-icons/fa'; // Import the plus icon
 import { AiOutlineClose } from 'react-icons/ai';
 import { validateInputs } from './InputValidation';
+import * as geolib from 'geolib';
 
 const libraries = [process.env.REACT_APP_GOOGLE_LIB];
 const Map = () => {
@@ -48,6 +49,7 @@ const Map = () => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [fromTime, setFromTime] = useState('');
   const [toTime, setToTime] = useState('');
+  const [mapZoom, setMapZoom] = useState(12); // Initial zoom level
 
   // errors handling
   const [err, setError] = useState(null);
@@ -166,7 +168,7 @@ const Map = () => {
   }, [type, requests]); // MUST Add 'requests' as a dependency
 
   // Center the Map At Haifa Port
-  const center = useMemo(() => ({ lat: 32.79413, lng: 34.98828 }), []);
+  const [center, setCenter] = useState({ lat: 32.79413, lng: 34.98828 }); // Initial center coordinates
 
   const handleShowAddress = (address) => {
     showAddress(setSelectedMarker, address);
@@ -184,6 +186,64 @@ const Map = () => {
   const toggleAddWindow = () => {
     setShowAddWindow(!showAddWindow);
     setShowFilterWindow(false);
+  };
+
+  // Search bins
+  const searchReference = useRef();
+  const [searchLat, setSearchLat] = useState(0);
+  const [searchLng, setSearchLng] = useState(0);
+  const [searchAddress, setSearchAddress] = useState('');
+  const [filteredMarkers, setFilteredMarkers] = useState([]);
+  const [searchPerformed, setSearchPerformed] = useState(false);
+
+  const handleSearchCoordinates = () => {
+    const [place] = searchReference.current.getPlaces();
+    if (place) {
+      setSearchAddress(place.formatted_address);
+      setSearchLat(place.geometry.location.lat());
+      setSearchLng(place.geometry.location.lng());
+      console.log('searchLat: ' + place.geometry.location.lat());
+      console.log('searchLng: ' + place.geometry.location.lng());
+      console.log('searchAddress: ' + searchAddress);
+    }
+  };
+
+  // Function to calculate distance between two points
+  const calculateDistance = (lat1, lng1, lat2, lng2) => {
+    const distance = geolib.getDistance(
+      { latitude: lat1, longitude: lng1 },
+      { latitude: lat2, longitude: lng2 }
+    );
+    if (distance <= 5000) console.log(distance);
+    return distance;
+  };
+
+  function filterMarkers() {
+    if (searchLat && searchLng) {
+      const filtered = markers.filter((marker) => {
+        const distance = calculateDistance(
+          searchLat,
+          searchLng,
+          marker.lat,
+          marker.lng
+        );
+        return distance <= 5000; // 5000 meters (5 km)
+      });
+
+      setFilteredMarkers(filtered); // Update the filteredMarkers state
+      // Set the map's center to the search coordinates
+      const newCenter = { lat: searchLat, lng: searchLng };
+      setCenter(newCenter);
+      setMapZoom(15); // Change the zoom level to 15
+
+      setSearchPerformed(true); // Set searchPerformed to true
+    }
+  }
+
+  const handleFilterMarkers = () => {
+    filterMarkers();
+    // Update the zoom level and center of the map on successful search
+    setMapZoom(15); // Change the zoom level to 16
   };
 
   return (
@@ -234,7 +294,7 @@ const Map = () => {
       )}
       {showAddWindow && ( // Render the filter window only if showFilterWindow is true
         <div className={classes.addForm}>
-          <form ref={form} onSubmit={handleSubmit} action="#">
+          <form ref={form} id="addRequest" onSubmit={handleSubmit} action="#">
             <div className="mb-4">
               <label htmlFor="full_name" className="block text-black">
                 Full Name
@@ -358,53 +418,134 @@ const Map = () => {
         <GoogleMap
           mapContainerClassName={classes.mapContainer}
           center={center}
-          zoom={12}
+          zoom={mapZoom}
         >
-          {markers.map(({ id, lat, lng, type, address, last_modified }) => {
-            const markerClicked = selectedMarker === address;
-            return (
-              <MarkerF
-                key={id}
-                position={{ lat, lng }}
-                icon={{
-                  url: require(`../../img/icons/${type}.png`),
-                }}
-                onClick={() => handleShowAddress(address)}
-              >
-                {markerClicked && (
-                  <InfoWindowF
-                    onCloseClick={() => setSelectedMarker(null)}
-                    disableAutoClose={true}
-                    style={{ background: 'blue' }}
-                  >
-                    <div className="pl-5 text-center">
-                      <h1 className="text-xl font-bold mb-2 text-right">
-                        {address}
-                      </h1>
-                      <p
-                        className={`mb-2 text-center font-semibold ${typeColors[type]}`}
-                      >
-                        {typeDescriptions[type]}
-                      </p>
-                      <div className="text-center">
-                        <h2 className="mb-2 text-center">
-                          Last updated: {formatDate(last_modified)}
-                        </h2>
-                      </div>
-                      <div className="text-center">
-                        <button
-                          className="bg-white hover:bg-blue-300 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow items-center"
-                          onClick={() => handleOpenGoogleMaps(lat, lng)}
+          {/* Search Bins */}
+          <div className={classes.searchBox}>
+            <link
+              rel="stylesheet"
+              href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+            />
+            <StandaloneSearchBox
+              onLoad={(ref) => (searchReference.current = ref)}
+              onPlacesChanged={handleSearchCoordinates}
+            >
+              <input
+                type="text"
+                className={classes.searchInput}
+                placeholder="Search Recycle Bins(5km)"
+                inputref={searchReference}
+                onChange={(e) => setSearchAddress(e.target.value)}
+                required
+                onSubmit={handleFilterMarkers}
+              />
+            </StandaloneSearchBox>
+            <button type="submit" onClick={handleFilterMarkers}>
+              <i className="flex flex-col fa fa-search hover:text-blue-500"></i>
+            </button>
+          </div>
+          {searchPerformed
+            ? filteredMarkers.map(
+                ({ id, lat, lng, type, address, last_modified }) => {
+                  const markerClicked = selectedMarker === address;
+                  return (
+                    <MarkerF
+                      key={id}
+                      position={{ lat, lng }}
+                      icon={{
+                        url: require(`../../img/icons/${type}.png`),
+                      }}
+                      onClick={() => handleShowAddress(address)}
+                    >
+                      {markerClicked && (
+                        <InfoWindowF
+                          onCloseClick={() => setSelectedMarker(null)}
+                          disableAutoClose={true}
+                          style={{ background: 'blue' }}
                         >
-                          Navigate
-                        </button>
-                      </div>
-                    </div>
-                  </InfoWindowF>
-                )}
-              </MarkerF>
-            );
-          })}
+                          <div className="pl-5 text-center">
+                            <h1 className="text-xl font-bold mb-2 text-right">
+                              {address}
+                            </h1>
+                            <p
+                              className={`mb-2 text-center font-semibold ${typeColors[type]}`}
+                            >
+                              {typeDescriptions[type]}
+                            </p>
+                            <div className="text-center">
+                              <h2 className="mb-2 text-center">
+                                Last updated: {formatDate(last_modified)}
+                              </h2>
+                            </div>
+                            <div className="text-center">
+                              <button
+                                className="bg-white hover:bg-blue-300 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow items-center"
+                                onClick={() => handleOpenGoogleMaps(lat, lng)}
+                              >
+                                Navigate
+                              </button>
+                            </div>
+                          </div>
+                        </InfoWindowF>
+                      )}
+                    </MarkerF>
+                  );
+                }
+              )
+            : markers.map(({ id, lat, lng, type, address, last_modified }) => {
+                const markerClicked = selectedMarker === address;
+                const isAdmin = currentUser?.role === 1;
+                return (
+                  <MarkerF
+                    key={id}
+                    position={{ lat, lng }}
+                    icon={{
+                      url: require(`../../img/icons/${type}.png`),
+                    }}
+                    onClick={() => handleShowAddress(address)}
+                  >
+                    {markerClicked && (
+                      <InfoWindowF
+                        onCloseClick={() => setSelectedMarker(null)}
+                        disableAutoClose={true}
+                        style={{ background: 'blue' }}
+                      >
+                        <div className="pl-5 text-center">
+                          <h1 className="text-xl font-bold mb-2 text-right">
+                            {address}
+                          </h1>
+                          <p
+                            className={`mb-2 text-center font-semibold ${typeColors[type]}`}
+                          >
+                            {typeDescriptions[type]}
+                          </p>
+                          <div className="text-center">
+                            <h2 className="mb-2 text-center">
+                              Last updated: {formatDate(last_modified)}
+                            </h2>
+                          </div>
+                          <div className="text-center">
+                            <button
+                              className="bg-white hover:bg-blue-300 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow items-center"
+                              onClick={() => handleOpenGoogleMaps(lat, lng)}
+                            >
+                              Navigate
+                            </button>
+                            {isAdmin && (
+                              <Link
+                                to={`/admin/update-bin/${id}`}
+                                className="bg-white ml-2 hover:bg-yellow-300 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow items-center"
+                              >
+                                Update
+                              </Link>
+                            )}
+                          </div>
+                        </div>
+                      </InfoWindowF>
+                    )}
+                  </MarkerF>
+                );
+              })}
           {requests.map((request) => {
             const {
               request_id,
@@ -452,11 +593,6 @@ const Map = () => {
                             {from_hour} - {to_hour}
                           </span>
                         </div>
-                        {/* 
-                        <div className="flex items-center mb-1">
-                          <span className="font-semibold mr-1">Phone:</span>
-                          <span>{phone_number}</span>
-                        </div> */}
                         <div className="flex items-center mb-1">
                           <span className="font-semibold mr-1">Date:</span>
                           <span>{formatDateTime(request_date)}</span>
@@ -467,10 +603,6 @@ const Map = () => {
                           </span>
                           <span>{formatTime(request_date)}</span>
                         </div>
-                        {/* <div className="flex items-center">
-                          <span className="font-semibold mr-1">Status:</span>
-                          <span>{status}</span>
-                        </div> */}
                       </div>
                       <div className="flex justify-center">
                         {isCurrentUser && (

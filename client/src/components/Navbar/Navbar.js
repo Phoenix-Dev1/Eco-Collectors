@@ -64,11 +64,22 @@ const Navbar = () => {
               <li className="p-4 hover:text-blue-600">
                 <Link to="/">Home</Link>
               </li>
-              <li className="p-4 hover:text-blue-600">
-                <Link to="/join">Recycler Registration</Link>
-              </li>
-              <li className="p-4 hover:text-blue-600">
-                <Link to="/manager-join">Manager Registration</Link>
+              <li className="relative group">
+                <div className="p-4 hover:text-blue-600 cursor-pointer">
+                  Further Registrations
+                </div>
+                <ul className="absolute hidden group-hover:block bg-gray-900 text-white rounded-lg mt-2">
+                  <li className="p-4 hover:text-blue-600">
+                    <Link to="/join" onClick={closeNav}>
+                      Recycler Registration
+                    </Link>
+                  </li>
+                  <li className="p-4 hover:text-blue-600">
+                    <Link to="/manager-join" onClick={closeNav}>
+                      Manager Registration
+                    </Link>
+                  </li>
+                </ul>
               </li>
               <li className="p-4 hover:text-blue-600">
                 <Link to="/contact-us">Contact Us</Link>
@@ -139,7 +150,7 @@ const Navbar = () => {
               </Link>
             </li>
           )}
-          <li className="p-4 hover:text-purple-600">
+          <li className="p-4 hover-text-purple-600">
             {' '}
             <Link to="/map" onClick={closeNav}>
               {' '}
@@ -148,13 +159,24 @@ const Navbar = () => {
           </li>
           {currentUser && (
             <>
-              <li className="p-4 hover:text-blue-600">
-                <Link to="/join">Recycler Registration</Link>
+              <li className="relative group">
+                <div className="p-4 hover:text-blue-600 cursor-pointer">
+                  Further Registrations
+                </div>
+                <ul className="absolute hidden group-hover:block bg-gray-900 text-white rounded-lg mt-2">
+                  <li className="p-4 hover:text-blue-600">
+                    <Link to="/join" onClick={closeNav}>
+                      Recycler Registration
+                    </Link>
+                  </li>
+                  <li className="p-4 hover:text-blue-600">
+                    <Link to="/manager-join" onClick={closeNav}>
+                      Manager Registration
+                    </Link>
+                  </li>
+                </ul>
               </li>
               <li className="p-4 hover:text-blue-600">
-                <Link to="/manager-join">Manager Registration</Link>
-              </li>
-              <li className="p-4 border-b border-gray-600 hover:text-blue-600">
                 <Link to="/contact-us" onClick={closeNav}>
                   Contact Us
                 </Link>
