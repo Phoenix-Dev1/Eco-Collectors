@@ -68,7 +68,7 @@ const Navbar = () => {
                 <div className="p-4 hover:text-blue-600 cursor-pointer">
                   Further Registrations
                 </div>
-                <ul className="absolute hidden group-hover:block bg-gray-900 text-white rounded-lg mt-2">
+                <ul className="absolute hidden group-hover:block bg-gray-900 text-white rounded-lg mt-2 submenu">
                   <li className="p-4 hover:text-blue-600">
                     <Link to="/join" onClick={closeNav}>
                       Recycler Registration
