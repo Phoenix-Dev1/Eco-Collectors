@@ -21,10 +21,12 @@ const WelcomeUser = () => {
         setLast3RecyclersNames(res.data.last3RecyclersNames);
         setCurrentMonthRecycledBottles(res.data.currentMonthRecycledBottles);
       } catch (error) {
-        console.error('Error fetching user data:', error);
         setTotalRequests(-1);
         setTotalRecycledBottles(-1);
         setAvgClosingTime(-1);
+        setTotalCompletedRequests(-1);
+        setLast3RecyclersNames(-1);
+        setCurrentMonthRecycledBottles(-1);
       }
     };
     fetchUserData();
@@ -105,31 +107,45 @@ const WelcomeUser = () => {
   };
 
   return (
-    <div>
-      <header>
-        <nav className="bg-gray-800 pt-2 md:pt-1 pb-1 px-1 sticky top-0 z-20"></nav>
-      </header>
-      <main>
-        <div className="flex flex-col md:flex-row">
-          <nav aria-label="alternative nav"></nav>
-          <section>
-            <div
-              id="main"
-              className="main-content flex-1 bg-gray-700 mt-12 md:mt-2 pb-24 md:pb-5"
+    <main>
+      <div className="flex flex-col md:flex-row">
+        <section>
+          <div className="bg-gray-800 pt-3">
+            <h1
+              className="font-bold text-5xl cursor-pointer mb-4 mt-6"
+              style={{
+                '--s': '0.1em',
+                '--c': '#2c4bff',
+                color: 'var(--c)',
+                paddingBottom: 'var(--s)',
+                background: `linear-gradient(90deg,var(--c) 50%,#000 0) calc(100% - var(--_p,0%))/200% 100%,linear-gradient(var(--c) 0 0) 0% 100%/var(--_p,0%) var(--s) no-repeat`,
+                WebkitBackgroundClip: 'text,padding-box',
+                backgroundClip: 'text,padding-box',
+                transition: '0.5s',
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.setProperty('--_p', '100%');
+                e.target.style.setProperty('--c', '#2c4bff');
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.setProperty('--_p', '0%');
+                e.target.style.setProperty('--c', '#ffffff');
+              }}
             >
-              <div className="bg-gray-800 pt-3">
-                {/* ... */}
-                {/* The content of the title section goes here */}
-                {/* ... */}
-              </div>
-              <div className="flex flex-wrap font-bold text-2xl">
-                {renderMetricCards()}
-              </div>
+              Welcome Collector!
+            </h1>
+          </div>
+          <div
+            id="main"
+            className="main-content flex-1 bg-gray-700 mt-4 md:mt-2 pb-24 md:pb-5"
+          >
+            <div className="mb-6 flex flex-wrap font-bold text-2xl">
+              {renderMetricCards()}
             </div>
-          </section>
-        </div>
-      </main>
-    </div>
+          </div>
+        </section>
+      </div>
+    </main>
   );
 };
 
