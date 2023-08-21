@@ -13,50 +13,43 @@ function SignInForm() {
 
   const navigate = useNavigate();
 
-  // For displaying the current user name on screen - localStorage
   const { login } = useContext(AuthContext);
 
-  // User Credentials
   const handleChange = (e) => {
     setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleNavigate = (e) => {
-    switch (login.role) {
-      case 1:
-        navigate('/user/welcomeAdmin');
-      case 2:
-        navigate('/user/welcomeUser');
-      case 3:
-        navigate('/user/welcomeRecycler');
-      case 4:
-        navigate('/user/welcomeManager');
-      default:
-        navigate('/');
+  const handleWelcome = (userRole) => {
+    if (userRole === 1) navigate('/user/welcomeAdmin');
+    else if (userRole === 2 || userRole === 5) navigate('/user/welcomeUser');
+    else if (userRole === 3) navigate('/user/welcomeRecycler');
+    else if (userRole === 4) navigate('/user/welcomeManager');
+    else navigate('/');
+  };
+
+  const handleLoginErrors = (error) => {
+    if (error.response?.status === 404) {
+      setError('User not found. Please check your email.');
+    } else if (error.response?.status === 401) {
+      const errorMessage = error.response?.data?.error;
+      if (errorMessage === 'Account is inactive. Login is not permitted.') {
+        setError('Account is inactive. Please contact support.');
+      } else {
+        setError('Invalid email or password. Please try again.');
+      }
+    } else {
+      setError('An error occurred. Please try again later.');
     }
   };
 
-  // Submitting the register from authContext
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Calling the login function from AuthContext
-      await login(inputs);
-      handleNavigate();
-    } catch (err) {
-      // Check the error response from the server and display appropriate error message
-      if (err.response?.status === 404) {
-        setError('User not found. Please check your email.');
-      } else if (err.response?.status === 401) {
-        const errorMessage = err.response?.data?.error;
-        if (errorMessage === 'Account is inactive. Login is not permitted.') {
-          setError('Account is inactive. Please contact support.');
-        } else {
-          setError('Invalid email or password. Please try again.');
-        }
-      } else {
-        setError('An error occurred. Please try again later.');
-      }
+      const userRole = await login(inputs);
+      console.log('Returned user role:', userRole);
+      handleWelcome(userRole);
+    } catch (error) {
+      handleLoginErrors(error);
     }
   };
 
