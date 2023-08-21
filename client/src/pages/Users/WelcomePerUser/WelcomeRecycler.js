@@ -64,7 +64,7 @@ const WelcomeRecycler = () => {
           last3UsersNames.length > 0 ? (
             last3UsersNames.map((request, index) => (
               <div key={`last-request-${index}`}>
-                User's Name: {request.full_name}
+                {request.full_name}
               </div>
             ))
           ) : (
