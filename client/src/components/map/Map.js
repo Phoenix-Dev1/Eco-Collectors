@@ -210,10 +210,12 @@ const Map = () => {
 
   // Function to calculate distance between two points
   const calculateDistance = (lat1, lng1, lat2, lng2) => {
-    return geolib.getDistance(
+    const distance = geolib.getDistance(
       { latitude: lat1, longitude: lng1 },
       { latitude: lat2, longitude: lng2 }
     );
+    if (distance <= 5000) console.log(distance);
+    return distance;
   };
 
   function filterMarkers() {
@@ -439,7 +441,7 @@ const Map = () => {
               />
             </StandaloneSearchBox>
             <button type="submit" onClick={handleFilterMarkers}>
-              <i className="flex flex-col fa fa-search"></i>
+              <i className="flex flex-col fa fa-search hover:text-blue-500"></i>
             </button>
           </div>
           {searchPerformed
@@ -492,6 +494,7 @@ const Map = () => {
               )
             : markers.map(({ id, lat, lng, type, address, last_modified }) => {
                 const markerClicked = selectedMarker === address;
+                const isAdmin = currentUser?.role === 1;
                 return (
                   <MarkerF
                     key={id}
@@ -528,6 +531,14 @@ const Map = () => {
                             >
                               Navigate
                             </button>
+                            {isAdmin && (
+                              <Link
+                                to={`/admin/update-bin/${id}`}
+                                className="bg-white ml-2 hover:bg-yellow-300 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow items-center"
+                              >
+                                Update
+                              </Link>
+                            )}
                           </div>
                         </div>
                       </InfoWindowF>
@@ -535,7 +546,6 @@ const Map = () => {
                   </MarkerF>
                 );
               })}
-
           {requests.map((request) => {
             const {
               request_id,
