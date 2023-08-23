@@ -125,7 +125,7 @@ const AddWindow = ({
             {err}
           </p>
         )}
-        <button className="text-white bg-slate-500 py-2 px-4 rounded hover:bg-black ml-11">
+        <button className="text-white bg-blue-600 py-2 px-4 rounded hover:bg-blue-800 ml-11">
           Add Request
         </button>
       </form>

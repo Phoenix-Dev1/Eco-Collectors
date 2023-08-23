@@ -79,6 +79,7 @@
 .markerTypeList li {
   cursor: pointer;
   padding: 5px 0;
+  margin-right: 2px;
 }
 
 /* Style the selected item */
