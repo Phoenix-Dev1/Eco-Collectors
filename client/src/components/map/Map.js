@@ -22,13 +22,13 @@ import {
   typeDescriptions,
   typeColors,
 } from './mapFunctions';
-import FilterWindow from './FilterWindow'; // Import your FilterWindow component
+import FilterWindow from './FilterWindow';
+import AddWindow from './AddWindow';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/authContext';
 import { VscFilter } from 'react-icons/vsc';
 //import { GiRecycle } from 'react-icons/gi';
 import { FaPlus } from 'react-icons/fa'; // Import the plus icon
-import { AiOutlineClose } from 'react-icons/ai';
 import { validateInputs } from './InputValidation';
 import * as geolib from 'geolib';
 
@@ -282,118 +282,29 @@ const Map = () => {
           <FaPlus />
         </div>
       )}
-      {showAddWindow && ( // Render the filter window only if showFilterWindow is true
-        <div className={classes.addForm}>
-          <form ref={form} id="addRequest" onSubmit={handleSubmit} action="#">
-            <div className="mb-4">
-              <label htmlFor="full_name" className="block text-black">
-                Full Name
-              </label>
-              <input
-                name="full_name"
-                id="full_name"
-                value={fullName || initialName} // Use fullName or initialName as the value
-                onChange={(e) => setFullName(e.target.value)}
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                placeholder={
-                  !currentUser ? 'Enter your full name' : initialName
-                }
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <label htmlFor="number_of_bottles" className="block text-black">
-                Bottles
-              </label>
-              <input
-                onChange={(e) => setBottlesNumber(e.target.value)}
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                placeholder="0"
-                id="number_of_bottles"
-                name="number_of_bottles"
-                value={bottlesNumber}
-                type="number"
-                min="1"
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <label htmlFor="req_address" className="block text-black">
-                Address
-              </label>
-              <StandaloneSearchBox
-                onLoad={(ref) => (inputReference.current = ref)}
-                onPlacesChanged={handlePlaceChanged}
-              >
-                <input
-                  type="text"
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  placeholder="Enter Location"
-                  inputref={inputReference}
-                  onChange={(e) => setReqAddress(e.target.value)}
-                  required
-                />
-              </StandaloneSearchBox>
-            </div>
-            <div className="mb-4">
-              <label htmlFor="phoneNumber" className="block text-black">
-                Phone number
-              </label>
-              <input
-                onChange={(e) => setPhoneNumber(e.target.value)}
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                placeholder="Enter your number"
-                id="phoneNumber"
-                name="phoneNumber"
-                value={phoneNumber || currentUser?.phone || ''} // Set initial value
-                type="tel"
-                required
-              />
-            </div>
-            <div className="flex mb-4">
-              <div className="mr-4">
-                <label htmlFor="from_hour" className="block text-black">
-                  From
-                </label>
-                <input
-                  onChange={(e) => setFromTime(e.target.value)}
-                  id="from_hour"
-                  name="from_hour"
-                  type="time"
-                  value={fromTime}
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  required
-                />
-              </div>
-              <div>
-                <label htmlFor="to_hour" className="block text-black">
-                  To
-                </label>
-                <input
-                  onChange={(e) => setToTime(e.target.value)}
-                  id="to_hour"
-                  name="to_hour"
-                  type="time"
-                  value={toTime}
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  required
-                />
-              </div>
-            </div>
-            {err && (
-              <p className="flex items-center justify-center text-sm text-red-700 font-semibold mb-2">
-                {err}
-              </p>
-            )}
-            <button className="text-white bg-slate-500 py-2 px-4 rounded hover:bg-black ml-11">
-              Add Request
-            </button>
-          </form>
-
-          <div className={classes.closeAddWindow} onClick={toggleAddWindow}>
-            <AiOutlineClose />
-          </div>
-        </div>
+      {showAddWindow && (
+        <AddWindow
+          fullName={fullName}
+          initialName={initialName}
+          setFullName={setFullName}
+          bottlesNumber={bottlesNumber}
+          setBottlesNumber={setBottlesNumber}
+          inputReference={inputReference}
+          handlePlaceChanged={handlePlaceChanged}
+          setReqAddress={setReqAddress}
+          phoneNumber={phoneNumber}
+          setPhoneNumber={setPhoneNumber}
+          currentUser={currentUser}
+          fromTime={fromTime}
+          setFromTime={setFromTime}
+          toTime={toTime}
+          setToTime={setToTime}
+          err={err}
+          handleSubmit={handleSubmit}
+          toggleAddWindow={toggleAddWindow}
+          form={form}
+          classes={classes}
+        />
       )}
       {!isLoaded ? (
         <div className={classes.loaderWrapper}>
