@@ -22,6 +22,7 @@ import {
   typeDescriptions,
   typeColors,
 } from './mapFunctions';
+import FilterWindow from './FilterWindow'; // Import your FilterWindow component
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/authContext';
 import { VscFilter } from 'react-icons/vsc';
@@ -195,6 +196,7 @@ const Map = () => {
   const [searchAddress, setSearchAddress] = useState('');
   const [filteredMarkers, setFilteredMarkers] = useState([]);
   const [searchPerformed, setSearchPerformed] = useState(false);
+  const [selectedMarkerType, setSelectedMarkerType] = useState('');
 
   const handleSearchCoordinates = () => {
     const [place] = searchReference.current.getPlaces();
@@ -246,46 +248,34 @@ const Map = () => {
     setMapZoom(15); // Change the zoom level to 16
   };
 
+  // Function to handle changes in the dropdown selection
+  const handleMarkerTypeChange = (e) => {
+    setSelectedMarkerType(e.target.value);
+  };
+
+  // Filter markers based on selectedMarkerType
+  const filteredMarkersByType =
+    selectedMarkerType !== ''
+      ? markers.filter((marker) => marker.type === selectedMarkerType)
+      : markers;
+
+  const filteredFilteredMarkersByType =
+    selectedMarkerType !== ''
+      ? filteredMarkers.filter((marker) => marker.type === selectedMarkerType)
+      : filteredMarkers;
+
   return (
     <div className={classes.Map}>
       <div className={classes.filters} onClick={toggleFilterWindow}>
         <VscFilter />
       </div>
-      {showFilterWindow && ( // Render the filter window only if showFilterWindow is true
-        <div className={classes.filterWindow}>
-          <ul>
-            <a href="/map">
-              <li>All</li>
-            </a>
-            <a href="/map/?type=blue">
-              <li>Blue bins</li>
-            </a>
-            <a href="/map/?type=carton">
-              <li>Carton</li>
-            </a>
-            <a href="/map/?type=electronic-waste">
-              <li>e-waste</li>
-            </a>
-            <a href="/map/?type=orange">
-              <li>Orange bins</li>
-            </a>
-            <a href="/map/?type=purple">
-              <li>Purple bins</li>
-            </a>
-            <a href="/map/?type=textile">
-              <li>Textile</li>
-            </a>
-            <a href="/map/?type=request">
-              <li>Requests</li>
-            </a>
-          </ul>
-          <div
-            className={classes.closeFilterWindow}
-            onClick={toggleFilterWindow}
-          >
-            <AiOutlineClose />
-          </div>
-        </div>
+      {showFilterWindow && (
+        <FilterWindow
+          selectedMarkerType={selectedMarkerType}
+          handleMarkerTypeChange={handleMarkerTypeChange}
+          toggleFilterWindow={toggleFilterWindow}
+          classes={classes}
+        />
       )}
       {currentUser /*{ Will only show when a user is logged in }*/ && (
         <div className={classes.add} onClick={toggleAddWindow}>
@@ -445,7 +435,7 @@ const Map = () => {
             </button>
           </div>
           {searchPerformed
-            ? filteredMarkers.map(
+            ? filteredFilteredMarkersByType.map(
                 ({ id, lat, lng, type, address, last_modified }) => {
                   const markerClicked = selectedMarker === address;
                   return (
@@ -492,60 +482,62 @@ const Map = () => {
                   );
                 }
               )
-            : markers.map(({ id, lat, lng, type, address, last_modified }) => {
-                const markerClicked = selectedMarker === address;
-                const isAdmin = currentUser?.role === 1;
-                return (
-                  <MarkerF
-                    key={id}
-                    position={{ lat, lng }}
-                    icon={{
-                      url: require(`../../img/icons/${type}.png`),
-                    }}
-                    onClick={() => handleShowAddress(address)}
-                  >
-                    {markerClicked && (
-                      <InfoWindowF
-                        onCloseClick={() => setSelectedMarker(null)}
-                        disableAutoClose={true}
-                        style={{ background: 'blue' }}
-                      >
-                        <div className="pl-5 text-center">
-                          <h1 className="text-xl font-bold mb-2 text-right">
-                            {address}
-                          </h1>
-                          <p
-                            className={`mb-2 text-center font-semibold ${typeColors[type]}`}
-                          >
-                            {typeDescriptions[type]}
-                          </p>
-                          <div className="text-center">
-                            <h2 className="mb-2 text-center">
-                              Last updated: {formatDate(last_modified)}
-                            </h2>
-                          </div>
-                          <div className="text-center">
-                            <button
-                              className="bg-white hover:bg-blue-300 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow items-center"
-                              onClick={() => handleOpenGoogleMaps(lat, lng)}
+            : filteredMarkersByType.map(
+                ({ id, lat, lng, type, address, last_modified }) => {
+                  const markerClicked = selectedMarker === address;
+                  const isAdmin = currentUser?.role === 1;
+                  return (
+                    <MarkerF
+                      key={id}
+                      position={{ lat, lng }}
+                      icon={{
+                        url: require(`../../img/icons/${type}.png`),
+                      }}
+                      onClick={() => handleShowAddress(address)}
+                    >
+                      {markerClicked && (
+                        <InfoWindowF
+                          onCloseClick={() => setSelectedMarker(null)}
+                          disableAutoClose={true}
+                          style={{ background: 'blue' }}
+                        >
+                          <div className="pl-5 text-center">
+                            <h1 className="text-xl font-bold mb-2 text-right">
+                              {address}
+                            </h1>
+                            <p
+                              className={`mb-2 text-center font-semibold ${typeColors[type]}`}
                             >
-                              Navigate
-                            </button>
-                            {isAdmin && (
-                              <Link
-                                to={`/admin/update-bin/${id}`}
-                                className="bg-white ml-2 hover:bg-yellow-300 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow items-center"
+                              {typeDescriptions[type]}
+                            </p>
+                            <div className="text-center">
+                              <h2 className="mb-2 text-center">
+                                Last updated: {formatDate(last_modified)}
+                              </h2>
+                            </div>
+                            <div className="text-center">
+                              <button
+                                className="bg-white hover:bg-blue-300 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow items-center"
+                                onClick={() => handleOpenGoogleMaps(lat, lng)}
                               >
-                                Update
-                              </Link>
-                            )}
+                                Navigate
+                              </button>
+                              {isAdmin && (
+                                <Link
+                                  to={`/admin/update-bin/${id}`}
+                                  className="bg-white ml-2 hover:bg-yellow-300 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow items-center"
+                                >
+                                  Update
+                                </Link>
+                              )}
+                            </div>
                           </div>
-                        </div>
-                      </InfoWindowF>
-                    )}
-                  </MarkerF>
-                );
-              })}
+                        </InfoWindowF>
+                      )}
+                    </MarkerF>
+                  );
+                }
+              )}
           {requests.map((request) => {
             const {
               request_id,

@@ -50,7 +50,7 @@
   padding: 8px;
   margin: 10px;
   right: auto;
-  left: 300px;
+  left: 200px;
   background-color: white;
   border-radius: 50%;
   cursor: pointer; /* Add cursor pointer */
@@ -61,7 +61,7 @@
   position: absolute;
   top: 65px;
   right: auto;
-  left: 300px;
+  left: 200px;
   padding: 10px;
   background-color: white;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), 0 -1px 0px rgba(0, 0, 0, 0.02);
@@ -69,28 +69,30 @@
   z-index: 2;
 }
 
-.filterWindow ul {
+/* Filter options */
+.markerTypeList {
   list-style-type: none;
   padding: 0;
   margin: 0;
-  z-index: 2;
 }
 
-.filterWindow ul li {
-  padding-top: 5px; /* Add padding instead of margin */
+.markerTypeList li {
   cursor: pointer;
-  z-index: 2;
+  padding: 5px 0;
 }
 
-.filterWindow ul li:hover {
-  background-color: lightgray;
-  z-index: 2;
+/* Style the selected item */
+.markerTypeList .selected {
+  background-color: #007bff;
+  color: #fff;
+  border-radius: 5px;
 }
 
 .closeFilterWindow {
   position: absolute;
   top: -10px;
-  right: 92px;
+  right: auto;
+  left: -6px;
   width: 20px;
   height: 20px;
   display: flex;
@@ -119,7 +121,7 @@
   padding: 9px;
   margin-top: 9px;
   right: auto;
-  left: 200px;
+  left: 310px;
   border-radius: 50%;
   cursor: pointer; /* Add cursor pointer */
 }
@@ -128,7 +130,7 @@
   position: absolute;
   top: 70px;
   right: auto;
-  left: 200px;
+  left: 300px;
   padding: 10px;
   background-color: white;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), 0 -1px 0px rgba(0, 0, 0, 0.02);
@@ -144,8 +146,7 @@
   align-items: center;
   position: absolute;
   top: -10px;
-  right: auto;
-  left: -6px;
+  right: 220px;
   width: 20px;
   height: 20px;
   background-color: #be1717;

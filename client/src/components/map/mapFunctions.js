@@ -115,3 +115,12 @@ export const typeColors = {
   purple: 'text-purple-500',
   textile: 'text-lime-600',
 };
+
+export const binTypes = [
+  'blue',
+  'carton',
+  'electronic-waste',
+  'orange',
+  'purple',
+  'textile',
+];
