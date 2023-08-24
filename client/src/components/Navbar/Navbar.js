@@ -4,13 +4,19 @@ import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import Logo from '../../img/logo-no-bg.png';
 import { AuthContext } from '../../context/authContext';
+import { ArrowDownIcon, ArrowUpIcon } from '@heroicons/react/solid';
 
 const Navbar = () => {
   // Mobile Compatible Hook
   const [nav, setNav] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const handleNav = () => {
     setNav(!nav);
+  };
+
+  const toggleDropdown = () => {
+    setDropdownOpen(!dropdownOpen);
   };
 
   // Mobile
@@ -64,22 +70,41 @@ const Navbar = () => {
               <li className="p-4 hover:text-blue-600">
                 <Link to="/">Home</Link>
               </li>
-              <li className="relative group">
-                <div className="p-4 hover:text-blue-600 cursor-pointer">
-                  Further Registrations
+              <li
+                className={`relative group p-4`}
+                onMouseEnter={toggleDropdown}
+                onMouseLeave={toggleDropdown}
+              >
+                <div className="flex items-center cursor-pointer">
+                  <div className="hover:text-blue-600">
+                    Further Registrations
+                  </div>
+                  {dropdownOpen ? (
+                    <ArrowUpIcon className="w-4 h-4 ml-1" />
+                  ) : (
+                    <ArrowDownIcon className="w-4 h-4 ml-1" />
+                  )}
                 </div>
-                <ul className="absolute hidden group-hover:block bg-gray-900 text-white rounded-lg mt-2">
-                  <li className="p-4 hover:text-blue-600">
-                    <Link to="/join" onClick={closeNav}>
-                      Recycler Registration
-                    </Link>
-                  </li>
-                  <li className="p-4 hover:text-blue-600">
-                    <Link to="/manager-join" onClick={closeNav}>
-                      Manager Registration
-                    </Link>
-                  </li>
-                </ul>
+                <div
+                  className={`absolute ${
+                    dropdownOpen ? 'block z-50' : 'hidden'
+                  } bg-gray-900 border rounded-lg border-gray-700 mt-2 py-2 right-0`}
+                >
+                  <Link
+                    to="/join"
+                    onClick={closeNav}
+                    className="block px-4 py-2 hover:bg-gray-800"
+                  >
+                    Recycler Registration
+                  </Link>
+                  <Link
+                    to="/manager-join"
+                    onClick={closeNav}
+                    className="block px-4 py-2 hover:bg-gray-800"
+                  >
+                    Manager Registration
+                  </Link>
+                </div>
               </li>
               <li className="p-4 hover:text-blue-600">
                 <Link to="/contact-us">Contact Us</Link>
