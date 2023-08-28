@@ -80,7 +80,7 @@ const RecyclersJoinRequests = () => {
               </button>
               <button
                 onClick={() => handleDeclineRequest(row.join_id)} // Decline button
-                className="px-2 py-1 rounded bg-red-500 text-white"
+                className="px-2 py-1 rounded mb-2 bg-red-500 text-white"
               >
                 Decline
               </button>
@@ -111,13 +111,14 @@ const RecyclersJoinRequests = () => {
       sortable: true,
       wrap: true,
     },
+    */
     {
       name: 'User ID',
       selector: (row) => row.user_id,
       sortable: true,
       wrap: true,
     },
-    */
+
     {
       name: 'Join Date',
       selector: (row) => format(new Date(row.join_date), 'dd/MM/yyyy'), // Format the date

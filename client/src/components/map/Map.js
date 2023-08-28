@@ -519,7 +519,8 @@ const Map = () => {
                         {currentUser?.role !== 2 &&
                           currentUser?.role !== 5 &&
                           status !== 2 &&
-                          currentUser && (
+                          currentUser &&
+                          currentUser.ID !== user_id && (
                             <Link
                               to={`/collect?Id=${request_id}`}
                               className="bg-white ml-2 hover:bg-green-300 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow items-center"
