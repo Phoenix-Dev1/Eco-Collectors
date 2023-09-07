@@ -33,15 +33,6 @@ const Dashboard = () => {
     return <p>Loading...</p>;
   }
 
-  const handleWelcome = () => {
-    if (currentUser.role === 1) return '/user/welcomeAdmin';
-    else if (currentUser.role === 2 || currentUser.role === 5)
-      return '/user/welcomeUser';
-    else if (currentUser.role === 3) return '/user/welcomeRecycler';
-    else if (currentUser.role === 4) return '/user/welcomeManager';
-    else return '/';
-  };
-
   return (
     <div className="flex bg-slate-100 min-h-screen antialiased text-slate-300">
       <div className="flex">

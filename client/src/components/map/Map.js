@@ -22,12 +22,13 @@ import {
   typeDescriptions,
   typeColors,
 } from './mapFunctions';
+import FilterWindow from './FilterWindow';
+import AddWindow from './AddWindow';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/authContext';
 import { VscFilter } from 'react-icons/vsc';
 //import { GiRecycle } from 'react-icons/gi';
 import { FaPlus } from 'react-icons/fa'; // Import the plus icon
-import { AiOutlineClose } from 'react-icons/ai';
 import { validateInputs } from './InputValidation';
 import * as geolib from 'geolib';
 
@@ -195,6 +196,7 @@ const Map = () => {
   const [searchAddress, setSearchAddress] = useState('');
   const [filteredMarkers, setFilteredMarkers] = useState([]);
   const [searchPerformed, setSearchPerformed] = useState(false);
+  const [selectedMarkerType, setSelectedMarkerType] = useState('');
 
   const handleSearchCoordinates = () => {
     const [place] = searchReference.current.getPlaces();
@@ -246,164 +248,63 @@ const Map = () => {
     setMapZoom(15); // Change the zoom level to 16
   };
 
+  // Function to handle changes in the dropdown selection
+  const handleMarkerTypeChange = (e) => {
+    setSelectedMarkerType(e.target.value);
+  };
+
+  // Filter markers based on selectedMarkerType
+  const filteredMarkersByType =
+    selectedMarkerType !== ''
+      ? markers.filter((marker) => marker.type === selectedMarkerType)
+      : markers;
+
+  const filteredFilteredMarkersByType =
+    selectedMarkerType !== ''
+      ? filteredMarkers.filter((marker) => marker.type === selectedMarkerType)
+      : filteredMarkers;
+
   return (
     <div className={classes.Map}>
       <div className={classes.filters} onClick={toggleFilterWindow}>
         <VscFilter />
       </div>
-      {showFilterWindow && ( // Render the filter window only if showFilterWindow is true
-        <div className={classes.filterWindow}>
-          <ul>
-            <a href="/map">
-              <li>All</li>
-            </a>
-            <a href="/map/?type=blue">
-              <li>Blue bins</li>
-            </a>
-            <a href="/map/?type=carton">
-              <li>Carton</li>
-            </a>
-            <a href="/map/?type=electronic-waste">
-              <li>e-waste</li>
-            </a>
-            <a href="/map/?type=orange">
-              <li>Orange bins</li>
-            </a>
-            <a href="/map/?type=purple">
-              <li>Purple bins</li>
-            </a>
-            <a href="/map/?type=textile">
-              <li>Textile</li>
-            </a>
-            <a href="/map/?type=request">
-              <li>Requests</li>
-            </a>
-          </ul>
-          <div
-            className={classes.closeFilterWindow}
-            onClick={toggleFilterWindow}
-          >
-            <AiOutlineClose />
-          </div>
-        </div>
+      {showFilterWindow && (
+        <FilterWindow
+          selectedMarkerType={selectedMarkerType}
+          handleMarkerTypeChange={handleMarkerTypeChange}
+          toggleFilterWindow={toggleFilterWindow}
+          classes={classes}
+        />
       )}
       {currentUser /*{ Will only show when a user is logged in }*/ && (
         <div className={classes.add} onClick={toggleAddWindow}>
           <FaPlus />
         </div>
       )}
-      {showAddWindow && ( // Render the filter window only if showFilterWindow is true
-        <div className={classes.addForm}>
-          <form ref={form} id="addRequest" onSubmit={handleSubmit} action="#">
-            <div className="mb-4">
-              <label htmlFor="full_name" className="block text-black">
-                Full Name
-              </label>
-              <input
-                name="full_name"
-                id="full_name"
-                value={fullName || initialName} // Use fullName or initialName as the value
-                onChange={(e) => setFullName(e.target.value)}
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                placeholder={
-                  !currentUser ? 'Enter your full name' : initialName
-                }
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <label htmlFor="number_of_bottles" className="block text-black">
-                Bottles
-              </label>
-              <input
-                onChange={(e) => setBottlesNumber(e.target.value)}
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                placeholder="0"
-                id="number_of_bottles"
-                name="number_of_bottles"
-                value={bottlesNumber}
-                type="number"
-                min="1"
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <label htmlFor="req_address" className="block text-black">
-                Address
-              </label>
-              <StandaloneSearchBox
-                onLoad={(ref) => (inputReference.current = ref)}
-                onPlacesChanged={handlePlaceChanged}
-              >
-                <input
-                  type="text"
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  placeholder="Enter Location"
-                  inputref={inputReference}
-                  onChange={(e) => setReqAddress(e.target.value)}
-                  required
-                />
-              </StandaloneSearchBox>
-            </div>
-            <div className="mb-4">
-              <label htmlFor="phoneNumber" className="block text-black">
-                Phone number
-              </label>
-              <input
-                onChange={(e) => setPhoneNumber(e.target.value)}
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                placeholder="Enter your number"
-                id="phoneNumber"
-                name="phoneNumber"
-                value={phoneNumber || currentUser?.phone || ''} // Set initial value
-                type="tel"
-                required
-              />
-            </div>
-            <div className="flex mb-4">
-              <div className="mr-4">
-                <label htmlFor="from_hour" className="block text-black">
-                  From
-                </label>
-                <input
-                  onChange={(e) => setFromTime(e.target.value)}
-                  id="from_hour"
-                  name="from_hour"
-                  type="time"
-                  value={fromTime}
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  required
-                />
-              </div>
-              <div>
-                <label htmlFor="to_hour" className="block text-black">
-                  To
-                </label>
-                <input
-                  onChange={(e) => setToTime(e.target.value)}
-                  id="to_hour"
-                  name="to_hour"
-                  type="time"
-                  value={toTime}
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  required
-                />
-              </div>
-            </div>
-            {err && (
-              <p className="flex items-center justify-center text-sm text-red-700 font-semibold mb-2">
-                {err}
-              </p>
-            )}
-            <button className="text-white bg-slate-500 py-2 px-4 rounded hover:bg-black ml-11">
-              Add Request
-            </button>
-          </form>
-
-          <div className={classes.closeAddWindow} onClick={toggleAddWindow}>
-            <AiOutlineClose />
-          </div>
-        </div>
+      {showAddWindow && (
+        <AddWindow
+          fullName={fullName}
+          initialName={initialName}
+          setFullName={setFullName}
+          bottlesNumber={bottlesNumber}
+          setBottlesNumber={setBottlesNumber}
+          inputReference={inputReference}
+          handlePlaceChanged={handlePlaceChanged}
+          setReqAddress={setReqAddress}
+          phoneNumber={phoneNumber}
+          setPhoneNumber={setPhoneNumber}
+          currentUser={currentUser}
+          fromTime={fromTime}
+          setFromTime={setFromTime}
+          toTime={toTime}
+          setToTime={setToTime}
+          err={err}
+          handleSubmit={handleSubmit}
+          toggleAddWindow={toggleAddWindow}
+          form={form}
+          classes={classes}
+        />
       )}
       {!isLoaded ? (
         <div className={classes.loaderWrapper}>
@@ -445,7 +346,7 @@ const Map = () => {
             </button>
           </div>
           {searchPerformed
-            ? filteredMarkers.map(
+            ? filteredFilteredMarkersByType.map(
                 ({ id, lat, lng, type, address, last_modified }) => {
                   const markerClicked = selectedMarker === address;
                   return (
@@ -492,60 +393,62 @@ const Map = () => {
                   );
                 }
               )
-            : markers.map(({ id, lat, lng, type, address, last_modified }) => {
-                const markerClicked = selectedMarker === address;
-                const isAdmin = currentUser?.role === 1;
-                return (
-                  <MarkerF
-                    key={id}
-                    position={{ lat, lng }}
-                    icon={{
-                      url: require(`../../img/icons/${type}.png`),
-                    }}
-                    onClick={() => handleShowAddress(address)}
-                  >
-                    {markerClicked && (
-                      <InfoWindowF
-                        onCloseClick={() => setSelectedMarker(null)}
-                        disableAutoClose={true}
-                        style={{ background: 'blue' }}
-                      >
-                        <div className="pl-5 text-center">
-                          <h1 className="text-xl font-bold mb-2 text-right">
-                            {address}
-                          </h1>
-                          <p
-                            className={`mb-2 text-center font-semibold ${typeColors[type]}`}
-                          >
-                            {typeDescriptions[type]}
-                          </p>
-                          <div className="text-center">
-                            <h2 className="mb-2 text-center">
-                              Last updated: {formatDate(last_modified)}
-                            </h2>
-                          </div>
-                          <div className="text-center">
-                            <button
-                              className="bg-white hover:bg-blue-300 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow items-center"
-                              onClick={() => handleOpenGoogleMaps(lat, lng)}
+            : filteredMarkersByType.map(
+                ({ id, lat, lng, type, address, last_modified }) => {
+                  const markerClicked = selectedMarker === address;
+                  const isAdmin = currentUser?.role === 1;
+                  return (
+                    <MarkerF
+                      key={id}
+                      position={{ lat, lng }}
+                      icon={{
+                        url: require(`../../img/icons/${type}.png`),
+                      }}
+                      onClick={() => handleShowAddress(address)}
+                    >
+                      {markerClicked && (
+                        <InfoWindowF
+                          onCloseClick={() => setSelectedMarker(null)}
+                          disableAutoClose={true}
+                          style={{ background: 'blue' }}
+                        >
+                          <div className="pl-5 text-center">
+                            <h1 className="text-xl font-bold mb-2 text-right">
+                              {address}
+                            </h1>
+                            <p
+                              className={`mb-2 text-center font-semibold ${typeColors[type]}`}
                             >
-                              Navigate
-                            </button>
-                            {isAdmin && (
-                              <Link
-                                to={`/admin/update-bin/${id}`}
-                                className="bg-white ml-2 hover:bg-yellow-300 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow items-center"
+                              {typeDescriptions[type]}
+                            </p>
+                            <div className="text-center">
+                              <h2 className="mb-2 text-center">
+                                Last updated: {formatDate(last_modified)}
+                              </h2>
+                            </div>
+                            <div className="text-center">
+                              <button
+                                className="bg-white hover:bg-blue-300 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow items-center"
+                                onClick={() => handleOpenGoogleMaps(lat, lng)}
                               >
-                                Update
-                              </Link>
-                            )}
+                                Navigate
+                              </button>
+                              {isAdmin && (
+                                <Link
+                                  to={`/admin/update-bin/${id}`}
+                                  className="bg-white ml-2 hover:bg-yellow-300 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow items-center"
+                                >
+                                  Update
+                                </Link>
+                              )}
+                            </div>
                           </div>
-                        </div>
-                      </InfoWindowF>
-                    )}
-                  </MarkerF>
-                );
-              })}
+                        </InfoWindowF>
+                      )}
+                    </MarkerF>
+                  );
+                }
+              )}
           {requests.map((request) => {
             const {
               request_id,
@@ -616,7 +519,8 @@ const Map = () => {
                         {currentUser?.role !== 2 &&
                           currentUser?.role !== 5 &&
                           status !== 2 &&
-                          currentUser && (
+                          currentUser &&
+                          currentUser?.ID !== user_id && (
                             <Link
                               to={`/collect?Id=${request_id}`}
                               className="bg-white ml-2 hover:bg-green-300 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow items-center"

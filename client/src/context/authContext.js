@@ -13,8 +13,13 @@ export const AuthContextProvider = ({ children }) => {
   }, [currentUser]);
 
   const login = async (inputs) => {
-    const res = await axios.post('/auth/login', inputs);
-    setCurrentUser(res.data);
+    try {
+      const res = await axios.post('/auth/login', inputs);
+      setCurrentUser(res.data);
+      return res.data.role; // Return the user role
+    } catch (error) {
+      throw error; // Rethrow the error for handling in the component
+    }
   };
 
   const logout = async () => {
