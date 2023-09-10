@@ -99,6 +99,14 @@ const ForgotPassword = () => {
               >
                 {isResetting ? 'Resetting...' : 'Reset Password'}
               </button>
+              <div className="flex items-center justify-center">
+                <a
+                  href="/login"
+                  className="text-sm font-medium text-white text-primary-600 hover:underline dark:text-primary-500"
+                >
+                  Back to login page
+                </a>
+              </div>
             </form>
             {message && (
               <p className="flex items-center justify-center text-sm text-green-600 font-semibold">
