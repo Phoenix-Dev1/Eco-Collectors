@@ -516,11 +516,12 @@ const Map = () => {
                             Update
                           </Link>
                         )}
-                        {currentUser?.role !== 2 &&
-                          currentUser?.role !== 5 &&
-                          status !== 2 &&
-                          currentUser &&
-                          currentUser?.ID !== user_id && (
+                        {currentUser &&
+                          (currentUser.role === 1 ||
+                            (currentUser.ID !== user_id &&
+                              currentUser.role !== 2 &&
+                              currentUser.role !== 5 &&
+                              status !== 2)) && (
                             <Link
                               to={`/collect?Id=${request_id}`}
                               className="bg-white ml-2 hover:bg-green-300 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow items-center"
