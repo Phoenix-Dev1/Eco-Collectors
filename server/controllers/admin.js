@@ -17,7 +17,7 @@ const getAllUsers = (req, res) => {
     }
 
     const selectQuery =
-      'SELECT ID, role, first_name, last_name, email, city, address, phone, amount, active FROM users';
+      'SELECT ID, role, first_name, last_name, email, city, address, phone, amount, active FROM users WHERE role != 1';
 
     db.query(selectQuery, (err, data) => {
       if (err) return res.status(500).json(err);
