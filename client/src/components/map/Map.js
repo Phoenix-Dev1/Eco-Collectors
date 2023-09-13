@@ -264,6 +264,31 @@ const Map = () => {
       ? filteredMarkers.filter((marker) => marker.type === selectedMarkerType)
       : filteredMarkers;
 
+  // transfer later for logic
+  // double click for adding a recycle request
+
+  // Create a state variable for the marker with id 0
+  const [markerWithIdA, setMarkerWithIdA] = useState(null);
+
+  const handleDoubleClick = (event) => {
+    const latLng = event.latLng;
+    const lat = latLng.lat();
+    const lng = latLng.lng();
+
+    console.log('Double-clicked at:', lat, lng);
+
+    // Create a new marker
+    const newMarker = new window.google.maps.Marker({
+      id: 'A',
+      lat: lat,
+      lng: lng,
+      type: 'addMarker',
+    });
+
+    // Set the marker with id 0
+    setMarkerWithIdA(newMarker);
+  };
+
   return (
     <div className={classes.Map}>
       <div className={classes.filters} onClick={toggleFilterWindow}>
@@ -318,9 +343,22 @@ const Map = () => {
       ) : (
         <GoogleMap
           mapContainerClassName={classes.mapContainer}
+          gestureHandling="none"
           center={center}
           zoom={mapZoom}
+          onDblClick={handleDoubleClick}
         >
+          {/* Render the marker with id 0 */}
+          {markerWithIdA && (
+            <MarkerF
+              key={markerWithIdA.id}
+              position={{ lat: markerWithIdA.lat, lng: markerWithIdA.lng }}
+              icon={{
+                url: require(`../../img/icons/${markerWithIdA.type}.png`),
+              }}
+              onClick={() => handleShowAddress(markerWithIdA.address)}
+            />
+          )}
           {/* Search Bins */}
           <div className={classes.searchBox}>
             <link
