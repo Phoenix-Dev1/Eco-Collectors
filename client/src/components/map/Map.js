@@ -54,6 +54,7 @@ const Map = () => {
 
   // errors handling
   const [err, setError] = useState(null);
+
   // Add request Address GeoCoder Request
   const handlePlaceChanged = () => {
     const [place] = inputReference.current.getPlaces();
@@ -264,18 +265,15 @@ const Map = () => {
       ? filteredMarkers.filter((marker) => marker.type === selectedMarkerType)
       : filteredMarkers;
 
-  // transfer later for logic
-  // double click for adding a recycle request
+  /***** Double click solution  *****/
 
   // Create a state variable for the marker with id 0
   const [markerWithIdA, setMarkerWithIdA] = useState(null);
 
-  const handleDoubleClick = (event) => {
+  const handleDoubleClick = async (event) => {
     const latLng = event.latLng;
     const lat = latLng.lat();
     const lng = latLng.lng();
-
-    console.log('Double-clicked at:', lat, lng);
 
     // Create a new marker
     const newMarker = new window.google.maps.Marker({
@@ -285,8 +283,31 @@ const Map = () => {
       type: 'addMarker',
     });
 
-    // Set the marker with id 0
+    // Set the marker with id 'A' - unique
     setMarkerWithIdA(newMarker);
+
+    // Set the coordinates in the AddWindow
+    setReqLat(lat);
+    setReqLng(lng);
+
+    try {
+      // Use the Google Geocoding API to get the address
+      const response = await axios.get(
+        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${process.env.REACT_APP_GOOGLE_API_KEY}`
+      );
+
+      // Extract the formatted address from the response
+      const address = response.data.results[0]?.formatted_address;
+
+      // Set the address in the state
+      setReqAddress(address);
+
+      // Open the AddWindow
+      //toggleAddWindow();
+      setShowAddWindow(true);
+    } catch (error) {
+      console.error('Error fetching address:', error);
+    }
   };
 
   return (
@@ -316,6 +337,7 @@ const Map = () => {
           setBottlesNumber={setBottlesNumber}
           inputReference={inputReference}
           handlePlaceChanged={handlePlaceChanged}
+          reqAddress={reqAddress}
           setReqAddress={setReqAddress}
           phoneNumber={phoneNumber}
           setPhoneNumber={setPhoneNumber}
