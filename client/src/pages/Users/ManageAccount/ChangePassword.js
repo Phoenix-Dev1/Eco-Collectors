@@ -59,7 +59,7 @@ export default function ChangePassword() {
       alert('Password changed successfully!');
 
       // Redirect to the user page
-      navigate('/user/welcome');
+      navigate('/');
     } catch (err) {
       setError(err.response.data);
     }
@@ -91,6 +91,7 @@ export default function ChangePassword() {
               type="button"
               className="absolute inset-y-0 right-0 flex items-center pr-3 pt-4 justify-center"
               onClick={togglePasswordVisibility}
+              tabIndex={-1}
             >
               {showPassword ? (
                 <FiEyeOff className="h-5 w-5 text-gray-500" />
@@ -115,6 +116,7 @@ export default function ChangePassword() {
               type="button"
               className="absolute inset-y-0 right-0 flex items-center pr-3 pt-4 justify-center"
               onClick={toggleNewPasswordVisibility}
+              tabIndex={-1}
             >
               {showNewPassword ? (
                 <FiEyeOff className="h-5 w-5 text-gray-500" />
