@@ -112,6 +112,7 @@ const Map = () => {
           setFromTime('');
           setToTime('');
           setError(null);
+          setMarkerWithIdA(null);
           // Show an alert for successful submission
           window.alert('Request added successfully!');
         } catch (err) {
