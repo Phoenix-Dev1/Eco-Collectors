@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import validatePassword from './validatePassword';
+import { FiEye, FiEyeOff } from 'react-icons/fi';
 
 export default function ChangePassword() {
   const [passwords, setPasswords] = useState({
@@ -11,11 +12,21 @@ export default function ChangePassword() {
   });
 
   const [err, setError] = useState(null);
+  const [showPassword, setShowPassword] = useState(false); // State for password visibility
+  const [showNewPassword, setShowNewPassword] = useState(false); // State for password visibility
 
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     setPasswords((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword); // Toggle password visibility state
+  };
+
+  const toggleNewPasswordVisibility = () => {
+    setShowNewPassword(!showNewPassword); // Toggle password visibility state
   };
 
   const handleSubmit = async (e) => {
@@ -64,20 +75,31 @@ export default function ChangePassword() {
           className="m-0 p-8 bg-gray-800 rounded shadow-xl"
           onSubmit={handleSubmit}
         >
-          <div className="mt-2">
+          <div className="mt-2 relative">
             <label className="text-sm block text-white" htmlFor="old_password">
               Old Password
             </label>
             <input
               onChange={handleChange}
-              className="w-full px-2 py-2 bg-gray-600 rounded border border-gray-300 text-white"
+              className="w-full px-2 py-2 bg-gray-600 rounded border border-gray-300 text-white pr-10"
               id="old_password"
               name="old_password"
-              type="password"
+              type={showPassword ? 'text' : 'password'}
               aria-label="Old Password"
             />
+            <button
+              type="button"
+              className="absolute inset-y-0 right-0 flex items-center pr-3 pt-4 justify-center"
+              onClick={togglePasswordVisibility}
+            >
+              {showPassword ? (
+                <FiEyeOff className="h-5 w-5 text-gray-500" />
+              ) : (
+                <FiEye className="h-5 w-5 text-gray-500" />
+              )}
+            </button>
           </div>
-          <div className="mt-2">
+          <div className="mt-2 relative">
             <label className="text-sm block text-white" htmlFor="new_password">
               New Password
             </label>
@@ -86,11 +108,22 @@ export default function ChangePassword() {
               className="w-full px-2 py-2 bg-gray-600 rounded border border-gray-300 text-white"
               id="new_password"
               name="new_password"
-              type="password"
+              type={showNewPassword ? 'text' : 'password'}
               aria-label="New Password"
             />
+            <button
+              type="button"
+              className="absolute inset-y-0 right-0 flex items-center pr-3 pt-4 justify-center"
+              onClick={toggleNewPasswordVisibility}
+            >
+              {showNewPassword ? (
+                <FiEyeOff className="h-5 w-5 text-gray-500" />
+              ) : (
+                <FiEye className="h-5 w-5 text-gray-500" />
+              )}
+            </button>
           </div>
-          <div className="mt-2">
+          <div className="mt-2 relative">
             <label
               className="text-sm block text-white"
               htmlFor="confirm_password"
@@ -102,7 +135,7 @@ export default function ChangePassword() {
               className="w-full px-2 py-2 bg-gray-600 rounded border border-gray-300 text-white"
               id="confirm_password"
               name="confirm_password"
-              type="password"
+              type={showNewPassword ? 'text' : 'password'}
               aria-label="Confirm Password"
             />
           </div>
