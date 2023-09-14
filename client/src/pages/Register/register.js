@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { validateForm } from './formValidation'; // Import the validation functions
 import axios from 'axios';
 import smallLogo from '../../img/sm-logo.png';
+import { FiEye, FiEyeOff } from 'react-icons/fi';
 
 function SignupForm() {
   const [inputs, setInputs] = useState({
@@ -16,6 +17,8 @@ function SignupForm() {
   });
 
   const [err, setError] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   // User Credentials
   const handleChange = (e) => {
@@ -40,6 +43,14 @@ function SignupForm() {
         setError(err.response.data);
       }
     }
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword(!showConfirmPassword);
   };
 
   return (
@@ -145,7 +156,7 @@ function SignupForm() {
               aria-label="Phone Number"
             />
           </div>
-          <div className="mt-2">
+          <div className="mt-2 relative">
             <label className="text-sm block text-white" htmlFor="password">
               Password
             </label>
@@ -154,13 +165,25 @@ function SignupForm() {
               className="w-full px-2 py-2 bg-gray-600 rounded border border-gray-300 text-white"
               id="password"
               name="password"
-              type="password"
+              type={showPassword ? 'text' : 'password'} // Toggle password visibility
               required
               placeholder="••••••••"
               aria-label="Password"
             />
+            <button
+              type="button"
+              className="absolute mt-3 inset-y-0 right-0 flex items-center pr-3"
+              onClick={togglePasswordVisibility}
+              tabIndex={-1}
+            >
+              {showPassword ? (
+                <FiEyeOff className="h-5 w-5 text-gray-500" />
+              ) : (
+                <FiEye className="h-5 w-5 text-gray-500" />
+              )}
+            </button>
           </div>
-          <div className="mt-2">
+          <div className="mt-2 relative">
             <label
               className="text-sm block text-white"
               htmlFor="confirm_password"
@@ -172,11 +195,23 @@ function SignupForm() {
               className="w-full px-2 py-2 bg-gray-600 rounded border border-gray-300 text-white"
               id="confirm_password"
               name="confirm_password"
-              type="password"
+              type={showConfirmPassword ? 'text' : 'password'} // Toggle confirm password visibility
               required
               placeholder="••••••••"
               aria-label="Confirm Password"
             />
+            <button
+              type="button"
+              className="absolute pt-3 inset-y-0 right-0 flex items-center pr-3"
+              onClick={toggleConfirmPasswordVisibility}
+              tabIndex={-1}
+            >
+              {showConfirmPassword ? (
+                <FiEyeOff className="h-5 w-5 text-gray-500" />
+              ) : (
+                <FiEye className="h-5 w-5 text-gray-500" />
+              )}
+            </button>
           </div>
           {err && (
             <p className="flex items-center justify-center text-sm text-red-700 font-semibold">
