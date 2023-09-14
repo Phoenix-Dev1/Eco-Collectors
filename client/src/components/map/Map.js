@@ -266,12 +266,12 @@ const Map = () => {
       ? filteredMarkers.filter((marker) => marker.type === selectedMarkerType)
       : filteredMarkers;
 
-  /***** Double click solution  *****/
+  /***** Right click solution  *****/
 
   // Create a state variable for the marker with id 0
   const [markerWithIdA, setMarkerWithIdA] = useState(null);
 
-  const handleDoubleClick = async (event) => {
+  const handleRightClick = async (event) => {
     const latLng = event.latLng;
     const lat = latLng.lat();
     const lng = latLng.lng();
@@ -298,6 +298,7 @@ const Map = () => {
       );
 
       // Extract the formatted address from the response
+      console.table(response.data.results);
       const address = response.data.results[0]?.formatted_address;
 
       // Set the address in the state
@@ -369,7 +370,7 @@ const Map = () => {
           gestureHandling="none"
           center={center}
           zoom={mapZoom}
-          onDblClick={handleDoubleClick}
+          onRightClick={handleRightClick}
         >
           {/* Render the marker with id 0 */}
           {markerWithIdA && (
