@@ -199,6 +199,43 @@ const Map = () => {
   const [filteredMarkers, setFilteredMarkers] = useState([]);
   const [searchPerformed, setSearchPerformed] = useState(false);
   const [selectedMarkerType, setSelectedMarkerType] = useState('');
+  const [searchRadius, setSearchRadius] = useState(5000); // Default search radius in meters
+  const [searchClicked, setSearchClicked] = useState(false);
+
+  // Range search
+  const handleSearchRadiusChange = (e) => {
+    setSearchRadius(parseInt(e.target.value)); // Parse the input value as an integer
+  };
+
+  const handleCancelSearch = () => {
+    setSearchClicked(false);
+    setFilteredMarkers(markers);
+    setSearchRadius(5000);
+    setSearchAddress('');
+  };
+
+  // updating filtered markers based on range selection
+  function updateFilteredMarkers(radius) {
+    if (searchLat && searchLng) {
+      const filtered = markers.filter((marker) => {
+        const distance = calculateDistance(
+          searchLat,
+          searchLng,
+          marker.lat,
+          marker.lng
+        );
+        return distance <= radius;
+      });
+
+      setFilteredMarkers(filtered);
+      setSearchPerformed(true);
+    }
+  }
+
+  // update filtered markers when searchRadius changes
+  useEffect(() => {
+    updateFilteredMarkers(searchRadius);
+  }, [searchRadius]); // Trigger the effect when searchRadius changes - Do not add/remove!
 
   const handleSearchCoordinates = () => {
     const [place] = searchReference.current.getPlaces();
@@ -231,7 +268,7 @@ const Map = () => {
           marker.lat,
           marker.lng
         );
-        return distance <= 5000; // 5000 meters (5 km)
+        return distance <= searchRadius; // 5000 meters (5 km)
       });
 
       setFilteredMarkers(filtered); // Update the filteredMarkers state
@@ -239,13 +276,13 @@ const Map = () => {
       const newCenter = { lat: searchLat, lng: searchLng };
       setCenter(newCenter);
       setMapZoom(15); // Change the zoom level to 15
-
       setSearchPerformed(true); // Set searchPerformed to true
     }
   }
 
   const handleFilterMarkers = () => {
     filterMarkers();
+    setSearchClicked(true);
     // Update the zoom level and center of the map on successful search
     setMapZoom(15); // Change the zoom level to 16
   };
@@ -396,17 +433,35 @@ const Map = () => {
               <input
                 type="text"
                 className={classes.searchInput}
-                placeholder="Search Recycle Bins(5km)"
+                placeholder="Search Recycle Bins"
                 inputref={searchReference}
                 onChange={(e) => setSearchAddress(e.target.value)}
                 required
                 onSubmit={handleFilterMarkers}
               />
             </StandaloneSearchBox>
+            <button type="submit" onClick={handleCancelSearch}>
+              <i className="flex flex-2 flex-col fa fa-times mr-4 hover:text-blue-500"></i>
+            </button>
             <button type="submit" onClick={handleFilterMarkers}>
               <i className="flex flex-col fa fa-search hover:text-blue-500"></i>
             </button>
           </div>
+          {searchClicked && (
+            <div className={classes.rangeInputContainer}>
+              <input
+                type="range"
+                min="1000" // Minimum search radius in meters
+                max="10000" // Maximum search radius in meters
+                step="100" // Step value for the range input
+                value={searchRadius}
+                onChange={handleSearchRadiusChange}
+              />
+              <span className={classes.rangeTextContainer}>
+                <p>{searchRadius}m</p>
+              </span>
+            </div>
+          )}
           {searchPerformed
             ? filteredFilteredMarkersByType.map(
                 ({ id, lat, lng, type, address, last_modified }) => {
