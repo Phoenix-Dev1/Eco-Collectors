@@ -10,6 +10,7 @@ const AddWindow = ({
   setBottlesNumber,
   inputReference,
   handlePlaceChanged,
+  reqAddress,
   setReqAddress,
   phoneNumber,
   setPhoneNumber,
@@ -69,7 +70,8 @@ const AddWindow = ({
               type="text"
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               placeholder="Enter Location"
-              inputref={inputReference}
+              ref={inputReference}
+              value={reqAddress}
               onChange={(e) => setReqAddress(e.target.value)}
               required
             />

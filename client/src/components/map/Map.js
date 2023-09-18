@@ -54,6 +54,7 @@ const Map = () => {
 
   // errors handling
   const [err, setError] = useState(null);
+
   // Add request Address GeoCoder Request
   const handlePlaceChanged = () => {
     const [place] = inputReference.current.getPlaces();
@@ -111,6 +112,7 @@ const Map = () => {
           setFromTime('');
           setToTime('');
           setError(null);
+          setMarkerWithIdA(null);
           // Show an alert for successful submission
           window.alert('Request added successfully!');
         } catch (err) {
@@ -197,6 +199,43 @@ const Map = () => {
   const [filteredMarkers, setFilteredMarkers] = useState([]);
   const [searchPerformed, setSearchPerformed] = useState(false);
   const [selectedMarkerType, setSelectedMarkerType] = useState('');
+  const [searchRadius, setSearchRadius] = useState(5000); // Default search radius in meters
+  const [searchClicked, setSearchClicked] = useState(false);
+
+  // Range search
+  const handleSearchRadiusChange = (e) => {
+    setSearchRadius(parseInt(e.target.value)); // Parse the input value as an integer
+  };
+
+  const handleCancelSearch = () => {
+    setSearchClicked(false);
+    setFilteredMarkers(markers);
+    setSearchRadius(5000);
+    setSearchAddress('');
+  };
+
+  // updating filtered markers based on range selection
+  function updateFilteredMarkers(radius) {
+    if (searchLat && searchLng) {
+      const filtered = markers.filter((marker) => {
+        const distance = calculateDistance(
+          searchLat,
+          searchLng,
+          marker.lat,
+          marker.lng
+        );
+        return distance <= radius;
+      });
+
+      setFilteredMarkers(filtered);
+      setSearchPerformed(true);
+    }
+  }
+
+  // update filtered markers when searchRadius changes
+  useEffect(() => {
+    updateFilteredMarkers(searchRadius);
+  }, [searchRadius]); // Trigger the effect when searchRadius changes - Do not add/remove!
 
   const handleSearchCoordinates = () => {
     const [place] = searchReference.current.getPlaces();
@@ -229,7 +268,7 @@ const Map = () => {
           marker.lat,
           marker.lng
         );
-        return distance <= 5000; // 5000 meters (5 km)
+        return distance <= searchRadius; // 5000 meters (5 km)
       });
 
       setFilteredMarkers(filtered); // Update the filteredMarkers state
@@ -237,13 +276,13 @@ const Map = () => {
       const newCenter = { lat: searchLat, lng: searchLng };
       setCenter(newCenter);
       setMapZoom(15); // Change the zoom level to 15
-
       setSearchPerformed(true); // Set searchPerformed to true
     }
   }
 
   const handleFilterMarkers = () => {
     filterMarkers();
+    setSearchClicked(true);
     // Update the zoom level and center of the map on successful search
     setMapZoom(15); // Change the zoom level to 16
   };
@@ -263,6 +302,52 @@ const Map = () => {
     selectedMarkerType !== ''
       ? filteredMarkers.filter((marker) => marker.type === selectedMarkerType)
       : filteredMarkers;
+
+  /***** Right click solution  *****/
+
+  // Create a state variable for the marker with id 0
+  const [markerWithIdA, setMarkerWithIdA] = useState(null);
+
+  const handleRightClick = async (event) => {
+    const latLng = event.latLng;
+    const lat = latLng.lat();
+    const lng = latLng.lng();
+
+    // Create a new marker
+    const newMarker = new window.google.maps.Marker({
+      id: 'A',
+      lat: lat,
+      lng: lng,
+      type: 'addMarker',
+    });
+
+    // Set the marker with id 'A' - unique
+    setMarkerWithIdA(newMarker);
+
+    // Set the coordinates in the AddWindow
+    setReqLat(lat);
+    setReqLng(lng);
+
+    try {
+      // Use the Google Geocoding API to get the address
+      const response = await axios.get(
+        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${process.env.REACT_APP_GOOGLE_API_KEY}`
+      );
+
+      // Extract the formatted address from the response
+      console.table(response.data.results);
+      const address = response.data.results[0]?.formatted_address;
+
+      // Set the address in the state
+      setReqAddress(address);
+
+      // Open the AddWindow
+      //toggleAddWindow();
+      setShowAddWindow(true);
+    } catch (error) {
+      console.error('Error fetching address:', error);
+    }
+  };
 
   return (
     <div className={classes.Map}>
@@ -291,6 +376,7 @@ const Map = () => {
           setBottlesNumber={setBottlesNumber}
           inputReference={inputReference}
           handlePlaceChanged={handlePlaceChanged}
+          reqAddress={reqAddress}
           setReqAddress={setReqAddress}
           phoneNumber={phoneNumber}
           setPhoneNumber={setPhoneNumber}
@@ -318,9 +404,22 @@ const Map = () => {
       ) : (
         <GoogleMap
           mapContainerClassName={classes.mapContainer}
+          gestureHandling="none"
           center={center}
           zoom={mapZoom}
+          onRightClick={handleRightClick}
         >
+          {/* Render the marker with id 0 */}
+          {markerWithIdA && (
+            <MarkerF
+              key={markerWithIdA.id}
+              position={{ lat: markerWithIdA.lat, lng: markerWithIdA.lng }}
+              icon={{
+                url: require(`../../img/icons/${markerWithIdA.type}.png`),
+              }}
+              onClick={() => handleShowAddress(markerWithIdA.address)}
+            />
+          )}
           {/* Search Bins */}
           <div className={classes.searchBox}>
             <link
@@ -334,17 +433,35 @@ const Map = () => {
               <input
                 type="text"
                 className={classes.searchInput}
-                placeholder="Search Recycle Bins(5km)"
+                placeholder="Search Recycle Bins"
                 inputref={searchReference}
                 onChange={(e) => setSearchAddress(e.target.value)}
                 required
                 onSubmit={handleFilterMarkers}
               />
             </StandaloneSearchBox>
+            <button type="submit" onClick={handleCancelSearch}>
+              <i className="flex flex-2 flex-col fa fa-times mr-4 hover:text-blue-500"></i>
+            </button>
             <button type="submit" onClick={handleFilterMarkers}>
               <i className="flex flex-col fa fa-search hover:text-blue-500"></i>
             </button>
           </div>
+          {searchClicked && (
+            <div className={classes.rangeInputContainer}>
+              <input
+                type="range"
+                min="1000" // Minimum search radius in meters
+                max="10000" // Maximum search radius in meters
+                step="100" // Step value for the range input
+                value={searchRadius}
+                onChange={handleSearchRadiusChange}
+              />
+              <span className={classes.rangeTextContainer}>
+                <p>{searchRadius}m</p>
+              </span>
+            </div>
+          )}
           {searchPerformed
             ? filteredFilteredMarkersByType.map(
                 ({ id, lat, lng, type, address, last_modified }) => {
@@ -516,11 +633,12 @@ const Map = () => {
                             Update
                           </Link>
                         )}
-                        {currentUser?.role !== 2 &&
-                          currentUser?.role !== 5 &&
-                          status !== 2 &&
-                          currentUser &&
-                          currentUser?.ID !== user_id && (
+                        {currentUser &&
+                          (currentUser.role === 1 ||
+                            (currentUser.ID !== user_id &&
+                              currentUser.role !== 2 &&
+                              currentUser.role !== 5 &&
+                              status !== 2)) && (
                             <Link
                               to={`/collect?Id=${request_id}`}
                               className="bg-white ml-2 hover:bg-green-300 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow items-center"
