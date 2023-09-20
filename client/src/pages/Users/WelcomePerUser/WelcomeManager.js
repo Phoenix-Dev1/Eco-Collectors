@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const WelcomeManager = () => {
+  // State variables to hold various metrics
   const [totalPickedUpRequests, setTotalPickedUpRequests] = useState(0);
   const [totalRecycledBottles, setTotalRecycledBottles] = useState(0);
   const [currentMonthCollectedBottles, setCurrentMonthCollectedBottles] =
@@ -15,8 +16,10 @@ const WelcomeManager = () => {
   });
 
   useEffect(() => {
+    // Fetch data from the server on component mount
     const fetchManagerData = async () => {
       try {
+        // Set state variables with data from the response
         const res = await axios.get('/user/welcomeManager');
         setTotalPickedUpRequests(res.data.totalPickedUpRequests);
         setTotalRecycledBottles(res.data.totalRecycledBottles);
@@ -25,6 +28,7 @@ const WelcomeManager = () => {
         setActiveBisCount(res.data.activeBinsCount);
         setAvgClosingTime(res.data.avgClosingTime);
       } catch (error) {
+        // Handle errors by setting state variables to -1 or empty arrays/objects
         setTotalPickedUpRequests(-1);
         setTotalRecycledBottles(-1);
         setCurrentMonthCollectedBottles(-1);
@@ -40,11 +44,14 @@ const WelcomeManager = () => {
     fetchManagerData();
   }, []);
 
+  // Function to render metric cards
   const renderMetricCards = () => {
     const currentDate = new Date();
     const currentMonth = new Intl.DateTimeFormat('en', {
       month: 'long',
     }).format(currentDate);
+
+    // Configuration for metric cards
     const metricStyles = [
       {
         title: 'Total Requests Picked Up (Recyclers Only)',

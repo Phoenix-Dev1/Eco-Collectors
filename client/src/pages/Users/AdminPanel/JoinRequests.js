@@ -62,6 +62,7 @@ const JoinRequests = () => {
     }
   };
 
+  // Define columns in table
   const columns = [
     {
       cell: (row) => (

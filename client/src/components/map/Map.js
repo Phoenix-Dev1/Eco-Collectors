@@ -12,15 +12,15 @@ import { Link } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import classes from './map.module.css';
 import {
-  fetchActiveMarkers,
-  showAddress,
+  fetchActiveMarkers, // fetching the active markers from db
+  showAddress, // Show a single Marker Address
   openGoogleMaps,
   formatDate,
-  fetchRequests,
+  fetchRequests, // Fetching recycling Requests from DB
   formatDateTime,
   formatTime,
-  typeDescriptions,
-  typeColors,
+  typeDescriptions, // Recycle Bins Render properties
+  typeColors, // consts for different colors
 } from './mapFunctions';
 import FilterWindow from './FilterWindow';
 import AddWindow from './AddWindow';
@@ -237,6 +237,7 @@ const Map = () => {
     updateFilteredMarkers(searchRadius);
   }, [searchRadius]); // Trigger the effect when searchRadius changes - Do not add/remove!
 
+  // converting search address(text) to coordinates
   const handleSearchCoordinates = () => {
     const [place] = searchReference.current.getPlaces();
     if (place) {
@@ -280,6 +281,7 @@ const Map = () => {
     }
   }
 
+  // Showing the searched bins(using a new array to store bin object)
   const handleFilterMarkers = () => {
     filterMarkers();
     setSearchClicked(true);

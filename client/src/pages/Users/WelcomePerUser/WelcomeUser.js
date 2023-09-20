@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const WelcomeUser = () => {
+  // State variables to hold various metrics
   const [totalRequests, setTotalRequests] = useState(0);
   const [totalRecycledBottles, setTotalRecycledBottles] = useState(0);
   const [avgClosingTime, setAvgClosingTime] = useState(0);
@@ -10,10 +11,12 @@ const WelcomeUser = () => {
   const [currentMonthRecycledBottles, setCurrentMonthRecycledBottles] =
     useState(0);
 
+  // Fetch data from the server on component mount
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         const res = await axios.get('/user/welcomeUser');
+        // Set state variables with data from the response
         setTotalRequests(res.data.totalRequests);
         setTotalRecycledBottles(res.data.totalRecycledBottles);
         setAvgClosingTime(res.data.avgClosingTime);
@@ -21,6 +24,7 @@ const WelcomeUser = () => {
         setLast3RecyclersNames(res.data.last3RecyclersNames);
         setCurrentMonthRecycledBottles(res.data.currentMonthRecycledBottles);
       } catch (error) {
+        // Handle errors by setting state variables to -1 or empty arrays/strings
         setTotalRequests(-1);
         setTotalRecycledBottles(-1);
         setAvgClosingTime(-1);
@@ -32,11 +36,13 @@ const WelcomeUser = () => {
     fetchUserData();
   }, []);
 
+  // Function to render metric cards
   const renderMetricCards = () => {
     const currentDate = new Date();
     const currentMonth = new Intl.DateTimeFormat('en', {
       month: 'long',
     }).format(currentDate);
+    // Configuration for metric cards
     const metricStyles = [
       {
         title: 'Total Requests',
