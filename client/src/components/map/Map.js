@@ -210,7 +210,6 @@ const Map = () => {
   const handleCancelSearch = () => {
     setSearchClicked(false);
     setFilteredMarkers(markers);
-    setSearchRadius(5000);
     setSearchAddress('');
   };
 
