@@ -306,7 +306,7 @@ const Map = () => {
 
   /***** Right click solution  *****/
 
-  // Create a state variable for the marker with id 0
+  // Create a state variable for the marker with id 'A'
   const [markerWithIdA, setMarkerWithIdA] = useState(null);
 
   const handleRightClick = async (event) => {
@@ -430,7 +430,7 @@ const Map = () => {
           zoom={mapZoom}
           onRightClick={handleRightClick}
         >
-          {/* Render the marker with id 0 */}
+          {/* Render the marker with id A */}
           {markerWithIdA && (
             <MarkerF
               key={markerWithIdA.id}
