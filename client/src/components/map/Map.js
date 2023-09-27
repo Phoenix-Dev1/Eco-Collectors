@@ -342,29 +342,37 @@ const Map = () => {
         (result) => result.formatted_address
       );
 
-      // Function to check if a string contains English letters or the plus sign '+'
-      function containsEnglishOrPlus(str) {
+      // Function to check if a string contains English letters, the plus sign '+', or is the exact string "ישראל"
+      function containsEnglishOrPlusOrIsrael(str) {
         // Define a regular expression to match English letters or the plus sign '+'
         const englishOrPlusRegex = /[a-zA-Z+]/;
-        // Check if the string contains English letters or the plus sign '+'
-        return englishOrPlusRegex.test(str);
+        // Check if the string contains English letters, the plus sign '+', or is "ישראל"
+        return englishOrPlusRegex.test(str) || str === 'ישראל';
       }
 
       let bestAddress = null;
 
       // Iterate through the addresses and find the best address
       for (const address of addresses) {
-        if (!containsEnglishOrPlus(address)) {
+        if (!containsEnglishOrPlusOrIsrael(address)) {
           bestAddress = address;
           break; // Stop iterating once a suitable address is found
         }
       }
 
-      // Set the best address in the state
-      setReqAddress(bestAddress);
-
-      // Open the AddWindow
-      setShowAddWindow(true);
+      // If no valid address is found, display an alert and do not open AddWindow
+      if (!bestAddress) {
+        alert('Invalid location selected, please try again.');
+        // Deleting previous data, to prevent locations collison
+        setMarkerWithIdA(null);
+        setReqAddress('');
+        setReqLat(0);
+        setReqLng(0);
+      } else {
+        // Set the best address in the state and open the AddWindow
+        setReqAddress(bestAddress);
+        setShowAddWindow(true);
+      }
     } catch (error) {
       console.error('Error fetching address:', error);
     }
