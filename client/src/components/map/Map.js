@@ -335,15 +335,35 @@ const Map = () => {
         `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${process.env.REACT_APP_GOOGLE_API_KEY}`
       );
 
-      // Extract the formatted address from the response
       console.table(response.data.results);
-      const address = response.data.results[0]?.formatted_address;
 
-      // Set the address in the state
-      setReqAddress(address);
+      // Extract the formatted addresses from the response
+      const addresses = response.data.results.map(
+        (result) => result.formatted_address
+      );
+
+      // Function to check if a string contains English letters or the plus sign '+'
+      function containsEnglishOrPlus(str) {
+        // Define a regular expression to match English letters or the plus sign '+'
+        const englishOrPlusRegex = /[a-zA-Z+]/;
+        // Check if the string contains English letters or the plus sign '+'
+        return englishOrPlusRegex.test(str);
+      }
+
+      let bestAddress = null;
+
+      // Iterate through the addresses and find the best address
+      for (const address of addresses) {
+        if (!containsEnglishOrPlus(address)) {
+          bestAddress = address;
+          break; // Stop iterating once a suitable address is found
+        }
+      }
+
+      // Set the best address in the state
+      setReqAddress(bestAddress);
 
       // Open the AddWindow
-      //toggleAddWindow();
       setShowAddWindow(true);
     } catch (error) {
       console.error('Error fetching address:', error);
